@@ -1,6 +1,7 @@
 package com.kyeonjuk.post.domain;
 
 import com.kyeonjuk.common.domain.PositiveIntegerCounter;
+import com.kyeonjuk.post.domain.common.DateTimeInfo;
 import com.kyeonjuk.post.domain.content.PostContent;
 import com.kyeonjuk.post.domain.content.PostPublicationState;
 import com.kyeonjuk.user.domain.User;
@@ -45,5 +46,21 @@ public class Post {
 
         this.content.updateContent(updateContent);
         this.state = state;
+    }
+
+    public int getLikeCount() {
+        return likeCount.getCount();
+    }
+
+    public String getContent() {
+        return content.getContentText();
+    }
+
+    public DateTimeInfo getDateTimeInfo() {
+        return content.getDateTimeInfo();
+    }
+
+    public PostPublicationState getState() {
+        return state;
     }
 }

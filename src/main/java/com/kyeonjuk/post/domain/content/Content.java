@@ -24,4 +24,8 @@ public abstract class Content {
     public String getContentText() {
         return contentText;
     }
+
+    public DateTimeInfo getDateTimeInfo() {
+        return dateTimeInfo;
+    }
 }
