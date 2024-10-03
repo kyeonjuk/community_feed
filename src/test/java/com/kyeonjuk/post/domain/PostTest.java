@@ -72,4 +72,15 @@ class PostTest {
         assertEquals("수정했습니다", post1.getContent());
         assertEquals(PostPublicationState.PUBLIC, post1.getState());
     }
+
+    /*
+        다른 사람이 수정 (권한 X) -> 예외
+     */
+    @Test
+    void givenCreatePost_whenUpdatePostOther_thenThrowError() {
+
+        // then
+        assertThrows(IllegalArgumentException.class,
+            () -> post1.updatePost(user2, "수정했습니다", PostPublicationState.PUBLIC));
+    }
 }
