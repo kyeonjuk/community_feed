@@ -4,8 +4,8 @@ import com.kyeonjuk.post.domain.common.DateTimeInfo;
 
 public abstract class Content {
 
-    String contentText;
-    final DateTimeInfo dateTimeInfo;
+    protected String contentText;
+    protected final DateTimeInfo dateTimeInfo;
 
     protected Content(String contentText) {
         checkText(contentText);
