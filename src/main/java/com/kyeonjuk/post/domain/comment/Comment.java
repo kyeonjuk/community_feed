@@ -65,4 +65,20 @@ public class Comment {
     public int getLikeCount() {
         return likeCount.getCount();
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public CommentContent getContentObject() {
+        return content;
+    }
 }

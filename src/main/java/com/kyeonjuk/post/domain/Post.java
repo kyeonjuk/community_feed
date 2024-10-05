@@ -86,4 +86,16 @@ public class Post {
     public PostPublicationState getState() {
         return state;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public PostContent getContentObject() {
+        return content;
+    }
 }
