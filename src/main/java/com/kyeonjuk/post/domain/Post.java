@@ -14,6 +14,16 @@ public class Post {
     private final PositiveIntegerCounter likeCount;
     private PostPublicationState state;
 
+    // 정적 생성자 1
+    public static Post createPost(Long id, User author, String content, PostPublicationState state) {
+        return new Post(id, author, new PostContent(content), state);
+    }
+
+    // 정적 생성자 2
+    public static Post createDefaultPost(Long id, User author, String content) {
+        return new Post(id, author, new PostContent(content), PostPublicationState.PUBLIC);
+    }
+
     public Post(Long id, User author, PostContent content) {
 
         if (author == null) {
@@ -25,6 +35,19 @@ public class Post {
         this.content = content;
         this.likeCount = new PositiveIntegerCounter();
         this.state = PostPublicationState.PUBLIC;
+    }
+
+    public Post(Long id, User author, PostContent content, PostPublicationState state) {
+
+        if (author == null) {
+            throw new IllegalArgumentException();
+        }
+
+        this.id = id;
+        this.author = author;
+        this.content = content;
+        this.likeCount = new PositiveIntegerCounter();
+        this.state = state;
     }
 
     public void like(User user) {

@@ -14,6 +14,11 @@ public class Comment {
     private final CommentContent content;
     private final PositiveIntegerCounter likeCount;
 
+    // 정적 생성자
+    public static Comment createComment(Long id, Post post, User user, String content) {
+        return new Comment(id, post, user, new CommentContent(content));
+    }
+
     public Comment(Long id, Post post, User author, CommentContent content) {
         if (author == null) {
             throw new IllegalArgumentException();
