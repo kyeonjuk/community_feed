@@ -26,10 +26,11 @@ public class FakeLikePostRepository implements LikePostRepository {
         Set<User> users = store.get(post);
 
         if (users == null) {
-            users = Set.of(user);
-        } else {
-            users.add(user);
+            users = new HashSet<>();
         }
+
+        users.add(user);
+        store.put(post, users);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.kyeonjuk.post.application.interfaces.LikeCommentRepository;
 import com.kyeonjuk.post.domain.comment.Comment;
 import com.kyeonjuk.user.domain.User;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,10 +26,11 @@ public class FakeLikeCommentRepository implements LikeCommentRepository {
         Set<User> users = store.get(comment);
 
         if (users == null) {
-            users = Set.of(user);
-        } else {
-            users.add(user);
+            users = new HashSet<>();
         }
+
+        users.add(user);
+        store.put(comment, users);
     }
 
     @Override
