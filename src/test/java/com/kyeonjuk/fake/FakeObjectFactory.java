@@ -32,4 +32,22 @@ public class FakeObjectFactory {
     private static final UserRelationService userRelationService = new UserRelationService(userService, fakeUserRelationRepository);
     private static final PostService postService = new PostService(userService, fakePostRepository, fakeLikePostRepository);
     private static final CommentService commentService = new CommentService(userService, fakeCommentRepository, postService, fakeLikeCommentRepository);
+
+    private FakeObjectFactory() {}
+
+    public static UserService getUserService() {
+        return userService;
+    }
+
+    public static UserRelationService getUserRelationService() {
+        return userRelationService;
+    }
+
+    public static PostService getPostService() {
+        return postService;
+    }
+
+    public static CommentService getCommentService() {
+        return commentService;
+    }
 }

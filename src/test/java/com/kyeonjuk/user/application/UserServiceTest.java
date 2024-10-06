@@ -2,18 +2,15 @@ package com.kyeonjuk.user.application;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.kyeonjuk.fake.FakeObjectFactory;
 import com.kyeonjuk.user.application.dto.CreateUserRequestDto;
-import com.kyeonjuk.user.application.interfaces.UserRepository;
 import com.kyeonjuk.user.domain.User;
 import com.kyeonjuk.user.domain.UserInfo;
-import com.kyeonjuk.user.repository.FakeUserRepository;
 import org.junit.jupiter.api.Test;
 
 class UserServiceTest {
 
-    private final UserRepository userRepository = new FakeUserRepository();
-    private final UserService userService = new UserService(userRepository);
-
+    private final UserService userService = FakeObjectFactory.getUserService();
 
     /*
         User 저장 확인

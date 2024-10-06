@@ -95,6 +95,10 @@ public class Post {
         return author;
     }
 
+    public Long getAuthorId() {
+        return author.getId();
+    }
+
     public PostContent getContentObject() {
         return content;
     }
