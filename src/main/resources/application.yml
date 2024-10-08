@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/community_feed
+    username: root
+    password: 1234
+
+jpa:
+  show-sql: true    # sql 문 출력
+  hibernate:
+    ddl-auto: update
+  properties:
+    hibernate:
+      format_sql: true    # sql 문을 라인에 맞게 출력
+    open-in-view: false   # DB와 application 의 연결 스레드 관리 (기본값 : true)
