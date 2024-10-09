@@ -2,7 +2,14 @@ package com.kyeonjuk.user.domain;
 
 import com.kyeonjuk.common.domain.PositiveIntegerCounter;
 import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@Builder
+@AllArgsConstructor
 public class User {
 
     private final Long id;
@@ -73,11 +80,11 @@ public class User {
         return followingCount.getCount();
     }
 
-    public Long getId() {
-        return id;
+    public String getName() {
+        return info.getName();
     }
 
-    public UserInfo getInfo() {
-        return info;
+    public String getProfileImageUrl() {
+        return info.getProfileImageUrl();
     }
 }
