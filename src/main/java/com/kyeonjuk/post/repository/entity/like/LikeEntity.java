@@ -1,5 +1,6 @@
 package com.kyeonjuk.post.repository.entity.like;
 
+import com.kyeonjuk.common.repository.entity.TimeBaseEntity;
 import com.kyeonjuk.post.domain.Post;
 import com.kyeonjuk.post.domain.comment.Comment;
 import com.kyeonjuk.user.domain.User;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "community_like")
 @NoArgsConstructor
 @Getter
-public class LikeEntity {
+public class LikeEntity extends TimeBaseEntity {
 
   @EmbeddedId // @Embeddable로 선언한 공유 복합 속성 Entity의 id값 불러오기
   private LikeIdEntity id;
