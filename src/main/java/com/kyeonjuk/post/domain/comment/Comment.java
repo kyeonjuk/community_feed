@@ -5,7 +5,13 @@ import com.kyeonjuk.post.domain.Post;
 import com.kyeonjuk.post.domain.content.CommentContent;
 import com.kyeonjuk.post.domain.content.Content;
 import com.kyeonjuk.user.domain.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
+@Builder
+@AllArgsConstructor
+@Getter
 public class Comment {
 
     private final Long id;
@@ -66,20 +72,8 @@ public class Comment {
         return likeCount.getCount();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Post getPost() {
-        return post;
-    }
-
     public Long getPostId() {
         return post.getId();
-    }
-
-    public User getAuthor() {
-        return author;
     }
 
     public Long getAuthorId() {

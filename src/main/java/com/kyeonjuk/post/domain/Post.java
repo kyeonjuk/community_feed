@@ -5,7 +5,13 @@ import com.kyeonjuk.post.domain.common.DateTimeInfo;
 import com.kyeonjuk.post.domain.content.PostContent;
 import com.kyeonjuk.post.domain.content.PostPublicationState;
 import com.kyeonjuk.user.domain.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
+@Getter
+@Builder
+@AllArgsConstructor
 public class Post {
 
     private final Long id;
@@ -81,18 +87,6 @@ public class Post {
 
     public DateTimeInfo getDateTimeInfo() {
         return content.getDateTimeInfo();
-    }
-
-    public PostPublicationState getState() {
-        return state;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public User getAuthor() {
-        return author;
     }
 
     public Long getAuthorId() {
