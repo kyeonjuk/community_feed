@@ -16,14 +16,14 @@ import lombok.NoArgsConstructor;
 @Getter
 public class LikeEntity extends TimeBaseEntity {
 
-  @EmbeddedId // @Embeddable로 선언한 공유 복합 속성 Entity의 id값 불러오기
-  private LikeIdEntity id;
+    @EmbeddedId // @Embeddable로 선언한 공유 복합 속성 Entity의 id값 불러오기
+    private LikeIdEntity id;
 
-  public LikeEntity(Post post, User likeUser) {
-    this.id = new LikeIdEntity(post.getId(), likeUser.getId(), LikeTarget.POST.name());
-  }
+    public LikeEntity(Post post, User likeUser) {
+        this.id = new LikeIdEntity(post.getId(), likeUser.getId(), LikeTarget.POST.name());
+    }
 
-  public LikeEntity(Comment comment, User likeUser) {
-    this.id = new LikeIdEntity(comment.getId(), likeUser.getId(), LikeTarget.COMMENT.name());
-  }
+    public LikeEntity(Comment comment, User likeUser) {
+        this.id = new LikeIdEntity(comment.getId(), likeUser.getId(), LikeTarget.COMMENT.name());
+    }
 }

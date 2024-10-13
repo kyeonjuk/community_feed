@@ -26,36 +26,37 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class CommentEntity extends TimeBaseEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "post_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-  private PostEntity post;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "author_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-  private UserEntity author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private PostEntity post;
 
-  private String content;
-  private Integer likeCount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private UserEntity author;
 
-  public CommentEntity(Comment comment) {
-    this.id = comment.getId();
-    this.post = new PostEntity(comment.getPost());
-    this.author = new UserEntity(comment.getAuthor());
-    this.content = comment.getContent();
-    this.likeCount = comment.getLikeCount();
-  }
+    private String content;
+    private Integer likeCount;
 
-  public Comment toComment() {
-    return Comment.builder()
-        .id(id)
-        .post(post.toPost())
-        .author(author.toUser())
-        .content(new CommentContent(content))
-        .likeCount(new PositiveIntegerCounter(likeCount))
-        .build();
-  }
+    public CommentEntity(Comment comment) {
+        this.id = comment.getId();
+        this.post = new PostEntity(comment.getPost());
+        this.author = new UserEntity(comment.getAuthor());
+        this.content = comment.getContent();
+        this.likeCount = comment.getLikeCount();
+    }
+
+    public Comment toComment() {
+        return Comment.builder()
+            .id(id)
+            .post(post.toPost())
+            .author(author.toUser())
+            .content(new CommentContent(content))
+            .likeCount(new PositiveIntegerCounter(likeCount))
+            .build();
+    }
 }

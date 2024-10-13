@@ -26,38 +26,39 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class PostEntity extends TimeBaseEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
 
-  @ManyToOne                                        // 앞의 Many = 현재 Entity(Post) [1:N]
-  @JoinColumn(name = "author_id",                   // 아래의 Entity의 id값으로 join
-      foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))  // DDL 생성시에 외래키 생성 제한
-  private UserEntity author;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String content;
+    @ManyToOne                                        // 앞의 Many = 현재 Entity(Post) [1:N]
+    @JoinColumn(name = "author_id",                   // 아래의 Entity의 id값으로 join
+        foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))  // DDL 생성시에 외래키 생성 제한
+    private UserEntity author;
 
-  @Convert(converter = PostPublicationStateConverter.class)   // Enum값을 DB에 저장하기위한 타입변환 기능
-  private PostPublicationState state;
+    private String content;
 
-  private Integer likeCount;
+    @Convert(converter = PostPublicationStateConverter.class)   // Enum값을 DB에 저장하기위한 타입변환 기능
+    private PostPublicationState state;
 
-  public PostEntity(Post post) {
-    this.id = post.getId();
-    this.author = new UserEntity(post.getAuthor());
-    this.content = post.getContent();
-    this.state = post.getState();
-    this.likeCount = post.getLikeCount();
-  }
+    private Integer likeCount;
 
-  // DTO객체로 변환
-  public Post toPost() {
-    return Post.builder()
-        .id(id)
-        .author(author.toUser())
-        .content(new PostContent(content))
-        .state(state)
-        .likeCount(new PositiveIntegerCounter(likeCount))
-        .build();
-  }
+    public PostEntity(Post post) {
+        this.id = post.getId();
+        this.author = new UserEntity(post.getAuthor());
+        this.content = post.getContent();
+        this.state = post.getState();
+        this.likeCount = post.getLikeCount();
+    }
+
+    // DTO객체로 변환
+    public Post toPost() {
+        return Post.builder()
+            .id(id)
+            .author(author.toUser())
+            .content(new PostContent(content))
+            .state(state)
+            .likeCount(new PositiveIntegerCounter(likeCount))
+            .build();
+    }
 }

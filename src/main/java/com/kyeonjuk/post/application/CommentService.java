@@ -25,21 +25,22 @@ public class CommentService {
         this.likeCommentRepository = likeCommentRepository;
     }
 
-    public Comment getComment(Long id){
-        return commentRepository.findById(id).orElseThrow(()->new IllegalArgumentException("Comment Not Found"));
+    public Comment getComment(Long id) {
+        return commentRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Comment Not Found"));
     }
 
-    public Comment createComment(CreateCommentRequestDto requestDto){
+    public Comment createComment(CreateCommentRequestDto requestDto) {
         User user = userService.getUser(requestDto.userId());
         Post post = postService.getPost(requestDto.postId());
 
         //정적 생성자로 생성
-        Comment comment = Comment.createComment(null,post,user,requestDto.content());
+        Comment comment = Comment.createComment(null, post, user, requestDto.content());
 
         return commentRepository.save(comment);
     }
 
-    public Comment updateComment(UpdateCommentRequestDto requestDto){
+    public Comment updateComment(UpdateCommentRequestDto requestDto) {
         Comment comment = getComment(requestDto.commentId());
         User user = userService.getUser(requestDto.userId());
 
@@ -48,24 +49,24 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public void likeComment(LikeCommentRequestDto requestDto){
+    public void likeComment(LikeCommentRequestDto requestDto) {
         Comment comment = getComment(requestDto.commentId());
         User user = userService.getUser(requestDto.userId());
 
-        if (likeCommentRepository.checkLike(user,comment)){
+        if (likeCommentRepository.checkLike(user, comment)) {
             return;
         }
         comment.like(user);
-        likeCommentRepository.like(user,comment);
+        likeCommentRepository.like(user, comment);
     }
 
-    public void unlikeComment(LikeCommentRequestDto requestDto){
+    public void unlikeComment(LikeCommentRequestDto requestDto) {
         Comment comment = getComment(requestDto.commentId());
         User user = userService.getUser(requestDto.userId());
 
-        if (likeCommentRepository.checkLike(user,comment)){
+        if (likeCommentRepository.checkLike(user, comment)) {
             comment.unLike();
-            likeCommentRepository.unlike(user,comment);
+            likeCommentRepository.unlike(user, comment);
         }
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass                               // 자식클래스에게 공통 속성 제공 (부모(현재)클래스는 테이블 매핑X)
 @Getter
 public class TimeBaseEntity {
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime regDt;

@@ -24,7 +24,8 @@ public class PostService {
     }
 
     public Post getPost(Long id) {
-        return postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post Not Found"));
+        return postRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Post Not Found"));
     }
 
     public Post createPost(CreatePostRequestDto requestDto) {
@@ -49,7 +50,7 @@ public class PostService {
         Post post = getPost(requestDto.postId());
 
         if (likePostRepository.checkLike(user, post)) {
-            return ;
+            return;
         }
 
         post.like(user);

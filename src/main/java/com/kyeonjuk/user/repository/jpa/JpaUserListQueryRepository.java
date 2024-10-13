@@ -9,15 +9,17 @@ import org.springframework.data.repository.query.Param;
 
 public interface JpaUserListQueryRepository extends JpaRepository<UserEntity, Long> {
 
-  @Query(value = "SELECT new com.kyeonjuk.user.application.dto.GetUserListResponseDto(u.name, u.profileImageUrl) "
-      + "FROM UserRelationEntity ur "
-      + "INNER JOIN UserEntity u ON ur.followerUserId = u.id "
-      + "WHERE ur.followingUserId = :userId")
-  List<GetUserListResponseDto> getFollowingUserList(Long userId);
+    @Query(value =
+        "SELECT new com.kyeonjuk.user.application.dto.GetUserListResponseDto(u.name, u.profileImageUrl) "
+            + "FROM UserRelationEntity ur "
+            + "INNER JOIN UserEntity u ON ur.followerUserId = u.id "
+            + "WHERE ur.followingUserId = :userId")
+    List<GetUserListResponseDto> getFollowingUserList(Long userId);
 
-  @Query(value = "SELECT new com.kyeonjuk.user.application.dto.GetUserListResponseDto(u.name, u.profileImageUrl) "
-      + "FROM UserRelationEntity ur "
-      + "INNER JOIN UserEntity u ON ur.followingUserId = u.id "
-      + "WHERE ur.followerUserId = :userId")
-  List<GetUserListResponseDto> getFollowerUserList(Long userId);
+    @Query(value =
+        "SELECT new com.kyeonjuk.user.application.dto.GetUserListResponseDto(u.name, u.profileImageUrl) "
+            + "FROM UserRelationEntity ur "
+            + "INNER JOIN UserEntity u ON ur.followingUserId = u.id "
+            + "WHERE ur.followerUserId = :userId")
+    List<GetUserListResponseDto> getFollowerUserList(Long userId);
 }
