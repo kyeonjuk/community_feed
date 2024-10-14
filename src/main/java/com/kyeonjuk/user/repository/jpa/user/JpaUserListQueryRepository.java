@@ -1,4 +1,4 @@
-package com.kyeonjuk.user.repository.jpa;
+package com.kyeonjuk.user.repository.jpa.user;
 
 import com.kyeonjuk.user.application.dto.GetUserListResponseDto;
 import com.kyeonjuk.user.repository.entity.UserEntity;

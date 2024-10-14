@@ -3,7 +3,9 @@ package com.kyeonjuk.user.application;
 import com.kyeonjuk.user.application.dto.FollowUserRequestDto;
 import com.kyeonjuk.user.application.interfaces.UserRelationRepository;
 import com.kyeonjuk.user.domain.User;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserRelationService {
 
     private final UserService userService;

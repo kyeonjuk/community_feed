@@ -3,7 +3,7 @@ package com.kyeonjuk.user.repository;
 import com.kyeonjuk.user.application.interfaces.UserRepository;
 import com.kyeonjuk.user.domain.User;
 import com.kyeonjuk.user.repository.entity.UserEntity;
-import com.kyeonjuk.user.repository.jpa.JpaUserRepository;
+import com.kyeonjuk.user.repository.jpa.user.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
