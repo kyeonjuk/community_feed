@@ -12,12 +12,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "community_user")
 @AllArgsConstructor // 모든 생성자
 @NoArgsConstructor  // 매개변수가 없는 생성자
 @Getter
+@DynamicUpdate      // dirty check
 public class UserEntity extends TimeBaseEntity {
 
     @Id
