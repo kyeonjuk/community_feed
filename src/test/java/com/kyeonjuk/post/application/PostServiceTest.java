@@ -66,10 +66,10 @@ class PostServiceTest {
         // given
         Post post = postService.createPost(postDto);
         UpdatePostRequestDto updateDto =
-            new UpdatePostRequestDto(post.getId(), post.getAuthorId(), "수정합니다.", post.getState());
+            new UpdatePostRequestDto(post.getAuthorId(), "수정합니다.", post.getState());
 
         // when
-        postService.updatePost(updateDto);
+        postService.updatePost(post.getId(), updateDto);
 
         // then
         assertEquals(updateDto.content(), post.getContent());

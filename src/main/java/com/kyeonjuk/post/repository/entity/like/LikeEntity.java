@@ -26,4 +26,5 @@ public class LikeEntity extends TimeBaseEntity {
     public LikeEntity(Comment comment, User likeUser) {
         this.id = new LikeIdEntity(comment.getId(), likeUser.getId(), LikeTarget.COMMENT.name());
     }
+
 }

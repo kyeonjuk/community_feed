@@ -9,7 +9,9 @@ import com.kyeonjuk.post.domain.Post;
 import com.kyeonjuk.post.domain.content.PostContent;
 import com.kyeonjuk.user.application.UserService;
 import com.kyeonjuk.user.domain.User;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PostService {
 
     private final UserService userService;
@@ -24,8 +26,7 @@ public class PostService {
     }
 
     public Post getPost(Long id) {
-        return postRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Post Not Found"));
+        return postRepository.findById(id);
     }
 
     public Post createPost(CreatePostRequestDto requestDto) {
@@ -37,9 +38,9 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Post updatePost(UpdatePostRequestDto requestDto) {
+    public Post updatePost(Long postId, UpdatePostRequestDto requestDto) {
         User user = userService.getUser(requestDto.userId());
-        Post post = getPost(requestDto.postId());
+        Post post = getPost(postId);
         post.updatePost(user, requestDto.content(), requestDto.state());
 
         return postRepository.save(post);

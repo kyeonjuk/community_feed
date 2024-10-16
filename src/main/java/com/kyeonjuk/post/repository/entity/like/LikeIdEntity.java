@@ -17,5 +17,5 @@ public class LikeIdEntity {
     // 3개의 복합키!
     private Long targetId;
     private Long userId;
-    private String targetType;
+    private String targetType;  // comment, post
 }
