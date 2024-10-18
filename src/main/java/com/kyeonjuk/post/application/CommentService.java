@@ -10,6 +10,7 @@ import com.kyeonjuk.post.domain.comment.Comment;
 import com.kyeonjuk.user.application.UserService;
 import com.kyeonjuk.user.domain.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
@@ -41,6 +42,7 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
+    @Transactional
     public Comment updateComment(Long commentId, UpdateCommentRequestDto requestDto) {
         Comment comment = getComment(commentId);
         User user = userService.getUser(requestDto.userId());
@@ -50,6 +52,7 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
+    @Transactional
     public void likeComment(LikeCommentRequestDto requestDto) {
         Comment comment = getComment(requestDto.commentId());
         User user = userService.getUser(requestDto.userId());
@@ -61,6 +64,7 @@ public class CommentService {
         likeCommentRepository.like(user, comment);
     }
 
+    @Transactional
     public void unlikeComment(LikeCommentRequestDto requestDto) {
         Comment comment = getComment(requestDto.commentId());
         User user = userService.getUser(requestDto.userId());

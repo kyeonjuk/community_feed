@@ -10,6 +10,7 @@ import com.kyeonjuk.post.domain.content.PostContent;
 import com.kyeonjuk.user.application.UserService;
 import com.kyeonjuk.user.domain.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PostService {
@@ -38,6 +39,7 @@ public class PostService {
         return postRepository.save(post);
     }
 
+    @Transactional
     public Post updatePost(Long postId, UpdatePostRequestDto requestDto) {
         User user = userService.getUser(requestDto.userId());
         Post post = getPost(postId);
@@ -46,6 +48,7 @@ public class PostService {
         return postRepository.save(post);
     }
 
+    @Transactional
     public void likePost(LikePostRequestDto requestDto) {
         User user = userService.getUser(requestDto.userId());
         Post post = getPost(requestDto.postId());
@@ -58,6 +61,7 @@ public class PostService {
         likePostRepository.like(user, post);
     }
 
+    @Transactional
     public void unlikePost(LikePostRequestDto requestDto) {
         User user = userService.getUser(requestDto.userId());
         Post post = getPost(requestDto.postId());
