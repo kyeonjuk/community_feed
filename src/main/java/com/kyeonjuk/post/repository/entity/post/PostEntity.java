@@ -19,6 +19,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "community_post")
@@ -42,6 +43,9 @@ public class PostEntity extends TimeBaseEntity {
     private PostPublicationState state;
 
     private Integer likeCount;
+
+    @ColumnDefault("0")     // 해당 컬럼을 처음 저장할 때 기본값 0으로 설정
+    private int commentCount;
 
     public PostEntity(Post post) {
         this.id = post.getId();

@@ -1,11 +1,16 @@
 package com.kyeonjuk.post.repository.jpa;
 
 import com.kyeonjuk.post.repository.entity.post.PostEntity;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface JpaPostRepository extends JpaRepository<PostEntity, Long> {
+
+    @Query("SELECT p.id FROM PostEntity p "
+        + "where p.author.id = :authorId")
+    List<Long> findFollowingPosts(Long authorId);
 
     @Modifying
     @Query(value = "UPDATE PostEntity p "
@@ -21,4 +26,11 @@ public interface JpaPostRepository extends JpaRepository<PostEntity, Long> {
         + "p.updDt = now() "
         + "where p.id = :#{#postEntity.id}")
     void updateLikePostEntity(PostEntity postEntity);
+
+    @Modifying
+    @Query(value = "UPDATE PostEntity p "
+        + "SET p.commentCount = p.commentCount + 1, "
+        + "p.updDt = now() "
+        + "where p.id = :id")
+    void increaseCommentCountEntity(Long id);
 }
