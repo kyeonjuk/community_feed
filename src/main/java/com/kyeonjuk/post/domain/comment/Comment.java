@@ -3,7 +3,6 @@ package com.kyeonjuk.post.domain.comment;
 import com.kyeonjuk.common.domain.PositiveIntegerCounter;
 import com.kyeonjuk.post.domain.Post;
 import com.kyeonjuk.post.domain.content.CommentContent;
-import com.kyeonjuk.post.domain.content.Content;
 import com.kyeonjuk.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
