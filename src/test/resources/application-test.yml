@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:~/test
+    username: sa
+    password:
+
+  jpa:
+    show-sql: true    # sql 문 출력
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true    # sql 문을 라인에 맞게 출력
+    open-in-view: false   # DB와 application 의 연결 스레드 관리 (기본값 : true)
