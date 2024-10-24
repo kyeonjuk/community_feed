@@ -25,17 +25,19 @@ public class UserPostQueueCommandRepositoryImpl implements UserPostQueueCommandR
     @Override
     @Transactional
     public void publishPost(PostEntity postEntity) {
-        // 작성자 정보 가져오기
+        //작성자 정보 가져오기
         UserEntity author = postEntity.getAuthor();
 
-        // 작성자를 팔로우하는 유저 정보 가져오기
+        //작성자를 팔로우하는 유저 정보 가져오기
         List<Long> followerIds = jpaUserRelationRepository.findFollowers(author.getId());
 
-        // 팔로우하는 유저들의 리스트를 -> UserPostQueueEntity 로 변경
-        List<UserPostQueueEntity> userPostQueueEntityList = followerIds.stream()
-            .map(userId -> new UserPostQueueEntity(userId, postEntity.getId(), author.getId())).toList();
 
-        // DB 저장
+        //팔로우하는 유저들의 리스트를 -> UserPostQueueEntity 로 변경
+        List<UserPostQueueEntity> userPostQueueEntityList = followerIds.stream()
+            .map(userId -> new UserPostQueueEntity(userId, postEntity.getId(), author.getId()))
+            .toList();
+
+        //DB 저장
         jpaUserPostQueueRepository.saveAll(userPostQueueEntityList);
     }
 
@@ -45,14 +47,15 @@ public class UserPostQueueCommandRepositoryImpl implements UserPostQueueCommandR
     @Override
     @Transactional
     public void saveFollowPost(Long userId, Long targetId) {
-        // 작성자의 post 가져오기
-        List<Long> followingPosts = jpaPostRepository.findFollowingPosts(targetId);
+        //작성자의 post 가져오기
+        List<Long> followingPosts= jpaPostRepository.findFollowingPosts(targetId);
 
-        // 가져온 데이터 -> Entity로 변경
+        //Entity로 변경
         List<UserPostQueueEntity> userPostQueueEntityList = followingPosts.stream()
-            .map(id -> new UserPostQueueEntity(userId, id, targetId)).toList();
+            .map(postId -> new UserPostQueueEntity(userId,postId,targetId))
+            .toList();
 
-        // DB 저장
+        //DB저장
         jpaUserPostQueueRepository.saveAll(userPostQueueEntityList);
     }
 

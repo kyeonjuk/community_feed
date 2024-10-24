@@ -24,12 +24,12 @@ public class UserAcceptanceSteps {
 
     public static ExtractableResponse<Response> followUser(FollowUserRequestDto dto) {
         return RestAssured
-            .given()
+            .given().log().all()
             .body(dto)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .post("/relation/follow")
-            .then()
+            .then().log().all()
             .extract();
     }
 }

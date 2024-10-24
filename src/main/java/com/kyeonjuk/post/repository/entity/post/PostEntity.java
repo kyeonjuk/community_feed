@@ -32,19 +32,18 @@ public class PostEntity extends TimeBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne                                        // 앞의 Many = 현재 Entity(Post) [1:N]
-    @JoinColumn(name = "author_id",                   // 아래의 Entity의 id값으로 join
-        foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))  // DDL 생성시에 외래키 생성 제한
+    @ManyToOne                                    //foreignKey 생성 제한 (데이터 수정이 어려워서 foreignKey 를 잘 사용 X)
+    @JoinColumn(name = "author_id" , foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private UserEntity author;
 
     private String content;
 
-    @Convert(converter = PostPublicationStateConverter.class)   // Enum값을 DB에 저장하기위한 타입변환 기능
+    @Convert(converter = PostPublicationStateConverter.class)
     private PostPublicationState state;
 
     private Integer likeCount;
 
-    @ColumnDefault("0")     // 해당 컬럼을 처음 저장할 때 기본값 0으로 설정
+    @ColumnDefault("0")     //해당 컬럼을 처음 저장할 때 기본값 0으로 설정
     private int commentCount;
 
     public PostEntity(Post post) {
@@ -54,9 +53,7 @@ public class PostEntity extends TimeBaseEntity {
         this.state = post.getState();
         this.likeCount = post.getLikeCount();
     }
-
-    // DTO객체로 변환
-    public Post toPost() {
+    public Post toPost(){
         return Post.builder()
             .id(id)
             .author(author.toUser())

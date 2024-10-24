@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Profile("test")    // 테스트 환경에서만 활성화
-@Component          // 스프링의 컴포넌트 스캔을 통해 자동으로 Bean등록
+@Component          // 스프링의 컴포넌트 스캔을 통해 자동으로 Bean 등록
 @Slf4j              // 로깅
 public class DatabaseCleanUp implements InitializingBean {
 

@@ -1,14 +1,9 @@
 package com.kyeonjuk.post.domain.common;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.kyeonjuk.post.domain.Post;
-import com.kyeonjuk.post.domain.content.PostContent;
-import com.kyeonjuk.post.domain.content.PostPublicationState;
-import com.kyeonjuk.user.domain.User;
-import com.kyeonjuk.user.domain.UserInfo;
 import java.time.LocalDateTime;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class DateTimeInfoTest {
