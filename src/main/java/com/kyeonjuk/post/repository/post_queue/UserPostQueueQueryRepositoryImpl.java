@@ -14,7 +14,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-@Repository
+//@Repository
 @RequiredArgsConstructor
 public class UserPostQueueQueryRepositoryImpl implements UserPostQueueQueryRepository {
 

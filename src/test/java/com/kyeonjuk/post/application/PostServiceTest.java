@@ -1,19 +1,17 @@
 package com.kyeonjuk.post.application;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.kyeonjuk.fake.FakeObjectFactory;
 import com.kyeonjuk.post.application.dto.CreatePostRequestDto;
 import com.kyeonjuk.post.application.dto.LikePostRequestDto;
 import com.kyeonjuk.post.application.dto.UpdatePostRequestDto;
 import com.kyeonjuk.post.domain.Post;
-import com.kyeonjuk.post.domain.content.PostContent;
 import com.kyeonjuk.post.domain.content.PostPublicationState;
 import com.kyeonjuk.user.application.UserService;
 import com.kyeonjuk.user.application.dto.CreateUserRequestDto;
 import com.kyeonjuk.user.domain.User;
-import com.kyeonjuk.user.domain.UserInfo;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class PostServiceTest {

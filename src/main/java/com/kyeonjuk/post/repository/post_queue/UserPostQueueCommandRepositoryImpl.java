@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserPostQueueCommandRepositoryImpl implements UserPostQueueCommandRepository{
 
     private final JpaPostRepository jpaPostRepository;
-    private final JpaUserPostQueueRepository jpaUserPostQueueRepository;
     private final JpaUserRelationRepository jpaUserRelationRepository;
+    private final UserQueueRedisRepository userQueueRedisRepository;
 
     /*
         post가 등록될 때 작성자를 팔로우하는 유저 피드에 해당 포스트 등록
@@ -31,14 +31,7 @@ public class UserPostQueueCommandRepositoryImpl implements UserPostQueueCommandR
         //작성자를 팔로우하는 유저 정보 가져오기
         List<Long> followerIds = jpaUserRelationRepository.findFollowers(author.getId());
 
-
-        //팔로우하는 유저들의 리스트를 -> UserPostQueueEntity 로 변경
-        List<UserPostQueueEntity> userPostQueueEntityList = followerIds.stream()
-            .map(userId -> new UserPostQueueEntity(userId, postEntity.getId(), author.getId()))
-            .toList();
-
-        //DB 저장
-        jpaUserPostQueueRepository.saveAll(userPostQueueEntityList);
+        userQueueRedisRepository.publishPostToFollowingUserList(postEntity, followerIds);
     }
 
     /*
@@ -48,15 +41,9 @@ public class UserPostQueueCommandRepositoryImpl implements UserPostQueueCommandR
     @Transactional
     public void saveFollowPost(Long userId, Long targetId) {
         //작성자의 post 가져오기
-        List<Long> followingPosts= jpaPostRepository.findFollowingPosts(targetId);
+        List<PostEntity> followingPosts = jpaPostRepository.findFollowingPosts(targetId);
 
-        //Entity로 변경
-        List<UserPostQueueEntity> userPostQueueEntityList = followingPosts.stream()
-            .map(postId -> new UserPostQueueEntity(userId,postId,targetId))
-            .toList();
-
-        //DB저장
-        jpaUserPostQueueRepository.saveAll(userPostQueueEntityList);
+        userQueueRedisRepository.publishPostListToFollowerUser(followingPosts, userId);
     }
 
     /*
@@ -66,6 +53,6 @@ public class UserPostQueueCommandRepositoryImpl implements UserPostQueueCommandR
     @Transactional
     public void deleteFollowPost(Long userId, Long targetId) {
         // 삭제
-        jpaUserPostQueueRepository.deleteAllByUserIdAndAuthorId(userId, targetId);
+        userQueueRedisRepository.deleteFeed(userId, targetId);
     }
 }
