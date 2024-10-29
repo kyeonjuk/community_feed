@@ -21,4 +21,12 @@ public class AcceptanceTestTemplate {
         cleanUp.execute();  // DB 초기화, ID값 초기화
         loader.loadData();  // 샘플 데이터 주입
     }
+
+    protected void cleanUp() {
+        cleanUp.execute();
+    }
+
+    protected String getEmailToken(String email) {
+        return loader.getEmailToken(email);
+    }
 }
