@@ -1,0 +1,28 @@
+package com.kyeonjuk.auth.application;
+
+import com.kyeonjuk.auth.application.dto.SendEmailRequestDto;
+import com.kyeonjuk.auth.application.interfaces.EmailSendRepository;
+import com.kyeonjuk.auth.application.interfaces.EmailVerificationRepository;
+import com.kyeonjuk.auth.domain.Email;
+import com.kyeonjuk.auth.domain.RandomTokenGenerator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class EmailService {
+
+    private final EmailSendRepository emailSendRepository;
+    private final EmailVerificationRepository emailVerificationRepository;
+
+    public void sendEmail(SendEmailRequestDto dto) {
+        Email email = Email.createEmail(dto.email());
+        String token = RandomTokenGenerator.generateToken();
+
+        // 이메일 인증 전송
+        emailSendRepository.sendEmail(email, token);
+
+        // DB에 저장
+        emailVerificationRepository.createEmailVerification(email, token);
+    }
+}

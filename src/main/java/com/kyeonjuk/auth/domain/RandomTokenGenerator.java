@@ -1,4 +1,4 @@
-package com.kyeonjuk.auth.application.domain;
+package com.kyeonjuk.auth.domain;
 
 import java.security.SecureRandom;
 

@@ -1,11 +1,11 @@
-package com.kyeonjuk.acceptance.auth;
+package com.kyeonjuk.auth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.kyeonjuk.auth.application.domain.RandomTokenGenerator;
+import com.kyeonjuk.auth.domain.RandomTokenGenerator;
 import org.junit.jupiter.api.Test;
 
 public class RandomTokenGeneratorTest {

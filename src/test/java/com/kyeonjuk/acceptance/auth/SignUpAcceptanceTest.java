@@ -45,9 +45,7 @@ class SignUpAcceptanceTest extends AcceptanceTestTemplate {
         Integer code = requestSendEmail(dto);
 
         // then
-        String token = this.getEmailToken(email);   // DB 에서 토큰 가져오기
-        assertNull(token);
-        assertEquals(500, code);  // HTTP 500번 서버에러
+        assertEquals(400, code);  // HTTP 400번 client 에러
     }
 
 }

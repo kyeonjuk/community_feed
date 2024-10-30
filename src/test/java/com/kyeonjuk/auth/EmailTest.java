@@ -1,7 +1,8 @@
-package com.kyeonjuk.auth.application.domain;
+package com.kyeonjuk.auth;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.kyeonjuk.auth.domain.Email;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
