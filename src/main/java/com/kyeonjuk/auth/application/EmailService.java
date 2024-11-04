@@ -25,4 +25,9 @@ public class EmailService {
         // DB에 저장
         emailVerificationRepository.createEmailVerification(email, token);
     }
+
+    public void verifyEmail(String email, String token) {
+        Email emailValue = Email.createEmail(email);
+        emailVerificationRepository.verifyEmail(emailValue, token);
+    }
 }

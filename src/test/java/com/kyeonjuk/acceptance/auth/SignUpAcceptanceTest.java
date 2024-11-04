@@ -1,9 +1,11 @@
 package com.kyeonjuk.acceptance.auth;
 
 import static com.kyeonjuk.acceptance.steps.SignUpAcceptanceSteps.requestSendEmail;
+import static com.kyeonjuk.acceptance.steps.SignUpAcceptanceSteps.requestVerifyEmail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.kyeonjuk.acceptance.utils.AcceptanceTestTemplate;
 import com.kyeonjuk.auth.application.dto.SendEmailRequestDto;
@@ -46,6 +48,72 @@ class SignUpAcceptanceTest extends AcceptanceTestTemplate {
 
         // then
         assertEquals(400, code);  // HTTP 400번 client 에러
+    }
+
+    /*
+        정상 이메일, 토큰 확인
+     */
+    @Test
+    void givenSendEmail_whenVerifyEmail_thenEmailVerified() {
+        // given
+        requestSendEmail(new SendEmailRequestDto(email));
+
+        // when
+        String token = getEmailToken(email);
+        Integer code = requestVerifyEmail(email, token);
+
+        // then
+        boolean isEmailVerified = isEmailVerified(email);
+        assertEquals(0, code);
+        assertTrue(isEmailVerified);
+
+    }
+
+    /*
+        정상 이메일 + 잘못된 토큰 일 때
+     */
+    @Test
+    void givenSendEmail_whenVerifyEmailWithWrongToken_thenEmailNotVerified() {
+        // given
+        requestSendEmail(new SendEmailRequestDto(email));
+
+        // when
+        Integer code = requestVerifyEmail(email, "wrong token");
+
+        // then
+        boolean isEmailVerified = isEmailVerified(email);
+        assertEquals(400, code);
+        assertFalse(isEmailVerified);
+    }
+
+    /*
+        인증이 완료된 이메일에 재인증시도 할 때
+     */
+    @Test
+    void givenSendEmailVerified_whenVerifyAgain_thenThrowError() {
+        // given
+        requestSendEmail(new SendEmailRequestDto(email));
+        String token = getEmailToken(email);
+        Integer code = requestVerifyEmail(email, token);
+
+        // when, then
+        assertEquals(400, code);
+    }
+
+    /*
+        인증할 이메일이 잘못된 경우
+     */
+    @Test
+    void givenSendEmail_whenVerifyEmailWithWrongEmail_thenThrowError() {
+        // given
+        requestSendEmail(new SendEmailRequestDto(email));
+
+        // when
+        String token = getEmailToken(email);
+        Integer code = requestVerifyEmail("wrong email", token);
+
+        // then
+        assertEquals(400, code);
     }
 
 }
