@@ -1,5 +1,6 @@
 package com.kyeonjuk.acceptance.steps;
 
+import com.kyeonjuk.auth.application.dto.CreateUserAuthRequestDto;
 import com.kyeonjuk.auth.application.dto.SendEmailRequestDto;
 import io.restassured.RestAssured;
 import org.springframework.http.MediaType;
@@ -29,6 +30,21 @@ public class SignUpAcceptanceSteps {
             .queryParam("token", token)
             .when()
             .get("/signup/verify-token")
+            .then()
+            .extract()
+            .jsonPath().get("code");    // response 의 code 를 가져옴
+    }
+
+    /*
+        회원 가입
+     */
+    public static Integer registerUser(CreateUserAuthRequestDto dto) {
+        return RestAssured
+            .given()
+            .body(dto)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/signup/register")
             .then()
             .extract()
             .jsonPath().get("code");    // response 의 code 를 가져옴

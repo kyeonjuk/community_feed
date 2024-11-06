@@ -1,5 +1,6 @@
 package com.kyeonjuk.acceptance.auth;
 
+import static com.kyeonjuk.acceptance.steps.SignUpAcceptanceSteps.registerUser;
 import static com.kyeonjuk.acceptance.steps.SignUpAcceptanceSteps.requestSendEmail;
 import static com.kyeonjuk.acceptance.steps.SignUpAcceptanceSteps.requestVerifyEmail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,7 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.kyeonjuk.acceptance.utils.AcceptanceTestTemplate;
+import com.kyeonjuk.auth.application.dto.CreateUserAuthRequestDto;
 import com.kyeonjuk.auth.application.dto.SendEmailRequestDto;
+import com.kyeonjuk.auth.domain.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -94,9 +97,12 @@ class SignUpAcceptanceTest extends AcceptanceTestTemplate {
         // given
         requestSendEmail(new SendEmailRequestDto(email));
         String token = getEmailToken(email);
+        requestVerifyEmail(email, token);
+
+        // when
         Integer code = requestVerifyEmail(email, token);
 
-        // when, then
+        // then
         assertEquals(400, code);
     }
 
@@ -111,6 +117,42 @@ class SignUpAcceptanceTest extends AcceptanceTestTemplate {
         // when
         String token = getEmailToken(email);
         Integer code = requestVerifyEmail("wrong email", token);
+
+        // then
+        assertEquals(400, code);
+    }
+
+    /*
+        정상 회원 가입
+     */
+    @Test
+    void  givenVerifiedEmail_whenRegister_thenUserRegistered(){
+        // given
+        requestSendEmail(new SendEmailRequestDto(email));
+        String token = getEmailToken(email);
+        requestVerifyEmail(email, token);
+
+        // when
+        CreateUserAuthRequestDto dto = new CreateUserAuthRequestDto(email, "1111", "USER", "홍길동", "");
+        Integer code = registerUser(dto);
+
+        // then
+        assertEquals(0, code);
+        Long userId = getUserId(email);
+        assertEquals(1L, userId);
+    }
+
+    /*
+        인증하지 않은 이메일로 가입
+     */
+    @Test
+    void givenUnverifiedEmail_whenRegister_thenThrowError(){
+        // given
+        requestSendEmail(new SendEmailRequestDto(email));
+
+        // when
+        CreateUserAuthRequestDto dto = new CreateUserAuthRequestDto(email, "1111", "USER", "홍길동", "");
+        Integer code = registerUser(dto);
 
         // then
         assertEquals(400, code);

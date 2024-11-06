@@ -42,4 +42,13 @@ public class DataLoader {
             .setParameter("email", email)
             .getSingleResult();
     }
+
+    /*
+        유저 아이디 조회
+     */
+    public Long getUserId(String email) {
+        return (Long) entityManager.createQuery("SELECT userId FROM UserAuthEntity WHERE email = :email", Long.class)
+            .setParameter("email", email)
+            .getSingleResult();
+    }
 }

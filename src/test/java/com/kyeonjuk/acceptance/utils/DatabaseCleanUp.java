@@ -29,8 +29,8 @@ public class DatabaseCleanUp implements InitializingBean {
             .map(entity -> entity.getJavaType().getAnnotation(Table.class).name())
             .toList();
 
-        // 초기화 안할
-        notGeneratedIdTableNames = List.of("community_user_relation", "community_like");
+        // 초기화 안함
+        notGeneratedIdTableNames = List.of("community_user_auth", "community_user_relation", "community_like");
     }
 
     @Transactional

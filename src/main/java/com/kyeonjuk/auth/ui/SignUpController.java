@@ -1,6 +1,8 @@
 package com.kyeonjuk.auth.ui;
 
+import com.kyeonjuk.auth.application.AuthService;
 import com.kyeonjuk.auth.application.EmailService;
+import com.kyeonjuk.auth.application.dto.CreateUserAuthRequestDto;
 import com.kyeonjuk.auth.application.dto.SendEmailRequestDto;
 import com.kyeonjuk.common.ui.Response;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SignUpController {
 
     private final EmailService emailService;
+    private final AuthService authService;
 
     @PostMapping("/send-verification-email")
     public Response<Void> sendEmail(@RequestBody SendEmailRequestDto dto) {
@@ -27,5 +30,11 @@ public class SignUpController {
     public Response<Void> verifyEmail(String email, String token) {
         emailService.verifyEmail(email, token);
         return Response.ok(null);
+    }
+
+    @PostMapping("/register")
+    public Response<Long> register(@RequestBody CreateUserAuthRequestDto dto) {
+        Long id = authService.registerUser(dto);
+        return Response.ok(id);
     }
 }
