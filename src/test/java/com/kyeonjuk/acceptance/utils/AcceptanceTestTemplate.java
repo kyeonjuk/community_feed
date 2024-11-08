@@ -37,4 +37,8 @@ public class AcceptanceTestTemplate {
     protected Long getUserId(String email) {
         return loader.getUserId(email);
     }
+
+    protected void createUser(String email) {
+        loader.createUser(email);
+    }
 }

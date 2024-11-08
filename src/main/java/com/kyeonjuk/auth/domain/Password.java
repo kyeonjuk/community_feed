@@ -18,6 +18,18 @@ public class Password {
     }
 
     /*
+        DB에서 패스워드 가져오기
+     */
+    public static Password getPassword(String password) {
+        if (password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("패스워드는 빈값이 올 수 없습니다.");
+        }
+
+        // 패스워드 암호화
+        return new Password(password);
+    }
+
+    /*
         비밀번호 확인
      */
     public boolean matchPassword(String password) {

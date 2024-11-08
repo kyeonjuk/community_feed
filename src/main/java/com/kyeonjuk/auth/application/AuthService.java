@@ -1,9 +1,12 @@
 package com.kyeonjuk.auth.application;
 
 import com.kyeonjuk.auth.application.dto.CreateUserAuthRequestDto;
+import com.kyeonjuk.auth.application.dto.LoginRequestDto;
+import com.kyeonjuk.auth.application.dto.UserAccessTokenResponseDto;
 import com.kyeonjuk.auth.application.interfaces.EmailVerificationRepository;
 import com.kyeonjuk.auth.application.interfaces.UserAuthRepository;
 import com.kyeonjuk.auth.domain.Email;
+import com.kyeonjuk.auth.domain.TokenProvider;
 import com.kyeonjuk.auth.domain.UserAuth;
 import com.kyeonjuk.user.domain.User;
 import com.kyeonjuk.user.domain.UserInfo;
@@ -16,6 +19,7 @@ public class AuthService {
 
     private final UserAuthRepository userAuthRepository;
     private final EmailVerificationRepository emailVerificationRepository;
+    private final TokenProvider tokenProvider;
 
     public Long registerUser(CreateUserAuthRequestDto dto) {
 
@@ -37,6 +41,15 @@ public class AuthService {
         userAuth = userAuthRepository.registerUser(userAuth, user);
 
         return userAuth.getUserId();
+    }
+
+    public UserAccessTokenResponseDto login(LoginRequestDto dto) {
+        UserAuth userAuth = userAuthRepository.loginUser(dto.email(), dto.password());
+
+        // 정상 로그인 시 -> 토큰 생성
+        String token = tokenProvider.createToken(userAuth.getUserId(), userAuth.getUserRole());
+
+        return new UserAccessTokenResponseDto(token);
     }
 
 }
