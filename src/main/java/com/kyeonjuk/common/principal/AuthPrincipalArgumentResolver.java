@@ -7,7 +7,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-// header 의 Authorization 필드의 "Bearer " 타입의 토큰을 파싱해서 값을 전달
+// 1. 커스텀 어노테이션 동작 설정 (해당 어노테이션 여부 확인 -> 원하는 함수 실행)
+// 2. header 의 Authorization 필드의 "Bearer " 타입의 토큰을 파싱해서 값을 전달
 public class AuthPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final TokenProvider tokenProvider;
@@ -16,9 +17,10 @@ public class AuthPrincipalArgumentResolver implements HandlerMethodArgumentResol
         this.tokenProvider = tokenProvider;
     }
 
-    //
+    // 매개변수에 @커스텀_매개변수_어노테이션이 붙어있는지 여부 확인
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
+        // true 면 아래의 resolveArgument 실행
         return parameter.hasParameterAnnotation(AuthPrincipal.class);
     }
 

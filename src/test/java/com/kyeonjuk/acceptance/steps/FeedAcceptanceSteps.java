@@ -39,7 +39,6 @@ public class FeedAcceptanceSteps {
             .get("/feed")
             .then().log().all()
             .extract()
-            // Long 반환하기
             .jsonPath()
             .getList("value", GetPostContentResponseDto.class);
     }

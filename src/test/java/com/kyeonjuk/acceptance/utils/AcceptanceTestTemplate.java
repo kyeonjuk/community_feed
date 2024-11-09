@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 
+// API 테스트 코드 캡슐화 (중복 코드 제거 및 재사용성 향상)
+// DB 초기화 및 샘플 데이터 주입
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)   // 기본 8080포트로 서버 연결
 public class AcceptanceTestTemplate {
