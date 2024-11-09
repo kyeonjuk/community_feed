@@ -1,5 +1,7 @@
 package com.kyeonjuk.post.ui;
 
+import com.kyeonjuk.common.principal.AuthPrincipal;
+import com.kyeonjuk.common.principal.UserPrincipal;
 import com.kyeonjuk.common.ui.Response;
 import com.kyeonjuk.post.repository.post_queue.UserPostQueueQueryRepository;
 import com.kyeonjuk.post.ui.dto.GetContentResponseDto;
@@ -18,17 +20,19 @@ public class FeedController {
 
     private final UserPostQueueQueryRepository userPostQueueQueryRepository;
 
-    @GetMapping("/{userId}")
-    public Response<List<GetPostContentResponseDto>> getPostFeed(@PathVariable(name = "userId") Long userId, Long lastPostId) {
-        List<GetPostContentResponseDto> result = userPostQueueQueryRepository.getContentResponse(userId, lastPostId);
+    @GetMapping("")
+    public Response<List<GetPostContentResponseDto>> getPostFeed(@AuthPrincipal UserPrincipal userPrincipal, Long lastPostId) {
+        List<GetPostContentResponseDto> result =
+            userPostQueueQueryRepository.getContentResponse(userPrincipal.getUserId(), lastPostId);
 
         return Response.ok(result);
     }
 
-    @GetMapping("/comment/{userId}/{postId}")
+    @GetMapping("/comment/{postId}")
     public Response<List<GetContentResponseDto>> getCommentFeed(@PathVariable(name = "postId") Long postId, Long lastCommentId,
-                                                                @PathVariable(name = "userId") Long userId) {
-        List<GetContentResponseDto> result = userPostQueueQueryRepository.getCommentResponse(postId, lastCommentId, userId);
+        @AuthPrincipal UserPrincipal userPrincipal) {
+        List<GetContentResponseDto> result =
+            userPostQueueQueryRepository.getCommentResponse(postId, lastCommentId, userPrincipal.getUserId());
 
         return Response.ok(result);
     }

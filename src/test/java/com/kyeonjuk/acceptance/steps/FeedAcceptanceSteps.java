@@ -30,16 +30,33 @@ public class FeedAcceptanceSteps {
     /*
         Feed 조회하기
      */
-    public static List<GetPostContentResponseDto> requestFeed(Long userId) {
+    public static List<GetPostContentResponseDto> requestFeed(String token) {
         return RestAssured
             .given().log().all()    // 로그값 가져오기
+            .header("Authorization", "Bearer " + token)
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .get("/feed/{userId}", userId)
+            .get("/feed")
             .then().log().all()
             .extract()
             // Long 반환하기
             .jsonPath()
             .getList("value", GetPostContentResponseDto.class);
+    }
+
+    /*
+        Feed 조회 응답 코드 조회
+     */
+    public static Integer requestFeedCode(String token) {
+        return RestAssured
+            .given().log().all()    // 로그값 가져오기
+            .header("Authorization", "Bearer " + token)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get("/feed")
+            .then().log().all()
+            .extract()
+            .jsonPath()
+            .get("code");
     }
 }
