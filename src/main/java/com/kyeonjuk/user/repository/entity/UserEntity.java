@@ -4,15 +4,18 @@ import com.kyeonjuk.common.domain.PositiveIntegerCounter;
 import com.kyeonjuk.common.repository.entity.TimeBaseEntity;
 import com.kyeonjuk.user.domain.User;
 import com.kyeonjuk.user.domain.UserInfo;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "community_user")
@@ -29,6 +32,11 @@ public class UserEntity extends TimeBaseEntity {
     private String profileImageUrl;
     private Integer followingCount;
     private Integer followerCount;
+
+    @CreatedDate        // 데이터가 처음 생성될 때의 날짜를 자동으로 설정 (Spring Date JPA)
+    @Column(updatable = false)  // 데이터 수정 X
+    private LocalDate regDate;
+
 
     public UserEntity(User user) {
         this.id = user.getId();
