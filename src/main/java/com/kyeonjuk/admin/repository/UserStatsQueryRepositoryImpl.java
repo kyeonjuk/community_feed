@@ -1,14 +1,12 @@
 package com.kyeonjuk.admin.repository;
 
-import static com.kyeonjuk.common.TimeCalculator.getDateDaysAgo;
+import static com.kyeonjuk.common.utils.TimeCalculator.getDateDaysAgo;
 
-import com.kyeonjuk.admin.ui.dto.GetDailyRegisterUserResponseDto;
+import com.kyeonjuk.admin.ui.dto.users.GetDailyRegisterUserResponseDto;
 import com.kyeonjuk.admin.ui.query.UserStatsQueryRepository;
 import com.kyeonjuk.user.repository.entity.QUserEntity;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

@@ -1,4 +1,4 @@
-package com.kyeonjuk.admin.ui.dto;
+package com.kyeonjuk.admin.ui.dto.users;
 
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
