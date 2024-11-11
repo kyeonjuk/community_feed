@@ -26,7 +26,7 @@ public class UserStatsQueryRepositoryImpl implements UserStatsQueryRepository {
                 Projections.fields(
                     GetDailyRegisterUserResponseDto.class,
                     userEntity.regDate.as("date"),
-                    userEntity.count().as("count")
+                    userEntity.count().as("count")  // count(*) 기능
                 )
             )
             .from(userEntity)

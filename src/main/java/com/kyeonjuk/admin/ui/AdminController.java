@@ -1,6 +1,8 @@
 package com.kyeonjuk.admin.ui;
 
 import com.kyeonjuk.admin.ui.dto.GetTableListResponse;
+import com.kyeonjuk.admin.ui.dto.posts.GetPostTableRequestDto;
+import com.kyeonjuk.admin.ui.dto.posts.GetPostTableResponseDto;
 import com.kyeonjuk.admin.ui.dto.users.GetUserTableRequestDto;
 import com.kyeonjuk.admin.ui.dto.users.GetUserTableResponseDto;
 import com.kyeonjuk.admin.ui.query.AdminTableQueryRepository;
@@ -30,6 +32,11 @@ public class AdminController {
 
     @GetMapping("/users")
     public ModelAndView users(GetUserTableRequestDto dto) {
+
+        if (dto.getName() == null) {
+            dto.setName("");
+        }
+
         ModelAndView modelAndView = new ModelAndView();
 
         modelAndView.setViewName("users");  // users.html 파일 출력
@@ -42,4 +49,20 @@ public class AdminController {
         return modelAndView;
     }
 
+    @GetMapping("/posts")
+    public ModelAndView posts(GetPostTableRequestDto dto) {
+
+
+
+        ModelAndView modelAndView = new ModelAndView();
+
+        modelAndView.setViewName("posts");
+
+        GetTableListResponse<GetPostTableResponseDto> result = adminTableQueryRepository.getPostTableData(dto);
+        modelAndView.addObject("requestDto", dto);
+        modelAndView.addObject("postList", result.getTableData());
+        modelAndView.addObject("totalCount", result.getTotalCount());
+
+        return modelAndView;
+    }
 }

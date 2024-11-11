@@ -65,7 +65,7 @@
                                 <form th:action="@{/admin/posts}" method="get" th:object="${requestDto}">
                                     <div class="col">
                                         <label>
-                                            <input id="user-name" type="text" class="form-control" placeholder="post id 검색" th:field="*{postId}">
+                                            <input id="user-name" type="text" class="form-control" placeholder="post id 검색" th:field="*{postId}" th:value="*{postId} == null ? '' : ${postId}" >
                                         </label>
                                         <button type="submit" class="btn btn-primary">검색</button>
                                     </div>
@@ -101,7 +101,7 @@
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2023</div>
+                            <div class="text-muted">Copyright &copy; Your Website 2024</div>
                             <div>
                                 <a href="#">Privacy Policy</a>
                                 &middot;
@@ -116,10 +116,15 @@
         <script src="js/scripts.js"></script>
         <script src="js/datatables-simple-demo.js"></script>
     </body>
-<script th:inline="javascript">
-    const totalCount = [[${totalCount}]];
-    const currentIndex = [[${requestDto.getPageIndex()}]];
-    const postId = /*[[${requestDto.getPostId()}]]*/ '';
-    createPagination(totalCount, currentIndex, 'posts', `&postId=${postId}`);
-</script>
+    <script th:inline="javascript">
+        const totalCount = [[${totalCount}]];
+        const currentIndex = [[${requestDto.getPageIndex()}]];
+        let postId = /*[[${requestDto.getPostId()}]]*/ '';
+
+        if (postId === 'null' || postId === null) {
+            postId = '';
+        }
+
+        createPagination(totalCount, currentIndex, 'posts', `&postId=${postId}`);
+    </script>
 </html>
