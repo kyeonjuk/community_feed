@@ -1,5 +1,6 @@
 package com.kyeonjuk.post.ui;
 
+import com.kyeonjuk.common.idempotency.Idempotent;
 import com.kyeonjuk.common.ui.Response;
 import com.kyeonjuk.post.application.CommentService;
 import com.kyeonjuk.post.application.PostService;
@@ -41,6 +42,7 @@ public class PostController {
         return Response.ok(post.getId());
     }
 
+    @Idempotent
     @GetMapping("/like/{postId}/{userId}")
     public Response<Void> postLike(@PathVariable(name = "postId") Long postId,
         @PathVariable(name = "userId") Long userId) {
