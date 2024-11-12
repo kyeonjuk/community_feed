@@ -1,89 +1,299 @@
-# 커뮤니티 SNS형 피드 프로젝트 
+<div id="top"></div>
 
-**프로젝트 설명** 
+<div align='center'>
+
+<h1><b>커뮤니티 SNS형 피드 프로젝트</b></h1>
+<h3><b>프로젝트 부제목</b></h3>
+
+🔗 [배포 링크](https://)
+
+<img src="" alt="intro title image"/>
+
+</div>
+
 <br>
+
+## 0. 목차
+
+1. [프로젝트 소개](#1)
+2. [개발 일정](#2)
+3. [기술 스택](#3)
+4. [라이브러리 사용 이유](#4)
+5. [컨벤션](#5)
+6. [브랜치 및 디렉토리 구조](#6)
+7. [주요 기능 소개](#7)
+8. [주요 코드 ](#8)
+9. [트러블 슈팅](#9)
+10. [프로젝트 회고](#10)
+11. [시작 가이드](#11)
+
+<br />
+
+## <span id="1">🚩 1. 프로젝트 소개</span>
 
 <a href="https://www.notion.so/SNS-137a0f9a44d180a6b1e9f130d59171b7?pvs=4">![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white)</a>
 
-<br>
-<br>
-
-
-
-## **유저 메인 서비스 FLOW**
-<br>
-
-1. **유저 생성**
-    - 유저는 id 를 통해 구분이 되어야 함
-    - 이름, 프로필 이미지를 입력 받으면 저장되어야 함
-        - 단, 이름은 빈 값이 입력되면 안됨
+프로젝트에 대한 전반적인 소개를 여기에 적어주세요.
 
 <br>
 
-2. **팔로우 기능:**
-    - 사용자는 다른 이용자를 팔로우 할 수 있음
-    - 팔로우 취소 할 수 있음
-    - 자기 자신을 팔로우 할 수 없음
-  
-<br>
-
-3. **프로필 노출:**
-    - 사용자 프로필을 누르면 다음과 같은 정보들이 노출 됨
-        - 이름, 유저 프로필, 팔로잉 숫자, 팔로워 숫자
-        - 팔로잉 팔로우 유저 리스트
-            - 이름, 프로필
-            - 단,  팔로잉, 팔로우 숫자를 클릭 했을 때에 각 유저 리스트가 노출됨
+<!-- Top Button -->
+<p style='background: black; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto;'><a href="#top" style='color: white; '>▲</a></p>
 
 <br>
+
+## <span id="2">📅 2. 개발 일정</span>
+
+> 프로젝트 개발 기간: 2024.00.00 ~ 2024.00.00
+
 <br>
 
-## **피드 서비스 메인 FLOW**
+<!-- Top Button -->
+<p style='background: black; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto;'><a href="#top" style='color: white; '>▲</a></p>
+
 <br>
 
-1. **게시물 작성:**
-    - 사용자가 텍스트를 입력하고
-    - 사용자가 공개 대상 (예: 모두 공개, 팔로워 전용)을 선택합니다.
-    - 사용자가 게시물을 제출합니다.
-        - 단, 게시물의 글자수는 5글자 이상 500자 이하여야 합니다.
-     
+## <span id="3">📚 3. 기술 스택</span>
+
+### Environment
+
+![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+
+### Config
+
+![Yarn](https://img.shields.io/badge/yarn-%232C8EBB.svg?style=for-the-badge&logo=yarn&logoColor=white)
+
+### Development
+
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)![React Query](https://img.shields.io/badge/-React%20Query-FF4154?style=for-the-badge&logo=react%20query&logoColor=white)![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)![Redux](https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white)![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)![Styled Components](https://img.shields.io/badge/styled--components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white)![Webpack](https://img.shields.io/badge/webpack-%238DD6F9.svg?style=for-the-badge&logo=webpack&logoColor=black)
+
+### Project Management
+
+![Github Issues]() ![Github Pull requests]()
+
+### Design
+
+![Pigma]()
+
+### Hosting
+
+![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)
+
+### Communication
+
+![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white)![Discord](https://img.shields.io/badge/Discord-2D8CFF?style=for-the-badge&logo=Discord&logoColor=white)
+
 <br>
 
+<!-- Top Button -->
+<p style='background: black; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto;'><a href="#top" style='color: white; '>▲</a></p>
 
-2. **댓글 작성:**
-    - 시용자기 텍스트를 입력하고
-    - 사용자가 댓글을 제출합니다.
-        - 단, 댓글의 글자수는 100자 이하여야 합니다.
-     
 <br>
 
-3. **게시물 상호작용:**
-    - 사용자는 '좋아요' 버튼을 눌러 게시물을 좋아할 수 있습니다.
-        - 본인 게시글은 본인이 좋아요를 누를 수 없습니다.
-    - 사용자는 댓글 섹션에 메시지를 입력하여 게시물에 댓글을 달 수 있습니다.
-    - 좋아요 개수를 누르면 좋아요를 누른 인원들을 볼 수 있음
-    - 댓글 개수를 누르면 댓글 리스트가 보일 수 있음
-    - 글 수정 버튼을 누르면 글을 수정할 수 있음
-        - 본인이 작성한 글이 아니면 수정 할 수 없음
-        - 수정이 된 여부와 수정된 시간을 같이 저장해야 함
-    - 댓글 수정 버튼을 누르면 댓글을 수정 할 수 있음
-        - 본인이 작성한 댓글이 아니면 수정 할 수 없음
-        - 수정이 된 여부와 수정된 시간을 같이 저장해야 함
-     
+## <span id="4">❓ 4. 라이브러리 사용 이유</span>
+
+각 라이브러리의 사용 이유를 설명해주세요.
+
+> React
+
 <br>
 
-4. **피드 보기:**
-    - 사용자는 팔로우 한 사람이 작성한 글을 시간 순서대로 볼 수 있습니다.
-    - 사용자는 피드를 스크롤하여 콘텐츠를 봅니다.
-    - 게시글은 다음과 같은 정보를 제공합니다.
-        - 글 내용, 작성자 이름, 작성자 프로필, 좋아요 개수, 댓글 개수, 수정 여부 , 발행 일자 (수정 시간), 나의 좋아요 여부
-     
+> Redux
+
 <br>
 
-5. **댓글 리스트:**
-    - 댓글 리스트에는 다음과 같은 정보들이 노출되어야 함
-        - 작성자 이름, 작성자 프로필, 댓글 내용, 좋아요 개수, 수정 여부, 발행 일자 (수정 시간), 나의 좋아요 여부
-    - 댓글에 좋아요를 누를 수 있음
-  
+> Axios
+
 <br>
+
+> Styled-Components
+
 <br>
+
+<!-- Top Button -->
+<p style='background: black; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto;'><a href="#top" style='color: white; '>▲</a></p>
+
 <br>
+
+## <span id="5">🤝 5. 컨벤션</span>
+
+### prettier
+
+```json
+{
+  "printWidth": 80,
+  "tabWidth": 2,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "semi": false
+}
+```
+
+### 커밋 컨벤션
+
+```
+feat: 새로운 기능 추가
+fix: 버그 수정
+docs: 문서 수정
+style: 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우
+refactor: 코드 리팩토링
+test: 테스트 추가, 테스트 리팩토링 (프로덕션 코드 변경 없음)
+chore: 빌드 업무 수정, 패키지 매니저 설정 수정 (프로덕션 코드 변경 없음)
+```
+
+<br>
+
+<!-- Top Button -->
+<p style='background: black; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto;'><a href="#top" style='color: white; '>▲</a></p>
+
+<br>
+
+## 6.<span id="6"> 🗂️ 브랜치 및 디렉토리 구조</span>
+
+> 브랜치
+
+- `main`:
+- `dev`:
+-
+
+<br>
+
+> 디렉토리 구조
+
+```
+.
+├── src
+│   ├── components
+│   ├── pages
+│   ├── redux
+│   ├── utils
+│   └── App.js
+├── public
+│   ├── index.html
+│   └── favicon.ico
+└── package.json
+
+```
+
+<br>
+
+<!-- Top Button -->
+<p style='background: black; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto;'><a href="#top" style='color: white; '>▲</a></p>
+
+<br>
+
+## <span id="7">7. 💻 주요 기능 소개</span>
+
+프로젝트의 주요 기능을 GIF를 첨부하여 설명해주세요.
+
+### 1) 홈
+
+| - 화면                                            | - 화면                                            | - 화면                                            |
+| ------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------- |
+| <img src="" alt="-화면" width="288" height="608"> | <img src="" alt="-화면" width="288" height="608"> | <img src="" alt="-화면" width="288" height="608"> |
+
+### 2) 게시글
+
+| 상세페이지 화면                                   | 게시물 작성 - ??                                  | 게시물 작성 - ??                                  |
+| ------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------- |
+| <img src="" alt="-화면" width="288" height="608"> | <img src="" alt="-화면" width="288" height="608"> | <img src="" alt="-화면" width="288" height="608"> |
+
+### 3) 404 & 로딩 화면
+
+| - 화면                                            | - 화면                                            | - 화면                                            |
+| ------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------- |
+| <img src="" alt="-화면" width="288" height="608"> | <img src="" alt="-화면" width="288" height="608"> | <img src="" alt="-화면" width="288" height="608"> |
+
+<br>
+
+<!-- Top Button -->
+<p style='background: black; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto;'><a href="#top" style='color: white; '>▲</a></p>
+
+<br>
+
+## <span id="8">✨ 8. 주요 코드</span>
+
+<details>
+<summary> 주요 코드에 대한 설명을 입력하세요. </summary>
+
+<div>
+설명
+
+```jsx
+
+```
+
+</div>
+</details>
+
+<br>
+
+<details>
+<summary> 주요 코드에 대한 설명을 입력하세요. </summary>
+
+<div>
+설명
+
+```jsx
+
+```
+
+</div>
+</details>
+
+<br>
+
+<!-- Top Button -->
+<p style='background: black; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto;'><a href="#top" style='color: white; '>▲</a></p>
+
+<br>
+
+## <span id="9">🚦 9. 트러블 슈팅</span>
+
+<details>
+<summary> 트러블 슈팅을 입력하세요. </summary>
+
+<div>
+
+1. 문제 상황 <br />
+
+2. 시도 <br />
+
+3. 해결방안 <br />
+
+</div>
+</details>
+
+<br>
+
+<!-- Top Button -->
+<p style='background: black; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto;'><a href="#top" style='color: white; '>▲</a></p>
+
+<br>
+
+## <span id="10">10. 📝 프로젝트 회고</span>
+
+프로젝트 진행 후 느낀 점과 개선할 점을 적어주세요. 블로그에 작성하셨다면 블로그 링크를 첨부해주세요.
+
+<br>
+
+<!-- Top Button -->
+<p style='background: black; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto;'><a href="#top" style='color: white; '>▲</a></p>
+
+<br>
+
+## <span id="11">11. 🛠️ 시작 가이드</span>
+
+### Installation
+
+```
+$ git clone https://github.com/MyNameSieun/OH-YO.git
+$ cd OH-YO
+$ yarn
+& yarn start
+```
+
+<br>
+
+<!-- Top Button -->
+<p style='background: black; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto;'><a href="#top" style='color: white; '>▲</a></p>
