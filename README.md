@@ -57,23 +57,32 @@
 
 ### Environment
 
-![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ_IDEA-%23FF5F00.svg?style=for-the-badge&logo=intellij-idea&logoColor=white)
+![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
 ### Config
 
-![Yarn](https://img.shields.io/badge/yarn-%232C8EBB.svg?style=for-the-badge&logo=yarn&logoColor=white)
+![Spring Config](https://img.shields.io/badge/Spring_Config-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+
 
 ### Development
 
-![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)![React Query](https://img.shields.io/badge/-React%20Query-FF4154?style=for-the-badge&logo=react%20query&logoColor=white)![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)![Redux](https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white)![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)![Styled Components](https://img.shields.io/badge/styled--components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white)![Webpack](https://img.shields.io/badge/webpack-%238DD6F9.svg?style=for-the-badge&logo=webpack&logoColor=black)
+![Java](https://img.shields.io/badge/Java-%23F7B731.svg?style=for-the-badge&logo=java&logoColor=white)
+![Spring](https://img.shields.io/badge/Spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-%236DB33F.svg?style=for-the-badge&logo=spring-boot&logoColor=white)
+![Spring Data JPA](https://img.shields.io/badge/Spring_Data_JPA-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring_Security-%236DB33F.svg?style=for-the-badge&logo=spring-security&logoColor=white)
+![QueryDSL](https://img.shields.io/badge/QueryDSL-%2338A3D8.svg?style=for-the-badge&logo=querydsl&logoColor=white)
+![JPQL](https://img.shields.io/badge/JPQL-%23338D91.svg?style=for-the-badge&logo=java&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-%234E77A8.svg?style=for-the-badge&logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-%232496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-%23000C1B.svg?style=for-the-badge&logo=gradle&logoColor=white)
+![H2 Database](https://img.shields.io/badge/H2_Database-%23A1C7B2.svg?style=for-the-badge&logo=h2&logoColor=white)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-%23495B6B.svg?style=for-the-badge&logo=thymeleaf&logoColor=white)
+![JUnit](https://img.shields.io/badge/JUnit-%23A8B9C4.svg?style=for-the-badge&logo=junit&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-%23DC382D.svg?style=for-the-badge&logo=redis&logoColor=white)
 
-### Project Management
-
-![Github Issues]() ![Github Pull requests]()
-
-### Design
-
-![Pigma]()
 
 ### Hosting
 
@@ -81,7 +90,7 @@
 
 ### Communication
 
-![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white)![Discord](https://img.shields.io/badge/Discord-2D8CFF?style=for-the-badge&logo=Discord&logoColor=white)
+![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white)
 
 <br>
 
@@ -92,21 +101,15 @@
 
 ## <span id="4">❓ 4. 라이브러리 사용 이유</span>
 
-각 라이브러리의 사용 이유를 설명해주세요.
 
-> React
-
+> Redis
+  - 인메모리 DB이자 캐시시스템인 Redis를 사용해 멱등키 처리같은 빠른 응답 시간이 필요한 API에 사용
+  - 데이터베이스 부하를 줄이고, 데이터 접근 속도를 빠르게 하기 위해
 <br>
 
-> Redux
-
-<br>
-
-> Axios
-
-<br>
-
-> Styled-Components
+> MySQL
+  - 중요한 데이터의 일관성과 무결성 보장
+  - 테이블 형식으로 저장하여 구조화된 데이터 저장
 
 <br>
 
@@ -251,15 +254,30 @@ chore: 빌드 업무 수정, 패키지 매니저 설정 수정 (프로덕션 코
 ## <span id="9">🚦 9. 트러블 슈팅</span>
 
 <details>
-<summary> 트러블 슈팅을 입력하세요. </summary>
+<summary> API 동시성, 중복 처리 문제 (멱등성) </summary>
 
 <div>
-
+<br>
+  
 1. 문제 상황 <br />
+  게시글이나 댓글에 대한 좋아요 중복, 네트워크 지연이나 서버오류의 이유로 사용자가 다시 버튼을 누른경우<br />
+  ㄴ 예시 1) 사용자가 버튼을 여러 번 눌러서 "좋아요"를 여러 번 클릭하게 되면, 동일한 좋아요 요청이 여러 번 처리되어 원하지 않는 결과가 발생<br />
 
-2. 시도 <br />
+<코드 추가하기 !!!!!!><br />
 
-3. 해결방안 <br />
+2. 해결방안 <br />
+  중복 처리 문제를 해결하기 위해, 멱등성(Idempotency)을 적용하여 문제를 해결
+- Idempotency 커스텀 어노테이션 추가
+  - API에 어노테이션으로 멱등성 적용 
+- Idempotency Key 도입
+  - header에 Idempotency-Key 필드에 랜덤한 UUID키값을 전달
+- Idempotency 저장소 구현
+  - 처음 실행시 Idempotency-Key를 DB에 저장
+  - 중복 실행시 저장된 Idempotency-Key 확인 후 중복방지 처리한 Response 반환
+
+3. 성능 고려 <br />
+  Idempotency를 도입하는 과정에서 성능 저하가 있을 수 있으므로,<br />
+  Redis를 사용하여 Idempotency Key와 응답을 저장해 빠른 속도로 중복 요청을 처리<br />
 
 </div>
 </details>
