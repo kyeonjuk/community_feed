@@ -13,3 +13,4 @@ spring:
       hibernate:
         format_sql: true    # sql 문을 라인에 맞게 출력
     open-in-view: false   # DB와 application 의 연결 스레드 관리 (기본값 : true)
+

@@ -4,7 +4,6 @@ import com.kyeonjuk.user.application.interfaces.UserRepository;
 import com.kyeonjuk.user.domain.User;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class FakeUserRepository implements UserRepository {
 

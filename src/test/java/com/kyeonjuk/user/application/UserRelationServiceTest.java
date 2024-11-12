@@ -1,13 +1,12 @@
 package com.kyeonjuk.user.application;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.kyeonjuk.fake.FakeObjectFactory;
 import com.kyeonjuk.user.application.dto.CreateUserRequestDto;
 import com.kyeonjuk.user.application.dto.FollowUserRequestDto;
 import com.kyeonjuk.user.domain.User;
-import com.kyeonjuk.user.repository.FakeUserRelationRepository;
-import com.kyeonjuk.user.repository.FakeUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -12,9 +12,11 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Profile({"!test"})
 @RequiredArgsConstructor
 public class UserPostQueueQueryRepositoryImpl implements UserPostQueueQueryRepository {
 

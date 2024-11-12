@@ -41,3 +41,7 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+
+### FCM ###
+community-service-adminsdk.json

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+</head>
+<script type="module">
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
+
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyD2x5AwpBiVYMphqkDtq2cQRdFyD4YsSzQ",
+    authDomain: "community-service-bb1ff.firebaseapp.com",
+    projectId: "community-service-bb1ff",
+    storageBucket: "community-service-bb1ff.firebasestorage.app",
+    messagingSenderId: "24753656321",
+    appId: "1:24753656321:web:427cbbe4be646c30ae2600"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const messaging = getMessaging(app);
+
+  // Function to retrieve FCM token
+  async function retrieveToken() {
+    try {
+      const currentToken = await getToken(messaging, {vapidKey: "BFZnaOmvy71Zp7dRY9K6Hk4-fjxfS8-92-6ZUBoy4SHSF8fJL0PZlDX4mryIzG23WPzZC-u0wqt1E0btURVIhVU"});
+      if (currentToken) {
+        console.log(currentToken);
+        return currentToken;
+      } else {
+        console.warn("No registration token available.");
+        return "";
+      }
+    } catch (err) {
+      console.error('An error occurred while retrieving token: ', err);
+      return "";
+    }
+  }
+
+  // Login function with fcmToken as a parameter
+  async function login(fcmToken) {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({email, password, fcmToken}),
+    }).then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('Network response was not ok.');
+    }).then(data => {
+      console.log(data);
+    }).catch(error => {
+      console.error('There has been a problem with your fetch operation:', error);
+    });
+  }
+
+  // Function that handles login button click
+  async function handleLogin() {
+    const fcmToken = await retrieveToken();
+    await login(fcmToken);
+  }
+
+  window.handleLogin = handleLogin;
+</script>
+
+<body>
+<div id="login-form">
+  <label for="email">이메일</label><input type="email" id="email" placeholder="Email">
+  <label for="password">비밀번호</label><input type="password" id="password" placeholder="Password">
+  <button onclick="handleLogin()">Login</button>
+</div>
+</body>
+
+</html>

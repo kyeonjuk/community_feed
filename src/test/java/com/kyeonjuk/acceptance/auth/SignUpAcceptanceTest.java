@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.kyeonjuk.acceptance.utils.AcceptanceTestTemplate;
 import com.kyeonjuk.auth.application.dto.CreateUserAuthRequestDto;
 import com.kyeonjuk.auth.application.dto.SendEmailRequestDto;
-import com.kyeonjuk.auth.domain.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

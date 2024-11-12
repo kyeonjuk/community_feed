@@ -7,9 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Profile({"!test"})
 public class UserQueueRedisRepositoryImpl implements UserQueueRedisRepository {
 
     private final Map<Long, Set<PostEntity>> queue = new HashMap<>();

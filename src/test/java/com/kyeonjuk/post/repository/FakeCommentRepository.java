@@ -4,7 +4,6 @@ import com.kyeonjuk.post.application.interfaces.CommentRepository;
 import com.kyeonjuk.post.domain.comment.Comment;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class FakeCommentRepository implements CommentRepository {
 

@@ -16,3 +16,8 @@ spring:
 
 # 비밀키
 secret-key : daksdhfasdjfksajdhjhasgdjfbsdjcbslcjsdhgfsldjhskjdfhksljdcbsnbcskjahdflkjshadsa
+
+# fcm - Firebase 인증서 파일(json) 읽어오기
+fcm :
+  certification : community-service-adminsdk.json   # 파일명
+

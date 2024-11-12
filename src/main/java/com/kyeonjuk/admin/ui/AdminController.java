@@ -52,8 +52,6 @@ public class AdminController {
     @GetMapping("/posts")
     public ModelAndView posts(GetPostTableRequestDto dto) {
 
-
-
         ModelAndView modelAndView = new ModelAndView();
 
         modelAndView.setViewName("posts");
@@ -63,6 +61,13 @@ public class AdminController {
         modelAndView.addObject("postList", result.getTableData());
         modelAndView.addObject("totalCount", result.getTotalCount());
 
+        return modelAndView;
+    }
+
+    @GetMapping("/login")
+    public ModelAndView login() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login");
         return modelAndView;
     }
 }

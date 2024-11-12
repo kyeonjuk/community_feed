@@ -1,6 +1,7 @@
 package com.kyeonjuk.post.domain.comment;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.kyeonjuk.post.domain.Post;
 import com.kyeonjuk.post.domain.content.CommentContent;
@@ -8,9 +9,6 @@ import com.kyeonjuk.post.domain.content.PostContent;
 import com.kyeonjuk.user.domain.User;
 import com.kyeonjuk.user.domain.UserInfo;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 class CommentTest {
 
