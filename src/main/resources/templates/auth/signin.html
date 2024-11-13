@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photogram</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{https://pro.fontawesome.com/releases/v5.10.0/css/all.css}"
+          integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD2x5AwpBiVYMphqkDtq2cQRdFyD4YsSzQ",
+      authDomain: "community-service-bb1ff.firebaseapp.com",
+      projectId: "community-service-bb1ff",
+      storageBucket: "community-service-bb1ff.firebasestorage.app",
+      messagingSenderId: "24753656321",
+      appId: "1:24753656321:web:427cbbe4be646c30ae2600"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+
+    // Function to retrieve FCM token
+    async function retrieveToken() {
+      try {
+        const currentToken = await getToken(messaging, {vapidKey: "BFZnaOmvy71Zp7dRY9K6Hk4-fjxfS8-92-6ZUBoy4SHSF8fJL0PZlDX4mryIzG23WPzZC-u0wqt1E0btURVIhVU"});
+        if (currentToken) {
+          console.log(currentToken);
+          return currentToken;
+        } else {
+          console.warn("No registration token available.");
+          return "";
+        }
+      } catch (err) {
+        console.error('An error occurred while retrieving token: ', err);
+        return "";
+      }
+    }
+
+    // Login function with fcmToken as a parameter
+     async function login(fcmToken) {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password, fcmToken }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                // accessToken 저장
+                const accessToken = data.value.accessToken;
+                localStorage.setItem('accessToken', accessToken);
+
+                // accessToken을 사용하여 getUserId 엔드포인트 호출
+                const userIdResponse = await fetch('/login/getUserId', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+
+                if (userIdResponse.ok) {
+                    const userIdData = await userIdResponse.json();
+                    const userId = userIdData.value;  // Response에서 userId 추출
+                    // 로그인 성공 후 페이지 이동
+                    window.location.href = `http://localhost:8080/model/feed?userId=${userId}`;
+                } else {
+                    console.error('User ID not found or token invalid.');
+                }
+            } else {
+                console.error('Login failed.');
+            }
+        } catch (error) {
+            console.error('There has been a problem with your fetch operation:', error);
+        }
+    }
+
+    // Function that handles login button click
+    async function handleLogin() {
+        const fcmToken = await retrieveToken();
+        await login(fcmToken);
+    }
+
+    window.handleLogin = handleLogin;
+</script>
+
+
+<body>
+<div class="container">
+    <main class="loginMain">
+        <!--로그인섹션-->
+        <section class="login">
+            <!--로그인박스-->
+            <article class="login__form__container">
+                <!--로그인 폼-->
+                <div class="login__form">
+                    <h1><img src="/images/logo.jpg" alt=""></h1>
+
+                    <!--로그인 인풋-->
+                    <div class="login__input">
+                        <input type="email" id="email" placeholder="이메일">
+                        <input type="password" id="password" placeholder="비밀번호">
+                        <button onclick="handleLogin()">로그인</button>
+                    </div>
+                    <!--로그인 인풋end-->
+
+                    <!-- 또는 -->
+                    <div class="login__horizon">
+                        <div class="br"></div>
+                        <div class="or">또는</div>
+                        <div class="br"></div>
+                    </div>
+                    <!-- 또는end -->
+
+                    <!-- Oauth 소셜로그인 -->
+                    <div class="login__facebook">
+                        <button>
+                            <i class="fab fa-facebook-square"></i>
+                            <span>Facebook으로 로그인</span>
+                        </button>
+                    </div>
+                    <!-- Oauth 소셜로그인end -->
+                </div>
+
+                <!--계정이 없으신가요?-->
+                <div class="login__register">
+                    <span>계정이 없으신가요?</span>
+                    <a href="/model/user/register">가입하기</a>
+                </div>
+                <!--계정이 없으신가요?end-->
+            </article>
+        </section>
+    </main>
+
+</div>
+</body>
+
+</html>

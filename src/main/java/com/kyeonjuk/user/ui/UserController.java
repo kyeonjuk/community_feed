@@ -24,12 +24,12 @@ public class UserController {
     private final UserService userService;
     private final JpaUserListQueryRepository jpaUserListQueryRepository;
 
-    @PostMapping
-    public Response<Long> createUser(@RequestBody CreateUserRequestDto dto) {
-        User user = userService.createUser(dto);
-
-        return Response.ok(user.getId());
-    }
+//    @PostMapping
+//    public Response<Long> createUser(@RequestBody CreateUserRequestDto dto) {
+//        User user = userService.createUser(dto);
+//
+//        return Response.ok(user.getId());
+//    }
 
     @GetMapping("/{userId}/follower")
     public Response<List<GetUserListResponseDto>> getFollowerList(@PathVariable(name = "userId") Long userId) {

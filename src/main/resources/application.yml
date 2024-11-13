@@ -5,6 +5,16 @@ spring:
     username: root
     password: 1234
 
+  # 콘솔 컬러 변경
+  output:
+    ansi:
+      enabled: always
+
+  # thymeleaf 경로 지정
+  thymeleaf:
+    suffix: .html
+    prefix: classpath:/templates/
+
   jpa:
     show-sql: true    # sql 문 출력
     hibernate:
