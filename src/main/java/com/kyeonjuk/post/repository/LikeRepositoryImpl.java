@@ -1,5 +1,6 @@
 package com.kyeonjuk.post.repository;
 
+import com.kyeonjuk.message.application.interfaces.MessageRepository;
 import com.kyeonjuk.post.application.interfaces.LikeCommentRepository;
 import com.kyeonjuk.post.application.interfaces.LikePostRepository;
 import com.kyeonjuk.post.domain.Post;
@@ -28,6 +29,7 @@ public class LikeRepositoryImpl implements LikeCommentRepository, LikePostReposi
     private final JpaLikeRepository jpaLikeRepository;
     private final JpaPostRepository jpaPostRepository;
     private final JpaCommentRepository jpaCommentRepository;
+    private final MessageRepository messageRepository;
 
     @Override
     public boolean checkLike(User user, Comment comment) {
@@ -42,6 +44,9 @@ public class LikeRepositoryImpl implements LikeCommentRepository, LikePostReposi
 
         // commentEntity likeCount 증가
         jpaCommentRepository.updateLikeCommentEntity(comment.getId(), 1);
+
+        // 좋아요 알림 메시지 보내기
+        messageRepository.sendLikeMessage(user, comment.getAuthor());
     }
 
     @Override
@@ -70,6 +75,9 @@ public class LikeRepositoryImpl implements LikeCommentRepository, LikePostReposi
 
         // postEntity likeCount 증가
         jpaPostRepository.updateLikePostEntity(post.getId(), 1);
+
+        // 좋아요 알림 메시지 보내기
+        messageRepository.sendLikeMessage(user, post.getAuthor());
     }
 
     @Override

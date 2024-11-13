@@ -2,16 +2,11 @@ package com.kyeonjuk.post.ui;
 
 import com.kyeonjuk.common.idempotency.Idempotent;
 import com.kyeonjuk.common.ui.Response;
-import com.kyeonjuk.post.application.CommentService;
 import com.kyeonjuk.post.application.PostService;
-import com.kyeonjuk.post.application.dto.CreateCommentRequestDto;
 import com.kyeonjuk.post.application.dto.CreatePostRequestDto;
-import com.kyeonjuk.post.application.dto.LikeCommentRequestDto;
 import com.kyeonjuk.post.application.dto.LikePostRequestDto;
-import com.kyeonjuk.post.application.dto.UpdateCommentRequestDto;
 import com.kyeonjuk.post.application.dto.UpdatePostRequestDto;
 import com.kyeonjuk.post.domain.Post;
-import com.kyeonjuk.post.domain.comment.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;

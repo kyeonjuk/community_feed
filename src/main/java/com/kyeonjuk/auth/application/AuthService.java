@@ -44,7 +44,7 @@ public class AuthService {
     }
 
     public UserAccessTokenResponseDto login(LoginRequestDto dto) {
-        UserAuth userAuth = userAuthRepository.loginUser(dto.email(), dto.password());
+        UserAuth userAuth = userAuthRepository.loginUser(dto.email(), dto.password(), dto.fcmToken());
 
         // 정상 로그인 시 -> 토큰 생성
         String token = tokenProvider.createToken(userAuth.getUserId(), userAuth.getUserRole());

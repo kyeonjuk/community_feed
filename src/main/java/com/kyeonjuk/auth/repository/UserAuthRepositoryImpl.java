@@ -4,6 +4,8 @@ import com.kyeonjuk.auth.application.interfaces.UserAuthRepository;
 import com.kyeonjuk.auth.domain.UserAuth;
 import com.kyeonjuk.auth.repository.entity.UserAuthEntity;
 import com.kyeonjuk.auth.repository.jpa.JpaUserAuthRepository;
+import com.kyeonjuk.message.repository.JpaFcmTokenRepository;
+import com.kyeonjuk.message.repository.entity.FcmTokenEntity;
 import com.kyeonjuk.user.application.interfaces.UserRepository;
 import com.kyeonjuk.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ public class UserAuthRepositoryImpl implements UserAuthRepository {
 
     private final JpaUserAuthRepository jpaUserAuthRepository;
     private final UserRepository userRepository;
+    private final JpaFcmTokenRepository jpaFcmTokenRepository;
 
     @Override
     public UserAuth registerUser(UserAuth auth, User user) {
@@ -34,7 +37,7 @@ public class UserAuthRepositoryImpl implements UserAuthRepository {
      */
     @Override
     @Transactional
-    public UserAuth loginUser(String email, String password) {
+    public UserAuth loginUser(String email, String password, String fcmToken) {
         UserAuthEntity userAuthEntity = jpaUserAuthRepository.findById(email).orElseThrow();
         UserAuth userAuth = userAuthEntity.toUserAuth();
 
@@ -43,6 +46,9 @@ public class UserAuthRepositoryImpl implements UserAuthRepository {
         }
 
         userAuthEntity.updateLastLoginAt();
+
+        // FCM 알림 토큰 저장
+        jpaFcmTokenRepository.save(new FcmTokenEntity(userAuth.getUserId(), fcmToken));
 
         return userAuth;
     }
