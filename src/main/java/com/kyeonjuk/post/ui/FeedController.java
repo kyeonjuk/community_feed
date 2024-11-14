@@ -20,7 +20,7 @@ public class FeedController {
 
     private final UserPostQueueQueryRepository userPostQueueQueryRepository;
 
-    @GetMapping("")
+    @GetMapping
     public Response<List<GetPostContentResponseDto>> getPostFeed(@AuthPrincipal UserPrincipal userPrincipal, Long lastPostId) {
         List<GetPostContentResponseDto> result =
             userPostQueueQueryRepository.getContentResponse(userPrincipal.getUserId(), lastPostId);

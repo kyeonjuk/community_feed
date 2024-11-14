@@ -3,6 +3,7 @@ package com.kyeonjuk.post.repository;
 import com.kyeonjuk.post.application.interfaces.PostRepository;
 import com.kyeonjuk.post.domain.Post;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,5 +27,10 @@ public class FakePostRepository implements PostRepository {
     @Override
     public Post findById(Long id) {
         return store.get(id);
+    }
+
+    @Override
+    public List<Post> findAllByUserId(Long userId) {
+        return List.of();
     }
 }

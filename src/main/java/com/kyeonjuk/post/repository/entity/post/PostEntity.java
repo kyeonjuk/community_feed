@@ -38,6 +38,8 @@ public class PostEntity extends TimeBaseEntity {
 
     private String content;
 
+    private String contentImageUrl;
+
     @Convert(converter = PostPublicationStateConverter.class)
     private PostPublicationState state;
 
@@ -50,6 +52,7 @@ public class PostEntity extends TimeBaseEntity {
         this.id = post.getId();
         this.author = new UserEntity(post.getAuthor());
         this.content = post.getContent();
+        this.contentImageUrl = post.getContentImageUrl();
         this.state = post.getState();
         this.likeCount = post.getLikeCount();
     }
@@ -58,6 +61,7 @@ public class PostEntity extends TimeBaseEntity {
             .id(id)
             .author(author.toUser())
             .content(new PostContent(content))
+            .contentImageUrl(contentImageUrl)
             .state(state)
             .likeCount(new PositiveIntegerCounter(likeCount))
             .build();

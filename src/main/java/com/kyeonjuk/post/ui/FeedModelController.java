@@ -12,7 +12,15 @@ public class FeedModelController {
     @GetMapping
     public ModelAndView feedForm() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("/image/feed");
+        modelAndView.setViewName("image/feed");
         return modelAndView;
     }
+
+    @GetMapping("/post")
+    public ModelAndView createPostForm() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("image/uploadPost");
+        return modelAndView;
+    }
+
 }

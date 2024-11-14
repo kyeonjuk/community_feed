@@ -5,6 +5,7 @@ import com.kyeonjuk.post.domain.Post;
 import com.kyeonjuk.post.repository.entity.post.PostEntity;
 import com.kyeonjuk.post.repository.jpa.JpaPostRepository;
 import com.kyeonjuk.post.repository.post_queue.UserPostQueueCommandRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -35,5 +36,11 @@ public class PostRepositoryImpl implements PostRepository {
         PostEntity postEntity = jpaPostRepository.findById(id)
             .orElseThrow(IllegalArgumentException::new);
         return postEntity.toPost();
+    }
+
+    @Override
+    public List<Post> findAllByUserId(Long userId) {
+        List<PostEntity> postEntityList = jpaPostRepository.findAllByAuthorId(userId);
+        return postEntityList.stream().map(PostEntity::toPost).toList();
     }
 }

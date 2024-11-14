@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping("/model/user")
+@RequestMapping("/model/auth")
 public class AuthModelController {
 
     @GetMapping("/register")
