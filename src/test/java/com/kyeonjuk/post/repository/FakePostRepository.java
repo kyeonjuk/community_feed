@@ -5,7 +5,6 @@ import com.kyeonjuk.post.domain.Post;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class FakePostRepository implements PostRepository {
 

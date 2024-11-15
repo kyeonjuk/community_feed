@@ -33,10 +33,11 @@
                     let postListHtml = '';
                     if (posts.length > 0) {
                         posts.forEach(post => {
+                            const postImageUrl = `/uploads/images/${post.contentImageUrl}`; // 이미지 경로 동적으로 설정
                             postListHtml += `
                                 <div class="img-box">
                                     <a href="/post/${post.id}">
-                                        <img src="${post.content.imageUrl || '/images/default.jpg'}" alt="Post Image" />
+                                        <img src="${postImageUrl}" alt="Post Image" />
                                     </a>
                                     <div class="comment">
                                         <a href="#">
@@ -65,6 +66,7 @@
                 console.log('No token found.');
             }
         });
+
     </script>
 </header>
 

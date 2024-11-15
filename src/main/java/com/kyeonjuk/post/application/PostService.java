@@ -93,7 +93,7 @@ public class PostService {
      */
     private String saveImage(MultipartFile image) {
         // 프로젝트 루트 디렉토리 + "uploads/images" 폴더 경로 생성
-        String uploadDirectory = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "images";
+        String uploadDirectory = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator + "uploads" + File.separator + "images";
 
         // 디렉토리가 없으면 생성
         File directory = new File(uploadDirectory);
@@ -119,7 +119,7 @@ public class PostService {
             File file = new File(imagePath);
             image.transferTo(file); // 파일 저장
 
-            return imagePath; // 저장된 파일 경로 반환
+            return uniqueFileName; // 저장된 파일 경로 반환
         } catch (IOException e) {
             e.printStackTrace();  // 예외 로그
             throw new RuntimeException("이미지 저장 실패: " + e.getMessage(), e);
