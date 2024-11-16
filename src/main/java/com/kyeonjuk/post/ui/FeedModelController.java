@@ -23,4 +23,10 @@ public class FeedModelController {
         return modelAndView;
     }
 
+    @GetMapping("/postMain")
+    public ModelAndView mainPostForm() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("image/postMain");
+        return modelAndView;
+    }
 }
