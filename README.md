@@ -33,7 +33,6 @@
 
 <a href="https://www.notion.so/SNS-137a0f9a44d180a6b1e9f130d59171b7?pvs=4">![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white)</a>
 
-프로젝트에 대한 전반적인 소개를 여기에 적어주세요.
 
 <br>
 
