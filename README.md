@@ -192,7 +192,7 @@ chore: 빌드 업무 수정, 패키지 매니저 설정 수정 (프로덕션 코
 
 | 로그인 화면                                            | - 화면                                            | - 화면                                            |
 | ------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------- |
-| <img src="" alt="-화면" width="288" height="608"> | <img src="" alt="-화면" width="288" height="608"> | <img src="" alt="-화면" width="288" height="608"> |
+| <img src="![KakaoTalk_20241125_231206214](https://github.com/user-attachments/assets/e1fe5d98-0633-49eb-bf0e-bf5d84baa04d)" alt="로그인 화면" width="288" height="608"> | <img src="" alt="-화면" width="288" height="608"> | <img src="" alt="-화면" width="288" height="608"> |
 
 ### 2) 게시글
 
