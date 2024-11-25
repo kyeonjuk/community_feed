@@ -54,8 +54,11 @@
     }).then(response => {
       if (response.ok) {
         return response.json();
+      } else {
+        // Show an alert if login fails
+        alert('가입된 아이디, 비밀번호를 찾을 수 없습니다.');
+        throw new Error('Login failed');
       }
-      throw new Error('Network response was not ok.');
     }).then(data => {
       console.log(data);
     }).catch(error => {

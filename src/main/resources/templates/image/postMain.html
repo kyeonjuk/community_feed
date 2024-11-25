@@ -99,91 +99,119 @@
     }
   </style>
 </head>
-<body>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  const pathname = window.location.pathname; // URL 경로 가져오기
+  const pathParts = pathname.split('/');     // '/'를 기준으로 분리
+  const postId = pathParts[pathParts.length - 1]; // 마지막 부분이 'postId'
 
-<div class="story-list__item">
+  if (postId) {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      fetch(`http://localhost:8080/post/getPost/${postId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+        .then(response => response.json())
+        .then(postData => {
+          console.log('Post Data:', postData); // 응답 데이터 확인
+
+          if (postData && postData.value) {
+            const { post, comment } = postData.value;
+
+            // 게시물 데이터 처리
+            const postContent = post.content || '게시물 내용 없음';
+            const postImageUrl = post.contentImageUrl
+              ? `/uploads/images/${post.contentImageUrl}`
+              : '/images/default-post-image.jpg';
+
+            // 작성자 정보
+            const userName = post.author?.info?.name || '사용자 이름';
+            const userProfileImage = post.author?.info?.profileImage || '/images/person.jpeg';
+
+            // 좋아요 수
+            const likeCount = post.likeCount || 0;
+
+            // HTML 업데이트
+            document.getElementById('postUserName').innerText = userName;
+            document.getElementById('postUserProfileImage').src = userProfileImage;
+            document.getElementById('postImage').src = postImageUrl;
+            document.getElementById('postContent').innerText = postContent;
+            document.getElementById('storyLikeCount').innerText = likeCount;
+
+            // 댓글 리스트 렌더링
+            const commentList = document.getElementById('storyCommentList');
+            commentList.innerHTML = ''; // 기존 댓글 제거
+
+            comment.forEach(commentItem => {
+              const commentElement = document.createElement('div');
+              commentElement.classList.add('sl__item__contents__comment');
+              commentElement.innerHTML = `
+                <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                  <img class="profile-image" src="${commentItem.userProfileImageUrl || '/images/person.jpeg'}" onerror="this.src='/images/person.jpeg'" style="width: 30px; height: 30px; margin-right: 10px;" />
+                  <b>${commentItem.userName}</b>
+                </div>
+                <p>${commentItem.content}</p>
+                <small style="color: #888;">${new Date(commentItem.createdAt).toLocaleString()}</small>
+              `;
+              commentList.appendChild(commentElement);
+            });
+          } else {
+            alert('게시물을 찾을 수 없습니다.');
+          }
+        })
+        .catch(error => console.error('데이터 가져오기 오류:', error));
+    } else {
+      alert('로그인 토큰이 없습니다.');
+    }
+  } else {
+    alert('잘못된 게시물 ID입니다.');
+  }
+});
+
+
+</script>
+<body>
+<div class="story-list__item" id="postItem">
   <div class="sl__item__header">
     <div>
-      <img class="profile-image" src="#" onerror="this.src='/images/person.jpeg'" />
+      <img class="profile-image" src="#" onerror="this.src='/images/person.jpeg'" id="postUserProfileImage" />
     </div>
-    <div>TherePrograming</div>
+    <div id="postUserName">사용자 이름</div>
   </div>
 
   <div class="sl__item__img">
-    <img src="/images/home.jpg" />
+    <img src="#" id="postImage" />
   </div>
 
   <div class="sl__item__contents">
     <div class="sl__item__contents__icon" style="margin-top: 10px; margin-left: 5px;">
       <button style="margin-top: 7px;">
-        <i class="fas fa-heart active" id="storyLikeIcon-1" onclick="toggleLike()"></i>
+        <i class="fas fa-heart" id="storyLikeIcon" onclick="toggleLike()"></i>
       </button>
-      <span class="like"><b id="storyLikeCount-1">3 </b>likes</span>
+      <span class="like"><b id="storyLikeCount">0</b> likes</span>
     </div>
     <br>
     <div class="sl__item__contents__content">
-      <p>등산하는 것이 너무 재밌네요</p>
+      <p id="postContent">게시물 내용</p>
     </div>
 
     <!-- 댓글 리스트 -->
-    <div id="storyCommentList-1">
-      <div class="sl__item__contents__comment" id="storyCommentItem-1" style="margin-top: 23px;">
-        <p>
-          <b>Lovely :</b> 부럽습니다.
-        </p>
-        <button style="margin-top: 5px;" onclick="deleteComment('storyCommentItem-1')">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
+    <div id="storyCommentList">
+      <!-- 댓글이 동적으로 추가됩니다. -->
     </div>
     <br>
 
     <div class="sl__item__input">
-      <input type="text" placeholder="댓글 달기..." id="storyCommentInput-1" />
-      <button type="button" onclick="addComment('storyCommentList-1', 'storyCommentInput-1')">게시</button>
+      <input type="text" placeholder="댓글 달기..." id="storyCommentInput" />
+      <button type="button" onclick="addComment('storyCommentList', 'storyCommentInput')">게시</button>
     </div>
   </div>
 </div>
 
-<script>
-  function toggleLike() {
-      const likeIcon = document.getElementById("storyLikeIcon-1");
-      const likeCount = document.getElementById("storyLikeCount-1");
-      let count = parseInt(likeCount.textContent.trim());
 
-      if (likeIcon.classList.contains("active")) {
-          likeIcon.classList.remove("active");
-          likeCount.textContent = count - 1;
-      } else {
-          likeIcon.classList.add("active");
-          likeCount.textContent = count + 1;
-      }
-  }
-
-  function addComment(commentListId, inputId) {
-      const commentList = document.getElementById(commentListId);
-      const input = document.getElementById(inputId);
-      const commentText = input.value.trim();
-
-      if (commentText) {
-          const commentItem = document.createElement("div");
-          commentItem.className = "sl__item__contents__comment";
-          commentItem.innerHTML = `
-              <p><b>User :</b> ${commentText}</p>
-              <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
-          `;
-          commentList.appendChild(commentItem);
-          input.value = "";
-      }
-  }
-
-  function deleteComment(commentId) {
-      const comment = document.getElementById(commentId);
-      if (comment) {
-          comment.remove();
-      }
-  }
-</script>
 
 </body>
 </html>

@@ -29,4 +29,5 @@ public class UserRelationController {
 
         return Response.ok(null);
     }
+
 }

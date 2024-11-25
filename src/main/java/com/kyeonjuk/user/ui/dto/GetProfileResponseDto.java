@@ -14,6 +14,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GetProfileResponseDto {
 
+    private Long myUserId;
+    private Long otherUserId;
     private List<Post> postList;
     private GetUserResponseDto profile;
+    private boolean isFollowing;
 }

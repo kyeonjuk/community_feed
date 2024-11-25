@@ -203,7 +203,17 @@
     background: rgba(0, 0, 0, 0.6);
     opacity: 1;
 }
-#tab-content #tab-1-content .tab-1-content-inner .img-box .comment a,#tab-content #tab-1-content .tab-1-content-inner .img-box .comment a span{
+#tab-content #tab-1-content .tab-1-content-inner .img-box .comment a {
+    width: 100%; /* 부모 크기와 동일 */
+    height: 100%; /* 부모 크기와 동일 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none; /* 기본 링크 스타일 제거 */
+    color: #fff;
+}
+
+#tab-content #tab-1-content .tab-1-content-inner .img-box .comment a span{
     color: #fff;
 }
 #tab-content #tab-1-content .tab-1-content-inner .img-box .comment a i {
@@ -264,9 +274,9 @@
 }
 
 
-.profile-image {
+/*.profile-image {
     border: 2px solid #8a3ab8;
-}
+}*/
 
 .modal-image {
     position: fixed;
@@ -403,6 +413,7 @@
     display: none;
     align-items: center;
     justify-content: center;
+    z-index: 1;
 }
 .modal-info .modal {
     width: 400px;

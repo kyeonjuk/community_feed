@@ -36,7 +36,7 @@ public class PostService {
     }
 
     /*
-        내가 작성한 게시글 리스트 가져오기
+        유저의 게시글 리스트 가져오기
      */
     public List<Post> getMyPostList(Long userId) {
         return postRepository.findAllByUserId(userId);

@@ -41,5 +41,15 @@ public class UserRelationService {
         userRelationRepository.delete(user, targetUser);
     }
 
+    /*
+        구독 여부 확인
+     */
+    public boolean isAlreadyFollow(Long userId, Long targetUserId) {
+
+        User user = userService.getUser(userId);
+        User targetUser = userService.getUser(targetUserId);
+
+        return userRelationRepository.isAlreadyFollow(user, targetUser);
+    }
 
 }

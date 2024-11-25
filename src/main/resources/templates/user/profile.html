@@ -1,29 +1,30 @@
 <header>
-    <script>
+    <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function() {
             // localStorage에서 토큰 가져오기
             const token = localStorage.getItem('accessToken');
-            console.log('Access Token:', token);
+            const otherUserId = /*[[${otherUserId}]]*/;
 
-            // 토큰이 존재하면 서버로 요청
             if (token) {
-                fetch('http://localhost:8080/user/getProfile', {
+                // 유저 프로필 정보 가져오기
+                fetch(`http://localhost:8080/user/getProfile/${otherUserId}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 })
-                .then(response => response.json()) // 응답이 JSON일 경우
+                .then(response => response.json())
                 .then(data => {
                     console.log('Profile Data:', data);
 
-                    // profile 데이터와 posts 데이터를 받아와서 화면에 업데이트
+                    const myUserId = data.value.myUserId;   // 로그인한 userId
+                    const targetUserId = data.value.otherUserId;
                     const profileData = data.value.profile || {};
-                    const posts = data.value.postList || []; // postList 배열로 변경
+                    const posts = data.value.postList || [];
+                    const isFollowing = data.value.isFollowing;  // isFollowing 값
 
                     // 프로필 정보 업데이트
                     const userName = profileData.name || '사용자 이름';
-                    const userId = profileData.id;
                     const profileImageUrl = profileData.profileImageUrl || '/images/person.jpeg';
                     const bio = profileData.bio || '자기 소개입니다.';
                     const followingCount = profileData.followingCount || 0;
@@ -33,23 +34,22 @@
                     let postListHtml = '';
                     if (posts.length > 0) {
                         posts.forEach(post => {
-                            const postImageUrl = `/uploads/images/${post.contentImageUrl}`; // 이미지 경로 동적으로 설정
+                            const postImageUrl = `/uploads/images/${post.contentImageUrl}`;
                             postListHtml += `
                                 <div class="img-box">
-                                    <a href="/post/${post.id}">
-                                        <img src="${postImageUrl}" alt="Post Image" />
-                                    </a>
+                                    <img src="${postImageUrl}" alt="Post Image" />
                                     <div class="comment">
-                                        <a href="#">
-                                            <i class="fas fa-heart"></i><span>${post.likeCount || 0}</span>
+                                        <a href="/model/feed/postMain/${post.id}">
+                                            <i class="fas fa-heart"></i>
+                                            <span>${post.likeCount || 0}</span>
                                         </a>
                                     </div>
                                 </div>
                             `;
                         });
-                        document.getElementById('noPostsMessage').style.display = 'none'; // 게시물이 있으면 "게시물이 없습니다." 숨기기
+                        document.getElementById('noPostsMessage').style.display = 'none';
                     } else {
-                        document.getElementById('noPostsMessage').style.display = 'block'; // 게시물이 없으면 메시지 보이기
+                        document.getElementById('noPostsMessage').style.display = 'block';
                     }
 
                     // DOM 업데이트
@@ -60,6 +60,43 @@
                     document.getElementById('postCount').innerText = postCount;
                     document.getElementById('postListContainer').innerHTML = postListHtml;
 
+                    // 구독 상태에 맞춰 버튼 변경
+                    const subscribeButton = document.querySelector(".subscribeButton");
+                    const postButtons = document.querySelectorAll('.updateBtn');
+
+                    // 콘솔로 myUserId, otherUserId 확인
+                    console.log('myUserId:', myUserId);
+                    console.log('targetUserId:', targetUserId);
+
+                    // myUserId와 otherUserId가 같으면 구독하기 버튼 숨기고, 게시글 등록/사진등록, modi 버튼 보이기
+                    if (Number(myUserId) === Number(targetUserId)) {
+                        console.log("같은 유저입니다. 버튼 숨기기/보이기 처리");
+
+                        // 게시글 등록, 사진등록, modi 버튼 보이기
+                        postButtons.forEach(button => button.style.display = 'inline-block');
+
+                        // 구독하기 버튼 숨기기
+                        subscribeButton.style.display = 'none';
+
+                    } else {
+                        console.log("다른 유저입니다. 버튼 숨기기/보이기 처리");
+
+                        // 구독하기 버튼 보이기
+                        subscribeButton.style.display = 'inline-block';
+
+                        // 게시글 등록, 사진등록, modi 버튼 숨기기
+                        postButtons.forEach(button => button.style.display = 'none');
+
+                        // 구독 상태에 맞춰 버튼 텍스트 설정
+                        if (isFollowing) {
+                            subscribeButton.innerText = "구독취소";
+                            subscribeButton.classList.add("blue");
+                        } else {
+                            subscribeButton.innerText = "구독하기";
+                            subscribeButton.classList.remove("blue");
+                        }
+
+                    }
                 })
                 .catch(error => console.error('Error fetching profile:', error));
             } else {
@@ -67,13 +104,71 @@
             }
         });
 
+        function toggleSubscribe(obj) {
+            const myUserId = Number(obj.dataset.myUserId);  // String을 Number로 변환
+            const targetUserId = Number(obj.dataset.targetUserId);  // String을 Number로 변환
+            const token = localStorage.getItem('accessToken');
+
+            if (obj.innerText === "구독취소") {
+                // 구독취소 버튼을 클릭했을 경우
+                fetch('http://localhost:8080/relation/unFollow', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: myUserId,         // 로그인한 사용자 ID
+                        targetUserId: targetUserId // 팔로우할 대상 사용자 ID
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        obj.innerText = "구독하기";
+                        obj.classList.remove("blue");
+                        alert("구독이 취소되었습니다.");  // 구독 취소 성공 시 알림
+                    } else {
+                        console.error('Failed to unfollow');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during unfollow request:', error);
+                });
+            } else {
+                // 구독하기 버튼을 클릭했을 경우
+                fetch('http://localhost:8080/relation/follow', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: myUserId,        // 로그인한 사용자 ID
+                        targetUserId: targetUserId // 팔로우할 대상 사용자 ID
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        obj.innerText = "구독취소";
+                        obj.classList.add("blue");
+                        alert("구독이 성공적으로 추가되었습니다.");  // 구독 성공 시 알림
+                    } else {
+                        console.error('Failed to follow');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during follow request:', error);
+                });
+            }
+        }
+
+
     </script>
 </header>
 
 <div th:replace="~{/layout/header :: headerFragment}"></div>
 
 <section class="profile">
-    <!-- 유저 정보 -->
     <div class="profileContainer">
         <div class="profile-left">
             <div class="profile-img-wrap story-border" onclick="popup('.modal-image')">
@@ -85,19 +180,18 @@
         </div>
         <div class="profile-right">
             <div class="name-group">
-                <!-- 사용자 이름 출력 -->
                 <h2 id="userName">사용자 이름</h2>
-
-                <!-- 사진 등록 버튼 -->
-                <button class="cta" onclick="location.href='/model/feed/post'">게시글 등록</button>
-                <button class="cta" onclick="location.href='/image/upload'">사진등록</button>
-                <button class="cta" onclick="toggleSubscribe(this)">구독하기</button>
-                <button class="modi" onclick="popup('.modal-info')">
+                <!-- Subscribe button with dynamic userId -->
+                <button class="cta subscribeButton"
+                        th:attr="data-my-user-id='${myUserId}', data-target-user-id='${otherUserId}'"
+                        onclick="toggleSubscribe(this)">구독하기</button>
+                <button class="cta updateBtn" onclick="location.href='/model/feed/post'">게시글 등록</button>
+                <button class="cta updateBtn" onclick="location.href='/image/upload'">사진등록</button>
+                <button class="modi updateBtn" onclick="popup('.modal-info')">
                     <i class="fas fa-cog"></i>
                 </button>
             </div>
 
-            <!-- 구독 정보 -->
             <div class="subscribe">
                 <ul>
                     <li>
@@ -109,21 +203,27 @@
                 </ul>
             </div>
             <div class="state">
-                <!-- 자기소개 출력 -->
                 <h4 id="bio">자기 소개입니다.</h4>
             </div>
         </div>
     </div>
 </section>
 
-<!-- 게시물 섹션 -->
+<!--로그아웃, 회원정보변경 모달-->
+<div class="modal-info" onclick="modalInfo()">
+    <div class="modal">
+        <button onclick="location.href='/user/update'">회원정보 변경</button>
+        <button onclick="location.href='/logout'">로그아웃</button>
+        <button onclick="closePopup('.modal-info')">취소</button>
+    </div>
+</div>
+<!--로그아웃, 회원정보변경 모달 end-->
+
 <section id="tab-content" style="display: flex;">
     <div class="profileContainer">
         <div id="tab-1-content" class="tab-content-item show">
             <div class="tab-1-content-inner" id="postListContainer" style="margin-top:10px;">
-                <!-- 게시물이 없으면 "게시물이 없습니다." 출력 -->
                 <p id="noPostsMessage">게시물이 없습니다.</p>
-                <!-- 게시물 리스트가 들어갈 부분 -->
             </div>
         </div>
     </div>

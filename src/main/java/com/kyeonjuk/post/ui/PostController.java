@@ -7,6 +7,10 @@ import com.kyeonjuk.post.application.dto.CreatePostRequestDto;
 import com.kyeonjuk.post.application.dto.LikePostRequestDto;
 import com.kyeonjuk.post.application.dto.UpdatePostRequestDto;
 import com.kyeonjuk.post.domain.Post;
+import com.kyeonjuk.post.repository.post_queue.UserPostQueueQueryRepository;
+import com.kyeonjuk.post.ui.dto.GetContentResponseDto;
+import com.kyeonjuk.post.ui.dto.GetPostMainResponseDto;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
     private final PostService postService;
+    private final UserPostQueueQueryRepository userPostQueueQueryRepository;
 
     @PostMapping
     public Response<Long> createPost(@ModelAttribute CreatePostRequestDto dto) {
@@ -32,27 +37,36 @@ public class PostController {
 
     @PatchMapping("/{postId}")
     public Response<Long> updatePost(@PathVariable(name = "postId") Long postId,
-        @RequestBody UpdatePostRequestDto dto) {
-
-        Post post = postService.updatePost(postId, dto);
+        @RequestBody UpdatePostRequestDto dto){
+        Post post = postService.updatePost(postId,dto);
         return Response.ok(post.getId());
     }
-
     @Idempotent
     @GetMapping("/like/{postId}/{userId}")
     public Response<Void> postLike(@PathVariable(name = "postId") Long postId,
-        @PathVariable(name = "userId") Long userId) {
+        @PathVariable(name = "userId") Long userId){
 
-        postService.likePost(new LikePostRequestDto(userId, postId));
+        postService.likePost(new LikePostRequestDto(userId,postId));
         return Response.ok(null);
     }
 
     @GetMapping("/unlike/{postId}/{userId}")
     public Response<Void> postUnLike(@PathVariable(name = "postId") Long postId,
-        @PathVariable(name = "userId") Long userId) {
+        @PathVariable(name = "userId") Long userId){
 
-        postService.unlikePost(new LikePostRequestDto(userId, postId));
+        postService.unlikePost(new LikePostRequestDto(userId,postId));
         return Response.ok(null);
     }
 
+    @GetMapping("/getPost/{postId}")
+    public Response<GetPostMainResponseDto> post(@PathVariable(name = "postId") Long postId) {
+
+        Post post = postService.getPost(postId);
+        List<GetContentResponseDto> comment = userPostQueueQueryRepository.getCommentResponse(postId, post.getAuthorId(),0L);
+
+        GetPostMainResponseDto result = new GetPostMainResponseDto(post,comment);
+
+        return Response.ok(result);
+    }
 }
+

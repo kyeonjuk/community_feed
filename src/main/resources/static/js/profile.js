@@ -10,17 +10,6 @@
  (8) 구독자 정보 모달 닫기
  */
 
-// (1) 유저 프로파일 페이지 구독하기, 구독취소
-function toggleSubscribe(obj) {
-    if ($(obj).text() === "구독취소") {
-        $(obj).text("구독하기");
-        $(obj).toggleClass("blue");
-    } else {
-        $(obj).text("구독취소");
-        $(obj).toggleClass("blue");
-    }
-}
-
 // (2) 구독자 정보  모달 보기
 function subscribeInfoModalOpen() {
     $(".modal-subscribe").css("display", "flex");
@@ -30,17 +19,6 @@ function getSubscribeModalItem() {
 
 }
 
-
-// (3) 구독자 정보 모달에서 구독하기, 구독취소
-function toggleSubscribeModal(obj) {
-    if ($(obj).text() === "구독취소") {
-        $(obj).text("구독하기");
-        $(obj).toggleClass("blue");
-    } else {
-        $(obj).text("구독취소");
-        $(obj).toggleClass("blue");
-    }
-}
 
 // (4) 유저 프로파일 사진 변경 (완)
 function profileImageUpload() {
@@ -89,6 +67,8 @@ function modalClose() {
     $(".modal-subscribe").css("display", "none");
     location.reload();
 }
+
+
 
 
 

@@ -32,7 +32,7 @@ public class UserPostQueueQueryRepositoryImpl implements UserPostQueueQueryRepos
     /*
         유저의 피드 댓글 가져오기
      */
-    public List<GetContentResponseDto> getCommentResponse(Long postId, Long lastCommentId, Long userId) {
+    public List<GetContentResponseDto> getCommentResponse(Long postId, Long userId, Long lastCommentId) {
         return queryFactory
             .select(
                 Projections.fields(     // DTO에 맞춰서 데이터 출력 명시
@@ -54,7 +54,7 @@ public class UserPostQueueQueryRepositoryImpl implements UserPostQueueQueryRepos
             .leftJoin(likeEntity).on(hasLikeComment(userId))
             .where(
                 commentEntity.post.id.eq(postId),
-                hasLastDataComment(lastCommentId)  // 마지막 게시글보다 작은 값일 경우
+                hasCommentLastData(lastCommentId)  // 마지막 게시글보다 작은 값일 경우
             )
             .orderBy(commentEntity.id.desc())
             .limit(20)
@@ -114,12 +114,12 @@ public class UserPostQueueQueryRepositoryImpl implements UserPostQueueQueryRepos
             .and(likeEntity.id.userId.eq(userId));
     }
 
-    private BooleanExpression hasLastDataComment(Long lastId) {
-        if (lastId == null) {
-            return null;
+    private BooleanExpression hasCommentLastData(Long lastId) {
+        if (lastId == null || lastId <= 0) {
+            return null;  // 처음부터 모든 댓글을 가져오도록 처리
         }
 
-        return commentEntity.id.lt(lastId);    // lastId보다 작을 때
+        return commentEntity.id.lt(lastId); //lastId보다 작을 때
     }
 
     private BooleanExpression hasLikeComment(Long userId) {
