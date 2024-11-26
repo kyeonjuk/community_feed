@@ -21,13 +21,13 @@
                     const targetUserId = data.value.otherUserId;
                     const profileData = data.value.profile || {};
                     const posts = data.value.postList || [];
-                    const isFollowing = data.value.isFollowing;  // isFollowing 값
+                    const isFollowing = data.value.followingCheck;  // isFollowing 값
 
                     // 프로필 정보 업데이트
                     const userName = profileData.name || '사용자 이름';
                     const profileImageUrl = profileData.profileImageUrl || '/images/person.jpeg';
                     const bio = profileData.bio || '자기 소개입니다.';
-                    const followingCount = profileData.followingCount || 0;
+                    const followingCount = profileData.followerCount || 0;
                     const postCount = posts.length || 0;
 
                     // 게시물 리스트 업데이트
@@ -64,9 +64,9 @@
                     const subscribeButton = document.querySelector(".subscribeButton");
                     const postButtons = document.querySelectorAll('.updateBtn');
 
-                    // 콘솔로 myUserId, otherUserId 확인
-                    console.log('myUserId:', myUserId);
-                    console.log('targetUserId:', targetUserId);
+                    // 구독 버튼 동적으로 설정
+                    subscribeButton.setAttribute('data-my-user-id', myUserId);  // myUserId 동적으로 설정
+                    subscribeButton.setAttribute('data-target-user-id', targetUserId);  // otherUserId 설정
 
                     // myUserId와 otherUserId가 같으면 구독하기 버튼 숨기고, 게시글 등록/사진등록, modi 버튼 보이기
                     if (Number(myUserId) === Number(targetUserId)) {
@@ -111,7 +111,7 @@
 
             if (obj.innerText === "구독취소") {
                 // 구독취소 버튼을 클릭했을 경우
-                fetch('http://localhost:8080/relation/unFollow', {
+                fetch('http://localhost:8080/relation/unfollow', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,

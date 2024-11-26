@@ -29,7 +29,7 @@ public class FakePostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAllByUserId(Long userId) {
+    public List<Post> findAllByUserIdOrderByIdDesc(Long userId) {
         return List.of();
     }
 }

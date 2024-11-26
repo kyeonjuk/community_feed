@@ -9,5 +9,5 @@ public interface PostRepository {
 
     Post findById(Long id);
 
-    List<Post> findAllByUserId(Long userId);
+    List<Post> findAllByUserIdOrderByIdDesc(Long userId);
 }
