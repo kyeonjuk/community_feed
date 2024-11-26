@@ -9,20 +9,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+
 @RestController
-@RequestMapping("/model/feed")
 @RequiredArgsConstructor
+@RequestMapping("/model/feed")
 public class FeedModelController {
 
     private final PostService postService;
 
     @GetMapping
-    public ModelAndView feedForm() {
-        ModelAndView modelAndView = new ModelAndView();
+    public ModelAndView feedForm(){
+
+        ModelAndView modelAndView =new ModelAndView();
+
         modelAndView.setViewName("image/feed");
         return modelAndView;
     }
-
     @GetMapping("/post")
     public ModelAndView createPostForm() {
         ModelAndView modelAndView = new ModelAndView();
@@ -40,4 +42,5 @@ public class FeedModelController {
         modelAndView.setViewName("image/postMain"); // postMain.html을 렌더링
         return modelAndView;
     }
+
 }

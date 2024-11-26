@@ -1,6 +1,8 @@
 package com.kyeonjuk.post.ui;
 
 import com.kyeonjuk.common.idempotency.Idempotent;
+import com.kyeonjuk.common.principal.AuthPrincipal;
+import com.kyeonjuk.common.principal.UserPrincipal;
 import com.kyeonjuk.common.ui.Response;
 import com.kyeonjuk.post.application.PostService;
 import com.kyeonjuk.post.application.dto.CreatePostRequestDto;
@@ -59,12 +61,16 @@ public class PostController {
     }
 
     @GetMapping("/getPost/{postId}")
-    public Response<GetPostMainResponseDto> post(@PathVariable(name = "postId") Long postId) {
+    public Response<GetPostMainResponseDto> post(@AuthPrincipal UserPrincipal userPrincipal,
+                                                 @PathVariable(name = "postId") Long postId) {
+
+        // 내 userId 가져오기
+        Long userId = userPrincipal.getUserId();
 
         Post post = postService.getPost(postId);
         List<GetContentResponseDto> comment = userPostQueueQueryRepository.getCommentResponse(postId, post.getAuthorId(),0L);
 
-        GetPostMainResponseDto result = new GetPostMainResponseDto(post,comment);
+        GetPostMainResponseDto result = new GetPostMainResponseDto(post,comment, userId, post.getAuthorId());
 
         return Response.ok(result);
     }

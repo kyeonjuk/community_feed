@@ -171,6 +171,41 @@
   }
 });
 
+function toggleLike() {
+    const pathname = window.location.pathname; // URL 경로 가져오기
+    const pathParts = pathname.split('/');     // '/'를 기준으로 분리
+    const postId = pathParts[pathParts.length - 1]; // 마지막 부분이 'postId'
+    const userId = 3;    // 실제로는 로그인된 유저의 ID  // 토큰값으로 usrId 가져오게 변경 해야함 ###############################
+
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+        fetch(`http://localhost:8080/post/like/${postId}/${userId}`, {
+            method: 'GET',  // 좋아요는 POST 메소드로 변경
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Like response:', data);
+
+            // 좋아요 수를 서버에서 받아와서 UI를 갱신
+            if (data && data.value) {
+                const updatedLikeCount = data.value || 0;
+                document.getElementById('storyLikeCount').innerText = updatedLikeCount;
+            }
+
+            // 좋아요 버튼 아이콘 업데이트 (예: 좋아요 상태에 맞게 아이콘 색상 변경)
+            const likeIcon = document.getElementById('storyLikeIcon');
+            likeIcon.style.color = likeIcon.style.color === 'red' ? 'black' : 'red'; // 예시로 색상 변경
+        })
+        .catch(error => console.error('Error liking post:', error));
+    } else {
+        alert('로그인 토큰이 없습니다.');
+    }
+}
+
+
 
 </script>
 <body>
@@ -188,11 +223,12 @@
 
   <div class="sl__item__contents">
     <div class="sl__item__contents__icon" style="margin-top: 10px; margin-left: 5px;">
-      <button style="margin-top: 7px;">
-        <i class="fas fa-heart" id="storyLikeIcon" onclick="toggleLike()"></i>
+      <button style="margin-top: 7px;" onclick="toggleLike(123, 1)"> <!-- postId와 userId를 실제 데이터로 대체 -->
+        <i class="fas fa-heart" id="storyLikeIcon"></i>
       </button>
       <span class="like"><b id="storyLikeCount">0</b> likes</span>
     </div>
+
     <br>
     <div class="sl__item__contents__content">
       <p id="postContent">게시물 내용</p>

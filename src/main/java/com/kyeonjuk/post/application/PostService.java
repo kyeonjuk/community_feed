@@ -36,11 +36,12 @@ public class PostService {
     }
 
     /*
-        유저의 게시글 리스트 가져오기
+        내가 작성한 게시글 리스트 가져오기
      */
     public List<Post> getMyPostList(Long userId) {
         return postRepository.findAllByUserIdOrderByIdDesc(userId);
     }
+
 
     public Post createPost(CreatePostRequestDto requestDto) {
         // 이미지 파일 처리
@@ -65,20 +66,22 @@ public class PostService {
     }
 
     @Transactional
-    public void likePost(LikePostRequestDto requestDto) {
+    public int likePost(LikePostRequestDto requestDto) {
         User user = userService.getUser(requestDto.userId());
         Post post = getPost(requestDto.postId());
 
         if (likePostRepository.checkLike(user, post)) {
-            return;
+            return post.getLikeCount();
         }
 
         post.like(user);
         likePostRepository.like(user, post);
+
+        return post.getLikeCount();
     }
 
     @Transactional
-    public void unlikePost(LikePostRequestDto requestDto) {
+    public int unlikePost(LikePostRequestDto requestDto) {
         User user = userService.getUser(requestDto.userId());
         Post post = getPost(requestDto.postId());
 
@@ -86,11 +89,13 @@ public class PostService {
             post.unLike();
             likePostRepository.unlike(user, post);
         }
+
+        return post.getLikeCount();
     }
 
     /*
-        이미지 파일 저장
-     */
+         이미지 파일 저장
+      */
     private String saveImage(MultipartFile image) {
         // 프로젝트 루트 디렉토리 + "uploads/images" 폴더 경로 생성
         String uploadDirectory = System.getProperty("user.dir") + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator + "uploads" + File.separator + "images";
@@ -125,7 +130,6 @@ public class PostService {
             throw new RuntimeException("이미지 저장 실패: " + e.getMessage(), e);
         }
     }
-
 
 
     // 고유한 파일 이름 생성 (UUID 사용)

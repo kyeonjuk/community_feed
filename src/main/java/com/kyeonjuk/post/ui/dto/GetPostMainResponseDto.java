@@ -15,5 +15,7 @@ public class GetPostMainResponseDto {
 
     private Post post;
     private List<GetContentResponseDto> comment;
+    private Long userId;
+    private Long authUserId;
 
 }
