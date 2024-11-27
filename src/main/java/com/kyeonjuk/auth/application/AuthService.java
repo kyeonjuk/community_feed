@@ -31,11 +31,11 @@ public class AuthService {
         }
 
         // User 생성
-        UserInfo userInfo = new UserInfo(dto.name(), dto.ProfileImageUrl());
+        UserInfo userInfo = new UserInfo(dto.name(), "Default-Profile.png");
         User user = new User(null, userInfo);
 
         // UserAuth 생성
-        UserAuth userAuth = new UserAuth(dto.email(), dto.password(), dto.role());
+        UserAuth userAuth = new UserAuth(dto.email(), dto.password(), "USER");
 
         // DB 저장
         userAuth = userAuthRepository.registerUser(userAuth, user);

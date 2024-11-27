@@ -24,10 +24,22 @@ spring:
         format_sql: true    # sql 문을 라인에 맞게 출력
     open-in-view: false   # DB와 application 의 연결 스레드 관리 (기본값 : true)
 
+  # Gmail 설정
+  mail:
+    host: smtp.gmail.com
+    post: 587
+    username: mailtestback@gmail.com
+    password: ygtl uaxc nnsz neue   # 오래된 앱은 자동제거 (계정의 앱 비밀번호 추가한 뒤 수정)
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
 # 비밀키
 secret-key : daksdhfasdjfksajdhjhasgdjfbsdjcbslcjsdhgfsldjhskjdfhksljdcbsnbcskjahdflkjshadsa
 
 # fcm - Firebase 인증서 파일(json) 읽어오기
 fcm :
   certification : community-service-adminsdk.json   # 파일명
+
+
 

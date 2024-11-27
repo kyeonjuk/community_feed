@@ -13,38 +13,141 @@
 <body>
 <div class="container">
     <main class="loginMain">
-        <!--회원가입섹션-->
         <section class="login">
             <article class="login__form__container">
-
-                <!--회원가입 폼-->
                 <div class="login__form">
-                    <!--로고-->
                     <h1><img src="/images/logo.jpg" alt=""></h1>
-                    <!--로고end-->
 
-                    <!--회원가입 인풋-->
-                    <form class="login__input" th:action="@{/signup/register}" method="post">
-                        <input type="email" name="email" placeholder="이메일" required="required" />
-                        <input type="password" name="password" placeholder="패스워드" required="required" />
-                        <input type="text" name="name" placeholder="이름" required="required" />
-                        <button>가입</button>
+                    <!-- 기존 form 태그 유지 -->
+                    <form class="login__input" id="signupForm">
+                        <input type="email" name="email" id="email" placeholder="이메일" required />
+                        <button type="button" onclick="sendVerificationCode()">인증 이메일 보내기</button>
+
+                        <input type="text" name="verificationCode" id="verificationCode" placeholder="인증 코드" required disabled />
+                        <button type="button" id="verifyCodeBtn" onclick="verifyCode()" disabled>인증 코드 확인</button>
+
+                        <input type="password" name="password" placeholder="패스워드" required />
+                        <input type="text" name="name" id="name" placeholder="이름" required />
+                        <button type="submit" id="submitBtn" disabled>가입</button>
                     </form>
-                    <!--회원가입 인풋end-->
                 </div>
-                <!--회원가입 폼end-->
 
-                <!--계정이 있으신가요?-->
                 <div class="login__register">
                     <span>계정이 있으신가요?</span>
                     <a href="/model/auth/login">로그인</a>
                 </div>
-                <!--계정이 있으신가요?end-->
-
             </article>
         </section>
     </main>
 </div>
-</body>
 
+<script>
+    let isVerificationCodeVerified = false; // 인증 코드 확인 여부를 추적하는 변수
+
+    // 인증 이메일 전송
+    function sendVerificationCode() {
+        const email = document.getElementById('email').value;
+        if (email) {
+            fetch('/signup/send-verification-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('인증 이메일이 전송되었습니다.');
+                    document.getElementById('verificationCode').disabled = false;
+                    document.getElementById('verifyCodeBtn').disabled = false;
+                } else {
+                    alert('이메일 전송에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error sending verification code:', error);
+            });
+        } else {
+            alert('이메일을 입력해주세요.');
+        }
+    }
+
+    // 인증 코드 확인
+    function verifyCode() {
+        const email = document.getElementById('email').value;
+        const verificationCode = document.getElementById('verificationCode').value;
+
+        if (!verificationCode) {
+            alert('인증 코드를 입력해주세요.');
+            return;
+        }
+
+        fetch('/signup/verify-token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email, token: verificationCode })
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('인증 코드가 확인되었습니다.');
+                isVerificationCodeVerified = true;
+                document.getElementById('verificationCode').disabled = true;
+                document.getElementById('verifyCodeBtn').disabled = true;
+                document.getElementById('submitBtn').disabled = false;
+            } else {
+                alert('인증 코드가 잘못되었습니다.');
+                isVerificationCodeVerified = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error verifying code:', error);
+        });
+    }
+
+    // 기존 form의 submit 이벤트를 가로채고 fetch로 처리
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 기본 폼 제출 방지
+
+        const email = document.getElementById('email').value;
+        const password = document.querySelector('input[name="password"]').value;
+        const name = document.getElementById('name').value;
+        console.log(name);
+
+        if (!isVerificationCodeVerified) {
+            alert('인증 코드가 확인되지 않았습니다.');
+            return;
+        }
+
+        const data = {
+            email: email,
+            password: password,
+            name: name
+        };
+
+        fetch('/signup/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('회원가입이 완료되었습니다.');
+                window.location.href = '/model/auth/login';
+            } else {
+                return response.json().then(err => {
+                    throw new Error(err.message || '회원가입에 실패했습니다.');
+                });
+            }
+        })
+        .catch(error => {
+            alert(error.message || '회원가입에 실패했습니다.');
+        });
+    });
+</script>
+
+</body>
 </html>

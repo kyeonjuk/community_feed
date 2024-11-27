@@ -4,9 +4,9 @@ import com.kyeonjuk.auth.application.AuthService;
 import com.kyeonjuk.auth.application.EmailService;
 import com.kyeonjuk.auth.application.dto.CreateUserAuthRequestDto;
 import com.kyeonjuk.auth.application.dto.SendEmailRequestDto;
+import com.kyeonjuk.auth.ui.dto.VerifyEmailResponseDto;
 import com.kyeonjuk.common.ui.Response;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +26,9 @@ public class SignUpController {
         return Response.ok(null);
     }
 
-    @GetMapping("/verify-token")
-    public Response<Void> verifyEmail(String email, String token) {
-        emailService.verifyEmail(email, token);
+    @PostMapping("/verify-token")
+    public Response<Void> verifyEmail(@RequestBody VerifyEmailResponseDto dto) {
+        emailService.verifyEmail(dto.getEmail(), dto.getToken());
         return Response.ok(null);
     }
 

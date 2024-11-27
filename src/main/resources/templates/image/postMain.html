@@ -101,105 +101,292 @@
 </head>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-  const pathname = window.location.pathname; // URL 경로 가져오기
-  const pathParts = pathname.split('/');     // '/'를 기준으로 분리
-  const postId = pathParts[pathParts.length - 1]; // 마지막 부분이 'postId'
+   const pathname = window.location.pathname; // URL 경로 가져오기
+   const pathParts = pathname.split('/');     // '/'를 기준으로 분리
+   const postId = pathParts[pathParts.length - 1]; // 마지막 부분이 'postId'
 
-  if (postId) {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      fetch(`http://localhost:8080/post/getPost/${postId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-        .then(response => response.json())
-        .then(postData => {
-          console.log('Post Data:', postData); // 응답 데이터 확인
+   if (postId) {
+     const token = localStorage.getItem('accessToken');
+     if (token) {
+       console.log("Sending request to get post details for postId:", postId);
 
-          if (postData && postData.value) {
-            const { post, comment } = postData.value;
+       fetch(`http://localhost:8080/post/getPost/${postId}`, {
+         method: 'GET',
+         headers: {
+           'Authorization': `Bearer ${token}`
+         }
+       })
+       .then(response => response.json())
+       .then(data => {
+         console.log('Post Data:', data);
 
-            // 게시물 데이터 처리
-            const postContent = post.content || '게시물 내용 없음';
-            const postImageUrl = post.contentImageUrl
-              ? `/uploads/images/${post.contentImageUrl}`
-              : '/images/default-post-image.jpg';
+         const post = data.value.post;
+         const comments = data.value.comment;
+         const isLiked = data.value.liked;  // 좋아요 상태
+         const userId = data.value.userId; // 응답에서 userId 가져오기
+         const authorId = post.author?.id; // 게시물 작성자 ID 가져오기
 
-            // 작성자 정보
-            const userName = post.author?.info?.name || '사용자 이름';
-            const userProfileImage = post.author?.info?.profileImage || '/images/person.jpeg';
+         // 게시물 내용 렌더링
+         const postContent = post.content || '게시물 내용 없음';
+         const postImageUrl = post.contentImageUrl ? `/uploads/images/${post.contentImageUrl}` : '/images/default-post-image.jpg';
+         const userName = post.author?.info?.name || '사용자 이름';
+         const userProfileImage = post.author?.info?.profileImage || '/images/person.jpeg';
+         const likeCount = post.likeCount || 0;
 
-            // 좋아요 수
-            const likeCount = post.likeCount || 0;
+         // HTML 업데이트
+         document.getElementById('postUserName').innerText = userName;
+         document.getElementById('postUserProfileImage').src = userProfileImage;
+         document.getElementById('postImage').src = postImageUrl;
+         document.getElementById('postContent').innerText = postContent;
+         document.getElementById('storyLikeCount').innerText = likeCount;
 
-            // HTML 업데이트
-            document.getElementById('postUserName').innerText = userName;
-            document.getElementById('postUserProfileImage').src = userProfileImage;
-            document.getElementById('postImage').src = postImageUrl;
-            document.getElementById('postContent').innerText = postContent;
-            document.getElementById('storyLikeCount').innerText = likeCount;
+         // 좋아요 상태 업데이트
+         const likeIcon = document.getElementById('storyLikeIcon');
+         if (isLiked) {
+           likeIcon.style.color = 'red'; // 좋아요 한 상태
+         } else {
+           likeIcon.style.color = 'black'; // 좋아요 하지 않은 상태
+         }
 
-            // 댓글 리스트 렌더링
-            const commentList = document.getElementById('storyCommentList');
-            commentList.innerHTML = ''; // 기존 댓글 제거
+         // 좋아요/싫어요 버튼 비활성화 (작성자와 동일한 사용자일 경우)
+         if (userId === authorId) {
+           likeIcon.style.pointerEvents = 'none'; // 클릭 방지
+           likeIcon.style.color = 'gray'; // 색상 변경 (비활성화 표시)
+         }
 
-            comment.forEach(commentItem => {
-              const commentElement = document.createElement('div');
-              commentElement.classList.add('sl__item__contents__comment');
-              commentElement.innerHTML = `
-                <div style="display: flex; align-items: center; margin-bottom: 5px;">
-                  <img class="profile-image" src="${commentItem.userProfileImageUrl || '/images/person.jpeg'}" onerror="this.src='/images/person.jpeg'" style="width: 30px; height: 30px; margin-right: 10px;" />
-                  <b>${commentItem.userName}</b>
-                </div>
-                <p>${commentItem.content}</p>
-                <small style="color: #888;">${new Date(commentItem.createdAt).toLocaleString()}</small>
-              `;
-              commentList.appendChild(commentElement);
-            });
-          } else {
-            alert('게시물을 찾을 수 없습니다.');
-          }
-        })
-        .catch(error => console.error('데이터 가져오기 오류:', error));
-    } else {
-      alert('로그인 토큰이 없습니다.');
-    }
+         // 댓글 렌더링
+         const commentList = document.getElementById('storyCommentList');
+         commentList.innerHTML = ''; // 기존 댓글 제거
+
+        comments.forEach(commentItem => {
+  // commentItem이 null이 아니고, likeCount가 존재하는지 확인
+  if (commentItem && commentItem.likeCount !== undefined) {
+    const commentElement = document.createElement('div');
+    commentElement.classList.add('sl__item__contents__comment');
+    commentElement.innerHTML = `
+      <div style="display: flex; align-items: center; margin-bottom: 5px;">
+        <img class="profile-image"
+             src="${commentItem.userProfileImageUrl || '/images/person.jpeg'}"
+             onerror="this.src='/images/person.jpeg'"
+             style="width: 30px; height: 30px; margin-right: 10px;" />
+        <b>${commentItem.userName}</b>
+        <button class="like-button"
+                onclick="toggleCommentLike(${commentItem.id}, this)"
+                style="background: none; border: none; cursor: pointer; margin-left: 10px;">
+          <i class="fas fa-heart" style="color: ${commentItem.likedByMe ? 'red' : 'black'};"></i>
+        </button>
+        <span id="commentLikeCount-${commentItem.id}"
+              style="margin-left: 5px; color: #555;">${commentItem.likeCount !== undefined ? commentItem.likeCount : 0}</span>
+      </div>
+      <p>${commentItem.content}</p>
+      <small style="color: #888;">${new Date(commentItem.createdAt).toLocaleString()}</small>
+    `;
+    commentList.appendChild(commentElement);
   } else {
-    alert('잘못된 게시물 ID입니다.');
+    console.error('Invalid comment data:', commentItem);  // 잘못된 댓글 데이터 출력
   }
 });
 
-function toggleLike() {
-    const pathname = window.location.pathname; // URL 경로 가져오기
-    const pathParts = pathname.split('/');     // '/'를 기준으로 분리
-    const postId = pathParts[pathParts.length - 1]; // 마지막 부분이 'postId'
-    const userId = 3;    // 실제로는 로그인된 유저의 ID  // 토큰값으로 usrId 가져오게 변경 해야함 ###############################
+       })
+       .catch(error => {
+         console.error('데이터 가져오기 오류:', error);
+         alert('데이터 가져오기 오류');
+       });
+     } else {
+       alert('로그인 토큰이 없습니다.');
+     }
+   } else {
+     alert('잘못된 게시물 ID입니다.');
+   }
+ });
 
+ function toggleLike() {
+   const pathname = window.location.pathname; // URL 경로 가져오기
+   const pathParts = pathname.split('/');     // '/'를 기준으로 분리
+   const postId = pathParts[pathParts.length - 1]; // 마지막 부분이 'postId'
+
+   const token = localStorage.getItem('accessToken');
+   if (token) {
+     fetch(`http://localhost:8080/post/getPost/${postId}`, {
+       method: 'GET',
+       headers: {
+         'Authorization': `Bearer ${token}`
+       }
+     })
+     .then(response => response.json())
+     .then(data => {
+       const userId = data.value.userId; // 응답에서 userId 가져오기
+       const authorId = data.value.post.author?.id; // 게시물 작성자 ID 가져오기
+       const likeIcon = document.getElementById('storyLikeIcon');
+       const likeCountElement = document.getElementById('storyLikeCount');
+
+       // 작성자와 동일한 사용자일 경우 좋아요/싫어요 금지
+       if (userId === authorId) {
+         alert('게시물 작성자는 좋아요를 할 수 없습니다.');
+         return;
+       }
+
+       // 현재 좋아요 상태를 체크 (red이면 이미 좋아요)
+       if (likeIcon.style.color === 'red') {
+         // 좋아요 상태일 때는 unlike API 호출
+         fetch(`http://localhost:8080/post/unlike/${postId}`, {
+           method: 'GET',
+           headers: {
+             'Authorization': `Bearer ${token}`
+           }
+         })
+         .then(response => response.json())
+         .then(data => {
+           console.log('Unlike response:', data);
+
+           // 좋아요 수를 서버에서 받아와서 UI를 갱신
+           const updatedLikeCount = data.value || 0;
+           likeCountElement.innerText = updatedLikeCount;  // 갱신된 좋아요 수 반영
+
+           // 좋아요 아이콘 색상 변경 (검정색으로 변경)
+           likeIcon.style.color = 'black';
+         })
+         .catch(error => console.error('Error unliking post:', error));
+       } else {
+         // 좋아요 상태가 아닐 경우에는 like API 호출
+         fetch(`http://localhost:8080/post/like/${postId}`, {
+           method: 'GET',
+           headers: {
+             'Authorization': `Bearer ${token}`
+           }
+         })
+         .then(response => response.json())
+         .then(data => {
+           console.log('Like response:', data);
+
+           // 좋아요 수를 서버에서 받아와서 UI를 갱신
+           const updatedLikeCount = data.value || 0;
+           likeCountElement.innerText = updatedLikeCount;  // 갱신된 좋아요 수 반영
+
+           // 좋아요 아이콘 색상 변경 (빨간색으로 변경)
+           likeIcon.style.color = 'red';
+         })
+         .catch(error => console.error('Error liking post:', error));
+       }
+     })
+     .catch(error => console.error('Error fetching post data:', error));
+   } else {
+     alert('로그인 토큰이 없습니다.');
+   }
+ }
+
+
+
+function addComment(commentListId, commentInputId) {
+    const commentContent = document.getElementById(commentInputId).value.trim();  // 댓글 내용 가져오기
+    if (!commentContent) {
+        alert('댓글 내용을 입력하세요.');
+        return;  // 댓글 내용이 비어있으면 처리하지 않음
+    }
+
+    const postId = window.location.pathname.split('/').pop();  // URL에서 postId 추출
+    const token = localStorage.getItem('accessToken');  // 저장된 토큰 가져오기
+    const userId = 1;  // 사용자 ID는 실제로 로그인한 사용자 ID로 대체해야 합니다.
+
+    const commentData = {
+        postId: postId,
+        content: commentContent,
+        userId: userId
+    };
+
+    if (token) {
+        fetch('http://localhost:8080/comment', {  // 실제 API URL로 변경
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(commentData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.code === 0) {  // 서버에서 응답으로 받은 code가 0이면 성공
+              alert('댓글이 성공적으로 등록되었습니다.');
+              document.getElementById(commentInputId).value = '';  // 입력창 초기화
+
+              // 서버에서 반환된 댓글 정보를 사용하여 화면에 추가
+              const newComment = data.value; // 댓글 정보 (content, userName, etc.)
+              addCommentToList(newComment);
+
+              // 입력 후 페이지 새로 고침
+              window.location.reload();  // 페이지 새로 고침
+          }
+           else {
+              console.error('댓글 작성 실패:', data.message); // 실패 메시지 출력
+              alert('댓글 작성에 실패했습니다.');
+          }
+        })
+        .catch(error => {
+            console.error('댓글 작성 오류:', error);
+            alert('댓글 작성에 실패했습니다.');
+        });
+    } else {
+        alert('로그인 토큰이 없습니다.');
+    }
+}
+
+function addCommentToList(comment) {
+    const commentList = document.getElementById('storyCommentList');
+    const commentElement = document.createElement('div');
+    commentElement.classList.add('sl__item__contents__comment');
+
+    // 댓글 요소 구조에 하트 아이콘과 좋아요 수 추가
+    commentElement.innerHTML = `
+        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+            <img class="profile-image" src="${comment.userProfileImageUrl || '/images/person.jpeg'}"
+              onerror="this.src='/images/person.jpeg'"
+              style="width: 30px; height: 30px; margin-right: 10px;" />
+            <b>${comment.userName}</b>
+            <button class="like-button"
+              onclick="toggleCommentLike(${comment.id}, this)"
+              style="background: none; border: none; cursor: pointer; margin-left: 10px;">
+                <i class="fas fa-heart" style="color: ${comment.isLiked ? 'red' : 'black'};"></i>
+            </button>
+            <span id="commentLikeCount-${comment.id}"
+              style="margin-left: 5px; color: #555;">${comment.likeCount || 0}</span>
+        </div>
+        <p>${comment.content}</p>
+        <small style="color: #888;">${new Date(comment.createdAt).toLocaleString()}</small>
+    `;
+
+    commentList.appendChild(commentElement);
+}
+
+function toggleCommentLike(commentId, button) {
     const token = localStorage.getItem('accessToken');
     if (token) {
-        fetch(`http://localhost:8080/post/like/${postId}/${userId}`, {
-            method: 'GET',  // 좋아요는 POST 메소드로 변경
+        const isLiked = button.querySelector('i').style.color === 'red'; // 현재 좋아요 상태 체크
+        const apiUrl = isLiked
+            ? `http://localhost:8080/comment/unlike/${commentId}` // 댓글 좋아요 취소
+            : `http://localhost:8080/comment/like/${commentId}`;  // 댓글 좋아요
+
+        fetch(apiUrl, {
+            method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Like response:', data);
+            const updatedLikeCount = data.value || 0; // 갱신된 좋아요 수 (API에서 반환한 값)
+            const likeCountElement = document.getElementById(`commentLikeCount-${commentId}`);
 
-            // 좋아요 수를 서버에서 받아와서 UI를 갱신
-            if (data && data.value) {
-                const updatedLikeCount = data.value || 0;
-                document.getElementById('storyLikeCount').innerText = updatedLikeCount;
+            // 좋아요 수 업데이트
+            likeCountElement.innerText = updatedLikeCount;
+
+            // 아이콘 색상 업데이트
+            if (isLiked) {
+                button.querySelector('i').style.color = 'black'; // 좋아요 취소 시 색상 변경 (검정색)
+            } else {
+                button.querySelector('i').style.color = 'red'; // 좋아요 시 색상 변경 (빨간색)
             }
-
-            // 좋아요 버튼 아이콘 업데이트 (예: 좋아요 상태에 맞게 아이콘 색상 변경)
-            const likeIcon = document.getElementById('storyLikeIcon');
-            likeIcon.style.color = likeIcon.style.color === 'red' ? 'black' : 'red'; // 예시로 색상 변경
         })
-        .catch(error => console.error('Error liking post:', error));
+        .catch(error => console.error('댓글 좋아요 오류:', error));
     } else {
         alert('로그인 토큰이 없습니다.');
     }

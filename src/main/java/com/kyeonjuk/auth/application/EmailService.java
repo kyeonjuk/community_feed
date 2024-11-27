@@ -7,6 +7,7 @@ import com.kyeonjuk.auth.domain.Email;
 import com.kyeonjuk.auth.domain.RandomTokenGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class EmailService {
     private final EmailSendRepository emailSendRepository;
     private final EmailVerificationRepository emailVerificationRepository;
 
+    @Transactional
     public void sendEmail(SendEmailRequestDto dto) {
         Email email = Email.createEmail(dto.email());
         String token = RandomTokenGenerator.generateToken();

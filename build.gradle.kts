@@ -47,6 +47,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.rest-assured:rest-assured:5.5.0") // REST Assured 의존성
     runtimeOnly("com.h2database:h2") // H2 데이터베이스 의존성
+
+    // javaEmailSender 라이브러리 (이메일 인증)
+    implementation("org.springframework.boot:spring-boot-starter-mail")
+
 }
 
 tasks.test {

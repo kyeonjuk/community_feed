@@ -131,7 +131,6 @@ public class PostService {
         }
     }
 
-
     // 고유한 파일 이름 생성 (UUID 사용)
     private String generateUniqueFileName(String originalFileName) {
         String extension = originalFileName.substring(originalFileName.lastIndexOf("."));

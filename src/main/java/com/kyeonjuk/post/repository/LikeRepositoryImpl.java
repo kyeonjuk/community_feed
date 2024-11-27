@@ -19,73 +19,81 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Repository
 @RequiredArgsConstructor
 public class LikeRepositoryImpl implements LikeCommentRepository, LikePostRepository {
 
     @PersistenceContext
-    private final EntityManager entityManager;  // JPA 영속성 컨텍스트
+    private final EntityManager entityManager; //JPA 영속성 컨텍스트
 
     private final JpaLikeRepository jpaLikeRepository;
     private final JpaPostRepository jpaPostRepository;
     private final JpaCommentRepository jpaCommentRepository;
     private final MessageRepository messageRepository;
-
     @Override
     public boolean checkLike(User user, Comment comment) {
-        LikeEntity likeEntity = new LikeEntity(comment, user);
+        LikeEntity likeEntity = new LikeEntity(comment,user);
+
         return jpaLikeRepository.existsById(likeEntity.getId());
     }
 
     @Override
+    @Transactional
     public void like(User user, Comment comment) {
-        LikeEntity likeEntity = new LikeEntity(comment, user);
+        LikeEntity likeEntity = new LikeEntity(comment,user);
+
         entityManager.persist(likeEntity);
 
-        // commentEntity likeCount 증가
+        //commentEntity LikeCount 증가
         jpaCommentRepository.updateLikeCommentEntity(comment.getId(), 1);
 
-        // 좋아요 알림 메시지 보내기
-        messageRepository.sendLikeMessage(user, comment.getAuthor());
+        //좋아요 알림 메시지 보내기
+        messageRepository.sendLikeMessage(user,comment.getAuthor());
+
     }
 
     @Override
+    @Transactional
     public void unlike(User user, Comment comment) {
-        LikeEntity likeEntity = new LikeEntity(comment, user);
+        LikeEntity likeEntity = new LikeEntity(comment,user);
+
         jpaLikeRepository.deleteById(likeEntity.getId());
 
-        // commentEntity likeCount 감소
+        //commentEntity LikeCount 감소
         jpaCommentRepository.updateLikeCommentEntity(comment.getId(), -1);
     }
 
     @Override
     public boolean checkLike(User user, Post post) {
-        LikeEntity likeEntity = new LikeEntity(post, user);
+        LikeEntity likeEntity = new LikeEntity(post,user);
+
         return jpaLikeRepository.existsById(likeEntity.getId());
     }
 
     @Override
     @Transactional
     public void like(User user, Post post) {
-        LikeEntity likeEntity = new LikeEntity(post, user);
-
-        // select하지 않고 EntityManager에 저장
-        // = jpaLikeRepository.save(likeEntity); => select로 조회 후 저장할 값 merge
+        LikeEntity likeEntity = new LikeEntity(post,user);
+        //select 하지 않고 EntityManager 에 저장
+        // = jpaLikeRepository.save(likeEntity); => select 로 조회 후 저장할 값 merge
         entityManager.persist(likeEntity);
 
-        // postEntity likeCount 증가
+        //postEntity LikeCount 증가
         jpaPostRepository.updateLikePostEntity(post.getId(), 1);
 
-        // 좋아요 알림 메시지 보내기
-        messageRepository.sendLikeMessage(user, post.getAuthor());
+        //좋아요 알림 메시지 보내기
+        messageRepository.sendLikeMessage(user,post.getAuthor());
     }
 
     @Override
     @Transactional
     public void unlike(User user, Post post) {
-        LikeEntity likeEntity = new LikeEntity(post, user);
+        LikeEntity likeEntity = new LikeEntity(post,user);
+
         jpaLikeRepository.deleteById(likeEntity.getId());
-        // postEntity likeCount 감소
+
+        //postEntity LikeCount 감소
         jpaPostRepository.updateLikePostEntity(post.getId(), -1);
     }
 }

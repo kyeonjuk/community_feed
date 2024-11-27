@@ -17,5 +17,6 @@ public class GetPostMainResponseDto {
     private List<GetContentResponseDto> comment;
     private Long userId;
     private Long authUserId;
+    private boolean isLiked; // 좋아요 여부 추가
 
 }

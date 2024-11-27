@@ -52,26 +52,27 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    @Transactional
-    public void likeComment(LikeCommentRequestDto requestDto) {
+    public int likeComment(LikeCommentRequestDto requestDto){
         Comment comment = getComment(requestDto.commentId());
         User user = userService.getUser(requestDto.userId());
 
-        if (likeCommentRepository.checkLike(user, comment)) {
-            return;
+        if (likeCommentRepository.checkLike(user,comment)){
+            return comment.getLikeCount();
         }
         comment.like(user);
-        likeCommentRepository.like(user, comment);
+        likeCommentRepository.like(user,comment);
+        return comment.getLikeCount();
     }
 
-    @Transactional
-    public void unlikeComment(LikeCommentRequestDto requestDto) {
+    public int unlikeComment(LikeCommentRequestDto requestDto){
         Comment comment = getComment(requestDto.commentId());
         User user = userService.getUser(requestDto.userId());
 
-        if (likeCommentRepository.checkLike(user, comment)) {
+        if (likeCommentRepository.checkLike(user,comment)){
             comment.unLike();
-            likeCommentRepository.unlike(user, comment);
+            likeCommentRepository.unlike(user,comment);
+            return comment.getLikeCount();
         }
+        return comment.getLikeCount();
     }
 }

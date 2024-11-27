@@ -8,10 +8,14 @@ import com.kyeonjuk.post.application.PostService;
 import com.kyeonjuk.post.application.dto.CreatePostRequestDto;
 import com.kyeonjuk.post.application.dto.LikePostRequestDto;
 import com.kyeonjuk.post.application.dto.UpdatePostRequestDto;
+import com.kyeonjuk.post.application.interfaces.LikeCommentRepository;
+import com.kyeonjuk.post.application.interfaces.LikePostRepository;
 import com.kyeonjuk.post.domain.Post;
 import com.kyeonjuk.post.repository.post_queue.UserPostQueueQueryRepository;
 import com.kyeonjuk.post.ui.dto.GetContentResponseDto;
 import com.kyeonjuk.post.ui.dto.GetPostMainResponseDto;
+import com.kyeonjuk.user.application.UserService;
+import com.kyeonjuk.user.domain.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,8 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PostController {
 
+    private final UserService userService;
     private final PostService postService;
     private final UserPostQueueQueryRepository userPostQueueQueryRepository;
+    private final LikePostRepository likePostRepository;
+    private final LikeCommentRepository likeCommentRepository;
 
     @PostMapping
     public Response<Long> createPost(@ModelAttribute CreatePostRequestDto dto) {
@@ -44,35 +51,42 @@ public class PostController {
         return Response.ok(post.getId());
     }
     @Idempotent
-    @GetMapping("/like/{postId}/{userId}")
-    public Response<Void> postLike(@PathVariable(name = "postId") Long postId,
-        @PathVariable(name = "userId") Long userId){
+    @GetMapping("/like/{postId}")
+    public Response<Integer> postLike(@PathVariable(name = "postId") Long postId,
+        @AuthPrincipal UserPrincipal userPrincipal) {
+        Long userId = userPrincipal.getUserId(); // 로그인한 사용자 ID
+        int likeCount = postService.likePost(new LikePostRequestDto(userId, postId));
 
-        postService.likePost(new LikePostRequestDto(userId,postId));
-        return Response.ok(null);
+        return Response.ok(likeCount);
     }
 
-    @GetMapping("/unlike/{postId}/{userId}")
-    public Response<Void> postUnLike(@PathVariable(name = "postId") Long postId,
-        @PathVariable(name = "userId") Long userId){
 
-        postService.unlikePost(new LikePostRequestDto(userId,postId));
-        return Response.ok(null);
+
+    @GetMapping("/unlike/{postId}")
+    public Response<Integer> postUnLike(@PathVariable(name = "postId") Long postId,
+        @AuthPrincipal UserPrincipal userPrincipal){
+        Long userId = userPrincipal.getUserId(); // 로그인한 사용자 ID
+        int likeCount = postService.unlikePost(new LikePostRequestDto(userId,postId));
+        return Response.ok(likeCount);
     }
 
     @GetMapping("/getPost/{postId}")
     public Response<GetPostMainResponseDto> post(@AuthPrincipal UserPrincipal userPrincipal,
-                                                 @PathVariable(name = "postId") Long postId) {
+        @PathVariable(name = "postId") Long postId) {
 
-        // 내 userId 가져오기
-        Long userId = userPrincipal.getUserId();
+        Long userId = userPrincipal.getUserId(); // 로그인한 사용자 ID
+        Post post = postService.getPost(postId); // 게시물 조회
+        List<GetContentResponseDto> comment = userPostQueueQueryRepository.getCommentResponse(postId, post.getAuthorId(), 0L); // 댓글 조회
 
-        Post post = postService.getPost(postId);
-        List<GetContentResponseDto> comment = userPostQueueQueryRepository.getCommentResponse(postId, post.getAuthorId(),0L);
+        User user = userService.getUser(userId);
 
-        GetPostMainResponseDto result = new GetPostMainResponseDto(post,comment, userId, post.getAuthorId());
+        // 현재 사용자가 좋아요를 눌렀는지 확인
+        boolean isLiked = likePostRepository.checkLike(user, post); // 좋아요 상태 체크
 
-        return Response.ok(result);
+        // GetPostMainResponseDto 객체 생성, isLiked 값 추가
+        GetPostMainResponseDto result = new GetPostMainResponseDto(post, comment, userId, post.getAuthorId(), isLiked);
+
+        return Response.ok(result); // 응답 반환
     }
 }
 
