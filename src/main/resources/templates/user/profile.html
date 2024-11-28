@@ -36,7 +36,7 @@
                 const isFollowing = data.value.followingCheck;
 
                 const userName = profileData.name || '사용자 이름';
-                const profileImageUrl = profileData.profileImageUrl || '/images/person.jpeg';
+                const profileImageUrl = profileData.profileImageUrl || 'Default-Profile.png';
                 const bio = profileData.bio || '자기 소개입니다.';
                 const followingCount = profileData.followerCount || 0;
                 const postCount = posts.length || 0;
@@ -172,7 +172,7 @@
                         th:attr="data-my-user-id='${myUserId}', data-target-user-id='${otherUserId}'"
                         onclick="toggleSubscribe(this)">구독하기</button>
                 <button class="cta updateBtn" onclick="location.href='/model/feed/post'">게시글 등록</button>
-                <button class="cta updateBtn" onclick="location.href='/image/upload'">사진등록</button>
+                <button class="cta updateBtn" onclick="location.href='/image/upload'">프로필 사진등록</button>
                 <button class="modi updateBtn" onclick="popup('.modal-info')">
                     <i class="fas fa-cog"></i>
                 </button>
