@@ -8,5 +8,5 @@ public interface UserPostQueueQueryRepository {
 
     List<GetPostContentResponseDto> getContentResponse(Long userId, Long lastPostId);
 
-    List<GetContentResponseDto> getCommentResponse(Long postId, Long lastCommentId, Long userId);
+    List<GetContentResponseDto> getCommentResponse(Long postId, Long userId, Long lastCommentId);
 }

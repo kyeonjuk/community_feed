@@ -5,10 +5,9 @@ import com.kyeonjuk.auth.application.dto.LoginRequestDto;
 import com.kyeonjuk.auth.application.dto.UserAccessTokenResponseDto;
 import com.kyeonjuk.auth.domain.TokenProvider;
 import com.kyeonjuk.common.domain.exception.ErrorCode;
+import com.kyeonjuk.common.ui.BaseException;
 import com.kyeonjuk.common.ui.Response;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,13 +24,13 @@ public class LoginController {
     private final TokenProvider tokenProvider;
 
     @PostMapping
-    public Response<UserAccessTokenResponseDto> login(@RequestBody LoginRequestDto dto, Model model) {
-        System.out.println(dto.fcmToken());
+    public Response<UserAccessTokenResponseDto> login(@RequestBody LoginRequestDto dto) {
+
         return Response.ok(authService.login(dto));
     }
 
     @GetMapping("/getUserId")
-    public Response<Long> getUserId(@RequestHeader("Authorization") String authorizationHeader, Model model) {
+    public Response<Long> getUserId(@RequestHeader("Authorization") String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);  // "Bearer " 제거
 
@@ -43,7 +42,7 @@ public class LoginController {
             }
         }
 
-        return Response.error(ErrorCode.INTERNAL_ERROR);
+        return Response.error(new BaseException(ErrorCode.INVALID_TOKEN));
     }
 
 }

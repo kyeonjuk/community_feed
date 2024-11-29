@@ -18,7 +18,6 @@
                 <div class="login__form">
                     <h1><img src="/images/logo.jpg" alt=""></h1>
 
-                    <!-- 기존 form 태그 유지 -->
                     <form class="login__input" id="signupForm">
                         <input type="email" name="email" id="email" placeholder="이메일" required />
                         <button type="button" onclick="sendVerificationCode()">인증 이메일 보내기</button>
@@ -41,39 +40,42 @@
     </main>
 </div>
 
+<!-- JavaScript 코드를 HTML 바디 끝에 삽입 -->
 <script>
     let isVerificationCodeVerified = false; // 인증 코드 확인 여부를 추적하는 변수
 
-    // 인증 이메일 전송
-    function sendVerificationCode() {
+    // 인증 이메일 전송 (async 추가)
+    async function sendVerificationCode() {
         const email = document.getElementById('email').value;
         if (email) {
-            fetch('/signup/send-verification-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email: email })
-            })
-            .then(response => {
+            try {
+                const response = await fetch('/signup/send-verification-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+
                 if (response.ok) {
                     alert('인증 이메일이 전송되었습니다.');
                     document.getElementById('verificationCode').disabled = false;
                     document.getElementById('verifyCodeBtn').disabled = false;
                 } else {
-                    alert('이메일 전송에 실패했습니다.');
+                    const errorResponse = await response.json();
+                    alert(errorResponse.message || '메일 전송에 실패했습니다.');
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error sending verification code:', error);
-            });
+                alert('메일 전송 중 오류가 발생했습니다.');
+            }
         } else {
             alert('이메일을 입력해주세요.');
         }
     }
 
     // 인증 코드 확인
-    function verifyCode() {
+    async function verifyCode() {
         const email = document.getElementById('email').value;
         const verificationCode = document.getElementById('verificationCode').value;
 
@@ -82,14 +84,15 @@
             return;
         }
 
-        fetch('/signup/verify-token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email: email, token: verificationCode })
-        })
-        .then(response => {
+        try {
+            const response = await fetch('/signup/verify-token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: email, token: verificationCode })
+            });
+
             if (response.ok) {
                 alert('인증 코드가 확인되었습니다.');
                 isVerificationCodeVerified = true;
@@ -97,23 +100,23 @@
                 document.getElementById('verifyCodeBtn').disabled = true;
                 document.getElementById('submitBtn').disabled = false;
             } else {
-                alert('인증 코드가 잘못되었습니다.');
+                const errorResponse = await response.json();
+                alert(errorResponse.message || '인증 코드가 잘못되었습니다.');
                 isVerificationCodeVerified = false;
             }
-        })
-        .catch(error => {
+        } catch (error) {
             console.error('Error verifying code:', error);
-        });
+            alert('인증 코드 확인 중 오류가 발생했습니다.');
+        }
     }
 
-    // 기존 form의 submit 이벤트를 가로채고 fetch로 처리
-    document.getElementById('signupForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // 기본 폼 제출 방지
+    // 회원가입 폼 제출 처리
+    document.getElementById('signupForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
 
         const email = document.getElementById('email').value;
         const password = document.querySelector('input[name="password"]').value;
         const name = document.getElementById('name').value;
-        console.log(name);
 
         if (!isVerificationCodeVerified) {
             alert('인증 코드가 확인되지 않았습니다.');
@@ -126,28 +129,26 @@
             name: name
         };
 
-        fetch('/signup/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => {
+        try {
+            const response = await fetch('/signup/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
             if (response.ok) {
                 alert('회원가입이 완료되었습니다.');
                 window.location.href = '/model/auth/login';
             } else {
-                return response.json().then(err => {
-                    throw new Error(err.message || '회원가입에 실패했습니다.');
-                });
+                const errorResponse = await response.json();
+                alert(errorResponse.message || '회원가입에 실패했습니다.');
             }
-        })
-        .catch(error => {
+        } catch (error) {
             alert(error.message || '회원가입에 실패했습니다.');
-        });
+        }
     });
 </script>
-
 </body>
 </html>

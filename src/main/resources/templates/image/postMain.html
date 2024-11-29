@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (token) {
       console.log("Sending request to get post details for postId:", postId);
 
-      fetch(`http://localhost:8080/post/getPost/${postId}`, {
+      fetch(`/post/getPost/${postId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -163,34 +163,40 @@ document.addEventListener('DOMContentLoaded', function () {
           const commentList = document.getElementById('storyCommentList');
           commentList.innerHTML = ''; // 기존 댓글 제거
 
-          comments.forEach(commentItem => {
-            // commentItem이 null이 아니고, likeCount가 존재하는지 확인
-            if (commentItem && commentItem.likeCount !== undefined) {
+          // 댓글 렌더링 수정
+        comments.forEach(commentItem => {
+          if (commentItem && commentItem.likeCount !== undefined) {
               const commentElement = document.createElement('div');
               commentElement.classList.add('sl__item__contents__comment');
+
+              // 작성자와 현재 사용자의 ID 비교
+              const isCommentOwner = globalUserId === commentItem.userId; // 전역 userId와 비교
+
               commentElement.innerHTML = `
-                <div style="display: flex; align-items: center; margin-bottom: 5px;">
-                  <img class="profile-image"
-                       src="${commentItem.userProfileImageUrl || '/images/person.jpeg'}"
-                       onerror="this.src='/images/person.jpeg'"
-                       style="width: 30px; height: 30px; margin-right: 10px;" />
-                  <b>${commentItem.userName}</b>
-                  <button class="like-button"
-                          onclick="toggleCommentLike(${commentItem.id}, this)"
-                          style="background: none; border: none; cursor: pointer; margin-left: 10px;">
-                    <i class="fas fa-heart" style="color: ${commentItem.likedByMe ? 'red' : 'black'};"></i>
-                  </button>
-                  <span id="commentLikeCount-${commentItem.id}"
-                        style="margin-left: 5px; color: #555;">${commentItem.likeCount !== undefined ? commentItem.likeCount : 0}</span>
-                </div>
-                <p>${commentItem.content}</p>
-                <small style="color: #888;">${new Date(commentItem.createdAt).toLocaleString()}</small>
+                  <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                      <img class="profile-image"
+                           src="${commentItem.userProfileImageUrl || '/images/person.jpeg'}"
+                           onerror="this.src='/images/person.jpeg'"
+                           style="width: 30px; height: 30px; margin-right: 10px;" />
+                      <b>${commentItem.userName}</b>
+                      <button class="like-button"
+                              onclick="${isCommentOwner ? 'alert(\'자신의 댓글은 좋아요를 누를 수 없습니다.\')' : `toggleCommentLike(${commentItem.id}, this)`}"
+                              style="background: none; border: none; cursor: pointer; margin-left: 10px;">
+                          <i class="fas fa-heart" style="color: ${commentItem.likedByMe ? 'red' : 'black'};"></i>
+                      </button>
+                      <span id="commentLikeCount-${commentItem.id}"
+                            style="margin-left: 5px; color: #555;">${commentItem.likeCount !== undefined ? commentItem.likeCount : 0}</span>
+                  </div>
+                  <p>${commentItem.content}</p>
+                  <small style="color: #888;">${new Date(commentItem.createdAt).toLocaleString()}</small>
               `;
+
               commentList.appendChild(commentElement);
-            } else {
+          } else {
               console.error('Invalid comment data:', commentItem); // 잘못된 댓글 데이터 출력
-            }
-          });
+          }
+      });
+
         })
         .catch(error => {
           console.error('데이터 가져오기 오류:', error);
@@ -211,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
    const token = localStorage.getItem('accessToken');
    if (token) {
-     fetch(`http://localhost:8080/post/getPost/${postId}`, {
+     fetch(`/post/getPost/${postId}`, {
        method: 'GET',
        headers: {
          'Authorization': `Bearer ${token}`
@@ -233,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
        // 현재 좋아요 상태를 체크 (red이면 이미 좋아요)
        if (likeIcon.style.color === 'red') {
          // 좋아요 상태일 때는 unlike API 호출
-         fetch(`http://localhost:8080/post/unlike/${postId}`, {
+         fetch(`/post/unlike/${postId}`, {
            method: 'GET',
            headers: {
              'Authorization': `Bearer ${token}`
@@ -253,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function () {
          .catch(error => console.error('Error unliking post:', error));
        } else {
          // 좋아요 상태가 아닐 경우에는 like API 호출
-         fetch(`http://localhost:8080/post/like/${postId}`, {
+         fetch(`/post/like/${postId}`, {
            method: 'GET',
            headers: {
              'Authorization': `Bearer ${token}`
@@ -303,7 +309,7 @@ function addComment(commentListId, commentInputId) {
   };
 
   if (token) {
-    fetch('http://localhost:8080/comment', {
+    fetch('/comment', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -365,8 +371,8 @@ function toggleCommentLike(commentId, button) {
     if (token) {
         const isLiked = button.querySelector('i').style.color === 'red'; // 현재 좋아요 상태 체크
         const apiUrl = isLiked
-            ? `http://localhost:8080/comment/unlike/${commentId}` // 댓글 좋아요 취소
-            : `http://localhost:8080/comment/like/${commentId}`;  // 댓글 좋아요
+            ? `/comment/unlike/${commentId}` // 댓글 좋아요 취소
+            : `/comment/like/${commentId}`;  // 댓글 좋아요
 
         fetch(apiUrl, {
             method: 'GET',
@@ -376,6 +382,7 @@ function toggleCommentLike(commentId, button) {
         })
         .then(response => response.json())
         .then(data => {
+
             const updatedLikeCount = data.value || 0; // 갱신된 좋아요 수 (API에서 반환한 값)
             const likeCountElement = document.getElementById(`commentLikeCount-${commentId}`);
 

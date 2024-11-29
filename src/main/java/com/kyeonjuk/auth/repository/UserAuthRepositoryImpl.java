@@ -47,6 +47,9 @@ public class UserAuthRepositoryImpl implements UserAuthRepository {
 
         userAuthEntity.updateLastLoginAt();
 
+        // 기존의 같은 FCM 토큰을 가지고 있는 정보 삭제
+        jpaFcmTokenRepository.deleteAllByFcmToken(fcmToken);
+
         // FCM 알림 토큰 저장
         jpaFcmTokenRepository.save(new FcmTokenEntity(userAuth.getUserId(), fcmToken));
 

@@ -8,10 +8,12 @@ import com.kyeonjuk.auth.application.interfaces.UserAuthRepository;
 import com.kyeonjuk.auth.domain.Email;
 import com.kyeonjuk.auth.domain.TokenProvider;
 import com.kyeonjuk.auth.domain.UserAuth;
+import com.kyeonjuk.message.repository.JpaFcmTokenRepository;
 import com.kyeonjuk.user.domain.User;
 import com.kyeonjuk.user.domain.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +22,9 @@ public class AuthService {
     private final UserAuthRepository userAuthRepository;
     private final EmailVerificationRepository emailVerificationRepository;
     private final TokenProvider tokenProvider;
+    private final JpaFcmTokenRepository jpaFcmTokenRepository;
 
+    @Transactional
     public Long registerUser(CreateUserAuthRequestDto dto) {
 
         // 가입 전 이메일 인증 여부 확인 -> 인증 된 이메일만 가입 가능
@@ -43,6 +47,7 @@ public class AuthService {
         return userAuth.getUserId();
     }
 
+    @Transactional
     public UserAccessTokenResponseDto login(LoginRequestDto dto) {
         UserAuth userAuth = userAuthRepository.loginUser(dto.email(), dto.password(), dto.fcmToken());
 
@@ -50,6 +55,14 @@ public class AuthService {
         String token = tokenProvider.createToken(userAuth.getUserId(), userAuth.getUserRole());
 
         return new UserAccessTokenResponseDto(token);
+    }
+
+    /*
+        FCM 토큰 삭제
+     */
+    @Transactional
+    public void deleteFcmToken(Long userId) {
+        jpaFcmTokenRepository.deleteById(userId);
     }
 
 }

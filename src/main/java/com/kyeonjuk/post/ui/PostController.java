@@ -76,7 +76,7 @@ public class PostController {
 
         Long userId = userPrincipal.getUserId(); // 로그인한 사용자 ID
         Post post = postService.getPost(postId); // 게시물 조회
-        List<GetContentResponseDto> comment = userPostQueueQueryRepository.getCommentResponse(postId, post.getAuthorId(), 0L); // 댓글 조회
+        List<GetContentResponseDto> comment = userPostQueueQueryRepository.getCommentResponse(postId, userId, 0L); // 댓글 조회
 
         User user = userService.getUser(userId);
 

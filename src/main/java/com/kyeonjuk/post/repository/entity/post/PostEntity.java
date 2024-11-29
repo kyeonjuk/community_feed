@@ -23,8 +23,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "community_post")
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class PostEntity extends TimeBaseEntity {
 

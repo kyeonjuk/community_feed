@@ -48,7 +48,7 @@
     }
 
     // Login function with fcmToken as a parameter
-     async function login(fcmToken) {
+    async function login(fcmToken) {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
@@ -63,6 +63,7 @@
 
             if (response.ok) {
                 const data = await response.json();
+
                 // accessToken 저장
                 const accessToken = data.value.accessToken;
                 localStorage.setItem('accessToken', accessToken);
@@ -77,19 +78,25 @@
 
                 if (userIdResponse.ok) {
                     const userIdData = await userIdResponse.json();
-                    const userId = userIdData.value;  // Response에서 userId 추출
+                    const userId = userIdData.value; // Response에서 userId 추출
+
                     // 로그인 성공 후 페이지 이동
-                    window.location.href = `http://localhost:8080/model/feed?userId=${userId}`;
+                    window.location.href = `/model/feed?userId=${userId}`;
                 } else {
                     console.error('User ID not found or token invalid.');
+                    alert('유저 ID를 찾을 수 없습니다.');
                 }
             } else {
-                console.error('Login failed.');
+                // 오류 응답을 JSON으로 파싱하여 메시지를 출력
+                const errorResponse = await response.json(); // 응답 JSON 파싱
+                alert(errorResponse.message || '로그인에 실패했습니다.'); // 메시지 출력
             }
         } catch (error) {
             console.error('There has been a problem with your fetch operation:', error);
+            alert('서버와의 연결에 문제가 발생했습니다.');
         }
     }
+
 
     // Function that handles login button click
     async function handleLogin() {
