@@ -5,6 +5,11 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
+    // 포스트
+    EMPTY_POST_CONTENT(400, "게시글 내용은 비어 있을 수 없습니다."),
+    EXCEEDED_MAX_POST_LENGTH(400, "게시글 내용은 최대 500자까지 작성할 수 있습니다."),
+    BELOW_MIN_POST_LENGTH(400, "게시글 내용은 최소 5자 이상이어야 합니다."),
+
     // 일반적인 오류 코드
     INVALID_INPUT_VALUE(400, "invalid input value"),
     NOT_FOUND(404, "not found data"),

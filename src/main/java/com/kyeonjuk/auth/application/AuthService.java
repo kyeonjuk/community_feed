@@ -24,6 +24,14 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final JpaFcmTokenRepository jpaFcmTokenRepository;
 
+    public UserAuth getUserAuth(Long userId) {
+        return userAuthRepository.getAuth(userId);
+    }
+
+    public void patchPassword(UserAuth userAuth) {
+        userAuthRepository.save(userAuth);
+    }
+
     @Transactional
     public Long registerUser(CreateUserAuthRequestDto dto) {
 

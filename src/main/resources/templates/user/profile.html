@@ -195,7 +195,7 @@
                         th:attr="data-my-user-id='${myUserId}', data-target-user-id='${otherUserId}'"
                         onclick="toggleSubscribe(this)">구독하기</button>
                 <button class="cta updateBtn" onclick="location.href='/model/feed/post'">게시글 등록</button>
-                <button class="cta updateBtn" onclick="location.href='/image/upload'">프로필 사진등록</button>
+                <button class="cta updateBtn" onclick="location.href='/model/user/profile/uploadImage'">프로필 사진등록</button>
                 <button class="modi updateBtn" onclick="popup('.modal-info')">
                     <i class="fas fa-cog"></i>
                 </button>
@@ -221,7 +221,7 @@
 <!--로그아웃, 회원정보변경 모달-->
 <div class="modal-info" onclick="modalInfo()">
     <div class="modal">
-        <button onclick="location.href='/user/update'">회원정보 변경</button>
+        <button onclick="location.href='/model/user/profile/uploadData'">회원정보 변경</button>
         <!-- 로그아웃 버튼 -->
         <button onclick="logout()">로그아웃</button>
         <button onclick="closePopup('.modal-info')">취소</button>

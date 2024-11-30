@@ -3,8 +3,8 @@ package com.kyeonjuk.user.domain;
 // name 값 유효성 검사를 위한 domain
 public class UserInfo {
 
-    private final String name;
-    private final String profileImageUrl;
+    private String name;
+    private String profileImageUrl;
 
     public UserInfo(String name, String profileImageUrl) {
 
@@ -22,5 +22,13 @@ public class UserInfo {
 
     public String getProfileImageUrl() {
         return profileImageUrl;
+    }
+
+    public void patchProfileImageUrl(String imageUrl) {
+        profileImageUrl = imageUrl;
+    }
+
+    public void patchProfileName(String newName) {
+        name = newName;
     }
 }

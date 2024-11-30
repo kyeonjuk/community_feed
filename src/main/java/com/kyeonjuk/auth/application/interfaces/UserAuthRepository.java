@@ -7,4 +7,6 @@ public interface UserAuthRepository {
 
     UserAuth registerUser(UserAuth auth, User user);
     UserAuth loginUser(String email, String password, String fcmToken);
+    UserAuth getAuth(Long userId);
+    void save(UserAuth userAuth);
 }

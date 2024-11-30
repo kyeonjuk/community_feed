@@ -6,7 +6,7 @@ import lombok.Getter;
 public class UserAuth {
 
     private final Email email;
-    private final Password password;
+    private Password password;
     private final UserRole userRole;
     private Long userId;
 
@@ -38,5 +38,9 @@ public class UserAuth {
 
     public boolean matchPassword(String password) {
         return this.password.matchPassword(password);
+    }
+
+    public void changePassword(String password) {
+        this.password = Password.createEncryptPassword(password);
     }
 }

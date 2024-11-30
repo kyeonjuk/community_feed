@@ -4,6 +4,8 @@ import com.kyeonjuk.auth.application.interfaces.UserAuthRepository;
 import com.kyeonjuk.auth.domain.UserAuth;
 import com.kyeonjuk.auth.repository.entity.UserAuthEntity;
 import com.kyeonjuk.auth.repository.jpa.JpaUserAuthRepository;
+import com.kyeonjuk.common.domain.exception.ErrorCode;
+import com.kyeonjuk.common.ui.BaseException;
 import com.kyeonjuk.message.repository.JpaFcmTokenRepository;
 import com.kyeonjuk.message.repository.entity.FcmTokenEntity;
 import com.kyeonjuk.user.application.interfaces.UserRepository;
@@ -54,5 +56,22 @@ public class UserAuthRepositoryImpl implements UserAuthRepository {
         jpaFcmTokenRepository.save(new FcmTokenEntity(userAuth.getUserId(), fcmToken));
 
         return userAuth;
+    }
+
+    @Override
+    public UserAuth getAuth(Long userId) {
+        return jpaUserAuthRepository.findByUserId(userId)
+            .map(entity -> new UserAuth(entity.getEmail(), entity.getPassword(), entity.getUserRole(),
+                entity.getUserId()))
+            .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
+    }
+
+    @Override
+    @Transactional
+    public void save(UserAuth userAuth) {
+
+        UserAuthEntity userAuthEntity = new UserAuthEntity(userAuth, userAuth.getUserId());
+
+        jpaUserAuthRepository.save(userAuthEntity);
     }
 }

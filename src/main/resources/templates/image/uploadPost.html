@@ -8,7 +8,7 @@
             // 토큰이 존재하면 서버로 요청
             if (token) {
                 // 1. /getUserId 엔드포인트 호출하여 userId 가져오기
-                fetch('http://localhost:8080/user/getUserId', {
+                fetch('/user/getUserId', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -44,7 +44,7 @@
         .then(response => {
             if (response.ok) {
                 // 업로드 성공 시, 특정 URL로 리다이렉트
-                window.location.href = 'http://localhost:8080/model/user/profile';
+                window.location.href = '/model/user/profile';
             } else {
                 console.error('Form submission failed:', response);
                 alert('업로드 실패. 다시 시도해 주세요.');
@@ -72,7 +72,7 @@
             <a href="home.html" class="">
                 <img src="/images/logo.jpg" alt="">
             </a>
-            <p>사진 업로드</p>
+            <p>게시글 업로드</p>
         </div>
         <!--사진업로드 로고 end-->
 

@@ -36,6 +36,10 @@ public class User {
         targetUser.increaseFollowerCount();
     }
 
+    public void changeName(String name) {
+        info.patchProfileName(name);
+    }
+
     public void unfollow(User targetUser) {
         if (targetUser.equals(this)) {
             throw new IllegalArgumentException();
@@ -85,5 +89,9 @@ public class User {
 
     public String getProfileImageUrl() {
         return info.getProfileImageUrl();
+    }
+
+    public void patchProfileImageUrl(String imageUrl) {
+        this.info.patchProfileImageUrl(imageUrl);
     }
 }

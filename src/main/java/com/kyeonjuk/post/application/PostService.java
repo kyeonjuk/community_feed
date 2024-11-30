@@ -43,6 +43,7 @@ public class PostService {
     }
 
 
+    @Transactional
     public Post createPost(CreatePostRequestDto requestDto) {
         // 이미지 파일 처리
         MultipartFile contentImageUrl = requestDto.contentImageUrl();
