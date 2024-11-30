@@ -1,52 +1,56 @@
 package com.kyeonjuk.post.repository.post_queue;
 
 import com.kyeonjuk.post.repository.entity.post.PostEntity;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import com.kyeonjuk.post.repository.entity.post.UserPostQueueEntity;
+import com.kyeonjuk.post.repository.jpa.JpaUserPostQueueRepository;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @Profile({"!test"})
+@RequiredArgsConstructor
 public class UserQueueRedisRepositoryImpl implements UserQueueRedisRepository {
 
-    private final Map<Long, Set<PostEntity>> queue = new HashMap<>();
+    private final JpaUserPostQueueRepository jpaUserPostQueueRepository;
 
+    /*
+        [포스트 작성시 배포] 팔로우 한 유저에게 -> 피드 추가
+     */
     @Override
     public void publishPostToFollowingUserList(PostEntity postEntity, List<Long> userIdList) {
         for (Long userId: userIdList) {
-            if (queue.containsKey(userId)) {
-                queue.get(userId).add(postEntity);
-            } else {
-                queue.put(userId, new HashSet<>(List.of(postEntity)));
-            }
+
+            UserPostQueueEntity userPostQueueEntity = new UserPostQueueEntity(
+                userId,
+                postEntity.getId(),
+                postEntity.getAuthor().getId()
+            );
+
+            jpaUserPostQueueRepository.save(userPostQueueEntity);
         }
     }
 
+    /*
+        [팔로우 시 기존 포스트 배포]
+     */
     @Override
     public void publishPostListToFollowerUser(List<PostEntity> postEntities, Long userId) {
-        if (queue.containsKey(userId)){
-            queue.get(userId).addAll(postEntities);
-        } else {
-            queue.put(userId, new HashSet<>(postEntities));
+        for (PostEntity postEntity : postEntities) {
+            UserPostQueueEntity userPostQueueEntity = new UserPostQueueEntity(
+                userId,
+                postEntity.getId(),
+                postEntity.getAuthor().getId()
+            );
+
+            jpaUserPostQueueRepository.save(userPostQueueEntity);
         }
     }
 
     @Override
     public void deleteFeed(Long userId, Long targetUserId) {
-        if (queue.containsKey(userId)) {
-            queue.get(userId).removeIf(post -> post.getAuthor().getId().equals(targetUserId));
-        }
+        jpaUserPostQueueRepository.deleteAllByUserIdAndAuthorId(userId, targetUserId);
     }
 
-    public List<PostEntity> getPostsByUserId(Long userId) {
-        if (queue.containsKey(userId)) {
-            return List.copyOf(queue.get(userId));
-        }
-        return new ArrayList<>();
-    }
 }

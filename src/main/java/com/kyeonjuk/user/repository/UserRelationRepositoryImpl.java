@@ -8,6 +8,8 @@ import com.kyeonjuk.user.repository.entity.UserRelationEntity;
 import com.kyeonjuk.user.repository.entity.UserRelationIdEntity;
 import com.kyeonjuk.user.repository.jpa.user.JpaUserRepository;
 import com.kyeonjuk.user.repository.jpa.userRelation.JpaUserRelationRepository;
+import com.kyeonjuk.user.ui.dto.GetUserRelationListResponseDto;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -53,5 +55,44 @@ public class UserRelationRepositoryImpl implements UserRelationRepository {
 
         // 언팔로우의 post를 피드에서 삭제
         userPostQueueCommandRepository.deleteFollowPost(user.getId(), targetUser.getId());
+    }
+
+    @Override
+    public List<GetUserRelationListResponseDto> findAllByFollowingUserId(Long followingUserId) {
+
+        List<Long> userIdList = jpaUserRelationRepository.findAllByFollowingUserId(followingUserId);
+
+        List<User> userEntityList = jpaUserRepository.findAllByIdIn(userIdList)
+            .stream()
+            .map(UserEntity::toUser).toList();
+
+        List<GetUserRelationListResponseDto> resultList = new ArrayList<>();
+
+        for (User user : userEntityList) {
+            resultList.add(
+                new GetUserRelationListResponseDto(user.getName(), user.getProfileImageUrl(), user.getId())
+            );
+        }
+
+        return resultList;
+    }
+
+    @Override
+    public List<GetUserRelationListResponseDto> findAllByFollowerUserId(Long followerUserId) {
+        List<Long> userIdList = jpaUserRelationRepository.findAllByFollowerUserId(followerUserId);
+
+        List<User> userEntityList = jpaUserRepository.findAllByIdIn(userIdList)
+            .stream()
+            .map(UserEntity::toUser).toList();
+
+        List<GetUserRelationListResponseDto> resultList = new ArrayList<>();
+
+        for (User user : userEntityList) {
+            resultList.add(
+                new GetUserRelationListResponseDto(user.getName(), user.getProfileImageUrl(), user.getId())
+            );
+        }
+
+        return resultList;
     }
 }

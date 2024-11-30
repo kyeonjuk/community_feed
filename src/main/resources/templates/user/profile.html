@@ -29,7 +29,8 @@
                 const userName = profileData.name || '사용자 이름';
                 const profileImageUrl = profileData.profileImageUrl || 'Default-Profile.png';
                 const bio = profileData.bio || '자기 소개입니다.';
-                const followingCount = profileData.followerCount || 0;
+                const followingCount = profileData.followingCount || 0;
+                const followerCount = profileData.followerCount || 0;
                 const postCount = posts.length || 0;
 
                 let postListHtml = '';
@@ -57,6 +58,7 @@
                 document.getElementById('userProfileImage').src = "/uploads/images/" + profileImageUrl;
                 document.getElementById('bio').innerText = bio;
                 document.getElementById('followingCount').innerText = followingCount;
+                document.getElementById('followerCount').innerText = followerCount;
                 document.getElementById('postCount').innerText = postCount;
                 document.getElementById('postListContainer').innerHTML = postListHtml;
 
@@ -172,6 +174,139 @@
             // 로그인 페이지로 리다이렉트
             window.location.href = '/model/auth/login';
         }
+
+
+        // 팔로워 및 팔로잉 모달 열기
+        function openFollowerFollowingModal(type) {
+            document.getElementById('followerFollowingModal').style.display = 'block';
+
+            if (type === 'followers') {
+                switchTab('followers');
+            } else {
+                switchTab('following');
+            }
+        }
+
+        // 팔로워 목록 불러오기
+        function fetchFollowerList() {
+            const targetUserId = document.querySelector(".subscribeButton").getAttribute('data-target-user-id'); // targetUserId 가져오기
+
+            fetch(`/relation/getFollowerList/${targetUserId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("팔로워 정보를 가져오지 못했습니다.");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const followers = data.value || [];  // API에서 반환된 팔로워 리스트를 가져옴
+                    const followersList = document.getElementById('followersList');
+                    followersList.innerHTML = '';
+
+                    if (followers.length > 0) {
+                        followers.forEach(user => {
+                            followersList.innerHTML += `
+                                <a href="/model/user/profile/${user.relationUserId}">
+                                    <li>
+                                        <img src="/uploads/images/${user.profileImageUrl || 'Default-Profile.png'}" alt="User Image">
+                                        <span>${user.name}</span>
+                                    </li>
+                                </a>
+                            `;
+                        });
+                    } else {
+                        followersList.innerHTML = `<li>팔로워 정보가 없습니다.</li>`;
+                    }
+
+                    // 팔로워 수 업데이트
+                    document.getElementById('followerCount').innerText = followers.length;
+                })
+                .catch(error => {
+                    console.error('Error fetching followers:', error);
+                    document.getElementById('followersList').innerHTML = `<li>팔로워 정보를 가져오는 데 실패했습니다.</li>`;
+                });
+        }
+
+        // 팔로잉 목록 불러오기
+        function fetchFollowingList() {
+            const targetUserId = document.querySelector(".subscribeButton").getAttribute('data-target-user-id'); // targetUserId 가져오기
+
+            fetch(`/relation/getFollowingList/${targetUserId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("팔로잉 정보를 가져오지 못했습니다.");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const following = data.value || [];  // API에서 반환된 팔로잉 리스트를 가져옴
+                    const followingList = document.getElementById('followingList');
+                    followingList.innerHTML = '';
+
+                    if (following.length > 0) {
+                        following.forEach(user => {
+                            followingList.innerHTML += `
+                                <a href="/model/user/profile/${user.relationUserId}">
+                                    <li>
+                                        <img src="/uploads/images/${user.profileImageUrl || 'Default-Profile.png'}" alt="User Image">
+                                        <span>${user.name}</span>
+                                    </li>
+                                </a>
+                            `;
+                        });
+                    } else {
+                        followingList.innerHTML = `<li>팔로잉 정보가 없습니다.</li>`;
+                    }
+
+                    // 팔로잉 수 업데이트
+                    document.getElementById('followingCount').innerText = following.length;
+                })
+                .catch(error => {
+                    console.error('Error fetching following:', error);
+                    document.getElementById('followingList').innerHTML = `<li>팔로잉 정보를 가져오는 데 실패했습니다.</li>`;
+                });
+        }
+
+
+
+
+
+        // 탭 전환
+        function switchTab(tab) {
+          const tabs = document.querySelectorAll('.tab-link');
+          const followersTabContent = document.getElementById('followersTab');
+          const followingTabContent = document.getElementById('followingTab');
+
+          // 모든 탭에서 active 클래스 제거
+          tabs.forEach(tabElement => tabElement.classList.remove('active'));
+
+          // 선택한 탭에 active 클래스 추가 및 컨텐츠 표시
+          if (tab === 'followers') {
+            document.querySelector('.tab-link:nth-child(1)').classList.add('active');
+            followersTabContent.style.display = 'block';
+            followingTabContent.style.display = 'none';
+            fetchFollowerList();
+          } else {
+            document.querySelector('.tab-link:nth-child(2)').classList.add('active');
+            followersTabContent.style.display = 'none';
+            followingTabContent.style.display = 'block';
+            fetchFollowingList();
+          }
+        }
+
+        // 초기 탭 설정 (팔로워 탭을 기본값으로 설정)
+        document.querySelector('.tab-link:nth-child(1)').classList.add('active');
+        document.getElementById('followersTab').style.display = 'block';
+        document.getElementById('followingTab').style.display = 'none';
+
+
+        // 팝업 닫기
+        function closePopup(selector) {
+            document.querySelector(selector).style.display = 'none';
+        }
+
+
+
     </script>
 </header>
 
@@ -206,8 +341,17 @@
                     <li>
                         <a href="#">게시물 <span id="postCount">0</span></a>
                     </li>
-                    <li><a href="javascript:subscribeInfoModalOpen();">구독정보
-                        <span id="followingCount">0</span></a>
+
+                    <li>
+                        <a href="javascript:openFollowerFollowingModal('followers');">팔로워
+                            <span id="followerCount">0</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="javascript:openFollowerFollowingModal('following');">팔로잉
+                            <span id="followingCount">0</span>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -228,6 +372,27 @@
     </div>
 </div>
 <!--로그아웃, 회원정보변경 모달 끝-->
+
+<!-- 팔로워 및 팔로잉 모달 -->
+<div class="modal-info" id="followerFollowingModal" style="display: none;">
+    <div class="modal" style="margin: auto; margin-top: 200px; padding: 10px;">
+        <div class="tabs">
+            <button class="tab-link" onclick="switchTab('followers')">팔로워</button>
+            <button class="tab-link" onclick="switchTab('following')">팔로잉</button>
+        </div>
+        <div class="tab-content">
+            <div id="followersTab" class="tab-pane">
+                <ul id="followersList" class="user-list"></ul>
+            </div>
+            <div id="followingTab" class="tab-pane" style="display: none;">
+                <ul id="followingList" class="user-list"></ul>
+            </div>
+        </div>
+        <button onclick="closePopup('#followerFollowingModal')" class="close-btn">닫기</button>
+    </div>
+</div>
+<!-- 팔로워 및 팔로잉 모달 끝 -->
+
 
 <section id="tab-content" style="display: flex;">
     <div class="profileContainer">

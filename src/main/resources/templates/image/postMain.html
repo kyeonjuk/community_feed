@@ -97,11 +97,144 @@
     .sl__item__input button:hover {
         background-color: #0056b3;
     }
+
+    /* 팝업 전체 스타일 */
+.popup {
+  display: none; /* 기본적으로 숨김 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 배경을 반투명하게 */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* 팝업이 다른 요소 위에 오도록 */
+}
+
+
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px; /* 팝업의 너비 */
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: auto;
+  margin-top: 176px;
+
+}
+
+/* 팝업 버튼 스타일 */
+.popup-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin: 5px 0;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+/* 버튼 hover 스타일 */
+.popup-button:hover {
+  background-color: #0056b3;
+}
+
+/* 팝업 외부 클릭 시 닫기 처리 (배경 클릭 시 닫히지 않게 설정) */
+.popup {
+  pointer-events: all; /* 팝업 내부 요소와 클릭 가능하게 */
+}
+
+/* 팝업 외부 영역 클릭 시 팝업이 닫히지 않도록 막기 */
+.popup-content {
+  pointer-events: all;
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+    /* 수정 모달 스타일 */
+#editModal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.editModal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 50%;  /* 너비 조정 */
+  max-width: 600px;  /* 최대 너비 설정 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.editModal-content input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.editModal-content button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.editModal-content button:hover {
+  background-color: #0056b3;
+}
+
   </style>
 </head>
 <script>
   let globalUserId = null; // 전역 변수 선언 (userId 저장)
-
+  let postData = null;
 document.addEventListener('DOMContentLoaded', function () {
   const pathname = window.location.pathname; // URL 경로 가져오기
   const pathParts = pathname.split('/'); // '/'를 기준으로 분리
@@ -122,6 +255,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
           console.log('Post Data:', data);
 
+          postData = data.value; // postData에 서버에서 받은 데이터 할당
           // 서버 응답에서 데이터 추출
           const post = data.value.post;
           const comments = data.value.comment;
@@ -401,6 +535,82 @@ function toggleCommentLike(commentId, button) {
         alert('로그인 토큰이 없습니다.');
     }
 }
+function showPopup() {
+  const popup = document.getElementById('popup');
+  if (popup) {
+    popup.style.display = 'flex'; // 팝업 보이기
+  }
+}
+
+
+function openEditModal(button) {
+    // 팝업 닫기
+    const popup = document.getElementById('popup');
+    if (popup) {
+        popup.style.display = 'none'; // popup 숨기기
+    }
+
+    const postId = button.getAttribute('data-post-id');
+    const post = postData?.post; // postData가 있을 때만 post에 접근하도록
+
+    // post가 제대로 로드되었는지 확인
+    if (!post) {
+        console.error('게시글 데이터를 찾을 수 없습니다.');
+        return;
+    }
+
+    // 수정 폼에 데이터를 채우기
+    const contentElement = document.getElementById('editPostContent');
+    const imageUrlElement = document.getElementById('editPostImageUrl');
+    const postImageElement = document.getElementById('editPostImage');
+    const postIdElement = document.getElementById('editPostId');
+
+    // 사용자 이름과 프로필 이미지 업데이트
+    const editPostUserName = document.getElementById('editPostUserName'); // 수정 팝업 내의 사용자 이름
+    const editPostUserProfileImage = document.getElementById('editPostUserProfileImage'); // 수정 팝업 내의 프로필 이미지
+
+    // 각 요소가 존재하는지 확인
+    if (!contentElement || !imageUrlElement || !postIdElement || !editPostUserName || !editPostUserProfileImage) {
+        console.error('필요한 요소가 존재하지 않습니다.');
+        return;
+    }
+
+    // 수정 폼에 데이터 삽입
+    contentElement.value = post.content;
+    imageUrlElement.value = post.contentImageUrl;
+    postIdElement.value = post.id;
+    postImageElement.src = '/uploads/images/' + post.contentImageUrl;
+
+    // 사용자 이름과 프로필 이미지 설정
+    editPostUserName.textContent = post.author.info.name;
+    editPostUserProfileImage.src = post.author.info.profileImageUrl;
+
+    // 이미지 URL이 잘못되었을 경우 기본 이미지 설정
+    editPostUserProfileImage.onerror = function () {
+        this.src = '/images/person.jpeg'; // 기본 이미지로 설정
+    };
+
+    // 수정 팝업창 표시
+    const editPopup = document.getElementById('editPopup');
+    if (editPopup) {
+        editPopup.style.display = 'block'; // 팝업을 표시합니다.
+    } else {
+        console.error('editPopup이 존재하지 않습니다.');
+    }
+}
+
+
+// 하나의 closePopup 함수로 두 팝업을 닫기
+function closePopup(popupId) {
+    const popup = document.getElementById(popupId);
+    if (popup) {
+        popup.style.display = 'none';
+    } else {
+        console.error(popupId + '을 찾을 수 없습니다.');
+    }
+}
+
+
 
 
 
@@ -412,6 +622,9 @@ function toggleCommentLike(commentId, button) {
       <img class="profile-image" src="#" onerror="this.src='/images/person.jpeg'" id="postUserProfileImage" />
     </div>
     <div id="postUserName">사용자 이름</div>
+    <button onclick="showPopup()" style="border: none; background: none; cursor: pointer;">
+      <i class="fas fa-ellipsis-h"></i> <!-- 더보기 아이콘 -->
+    </button>
   </div>
 
   <div class="sl__item__img">
@@ -443,6 +656,51 @@ function toggleCommentLike(commentId, button) {
     </div>
   </div>
 </div>
+
+<<!-- 팝업 -->
+<div id="popup" class="popup">
+  <div class="popup-content">
+    <button class="popup-button" data-post-id="12" onclick="openEditModal(this)">게시글 수정</button>
+    <button class="popup-button">게시글 삭제</button>
+    <button class="popup-button">게시글 공유</button>
+    <button class="popup-button" onclick="closePopup('popup')">닫기</button>
+  </div>
+</div>
+
+<!-- 수정 팝업 -->
+<div id="editPopup" class="popup">
+  <div class="popup-content">
+    <div class="story-list__item" id="editPostItem">
+      <div class="sl__item__header">
+        <div>
+          <img class="profile-image" src="#" onerror="this.src='/images/person.jpeg'" id="editPostUserProfileImage" />
+        </div>
+        <div id="editPostUserName">사용자 이름</div>
+      </div>
+
+      <div class="sl__item__img">
+        <img src="/uploads/images/${editPostImageUrl}" id="editPostImage" />
+      </div>
+
+      <div class="sl__item__contents">
+        <div class="sl__item__contents__content">
+          <textarea id="editPostContent" placeholder="게시글 내용을 수정하세요." rows="4" style="width: 100%;"></textarea>
+        </div>
+
+        <div class="sl__item__contents__content" style="margin-top: 10px;">
+          <input type="text" id="editPostImageUrl" placeholder="이미지 URL을 입력하세요." style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;" />
+          <input type="hidden" id="editPostId" />
+        </div>
+
+        <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+          <button onclick="submitEditForm()" style="background-color: #007bff; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">저장</button>
+          <button onclick="closePopup('editPopup')" style="background-color: #ddd; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">취소</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 

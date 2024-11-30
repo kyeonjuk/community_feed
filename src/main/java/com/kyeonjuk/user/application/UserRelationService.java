@@ -1,8 +1,12 @@
 package com.kyeonjuk.user.application;
 
+import com.kyeonjuk.common.domain.exception.ErrorCode;
+import com.kyeonjuk.common.ui.BaseException;
 import com.kyeonjuk.user.application.dto.FollowUserRequestDto;
 import com.kyeonjuk.user.application.interfaces.UserRelationRepository;
 import com.kyeonjuk.user.domain.User;
+import com.kyeonjuk.user.ui.dto.GetUserRelationListResponseDto;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,7 +26,7 @@ public class UserRelationService {
         User targetUser = userService.getUser(dto.targetUserId());
 
         if (userRelationRepository.isAlreadyFollow(user, targetUser)) {
-            throw new IllegalArgumentException();
+            throw new BaseException(ErrorCode.ALREADY_FOLLOWING_USER);
         }
 
         user.follow(targetUser);
@@ -34,7 +38,7 @@ public class UserRelationService {
         User targetUser = userService.getUser(dto.targetUserId());
 
         if (!userRelationRepository.isAlreadyFollow(user, targetUser)) {
-            throw new IllegalArgumentException();
+            throw new BaseException(ErrorCode.ALREADY_FOLLOWING_USER);
         }
 
         user.unfollow(targetUser);
@@ -50,6 +54,20 @@ public class UserRelationService {
         User targetUser = userService.getUser(targetUserId);
 
         return userRelationRepository.isAlreadyFollow(user, targetUser);
+    }
+
+    /*
+        팔로워 리스트 조회
+     */
+    public List<GetUserRelationListResponseDto> getFollowerList(Long targetUserId) {
+        return userRelationRepository.findAllByFollowerUserId(targetUserId);
+    }
+
+    /*
+        팔로잉 리스트 조회
+     */
+    public List<GetUserRelationListResponseDto> getFollowingList(Long targetUserId) {
+        return userRelationRepository.findAllByFollowingUserId(targetUserId);
     }
 
 }

@@ -5,6 +5,9 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
+    // 팔로우
+    ALREADY_FOLLOWING_USER(409, "이미 팔로우한 사용자입니다."),
+
     // 포스트
     EMPTY_POST_CONTENT(400, "게시글 내용은 비어 있을 수 없습니다."),
     EXCEEDED_MAX_POST_LENGTH(400, "게시글 내용은 최대 500자까지 작성할 수 있습니다."),
