@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,10 +45,17 @@ public class PostController {
 
     @PatchMapping("/{postId}")
     public Response<Long> updatePost(@PathVariable(name = "postId") Long postId,
-        @RequestBody UpdatePostRequestDto dto){
-        Post post = postService.updatePost(postId,dto);
+        @ModelAttribute UpdatePostRequestDto dto) {
+
+        if (postId == null) {
+            throw new IllegalArgumentException("postId는 null일 수 없습니다.");
+        }
+
+        Post post = postService.updatePost(postId, dto);
         return Response.ok(post.getId());
     }
+
+
     @Idempotent
     @GetMapping("/like/{postId}")
     public Response<Integer> postLike(@PathVariable(name = "postId") Long postId,

@@ -15,10 +15,6 @@ function subscribeInfoModalOpen() {
     $(".modal-subscribe").css("display", "flex");
 }
 
-function getSubscribeModalItem() {
-
-}
-
 
 // (4) 유저 프로파일 사진 변경 (완)
 function profileImageUpload() {

@@ -4,6 +4,7 @@ import com.kyeonjuk.user.application.interfaces.UserRepository;
 import com.kyeonjuk.user.domain.User;
 import com.kyeonjuk.user.repository.entity.UserEntity;
 import com.kyeonjuk.user.repository.jpa.user.JpaUserRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,5 +31,13 @@ public class UserRepositoryImpl implements UserRepository {
             .orElseThrow(IllegalArgumentException::new);
 
         return userEntity.toUser();
+    }
+
+    @Override
+    public List<User> findByNameContaining(String name) {
+        List<User> userList = jpaUserRepository.findByNameContaining(name).stream()
+            .map(UserEntity::toUser).toList();
+
+        return userList;
     }
 }

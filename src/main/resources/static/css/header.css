@@ -54,3 +54,104 @@
         width: 100%;
     }
 }
+
+/* 검색바 */
+.search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    background: #f0f0f0;
+    border: 1px solid gainsboro;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 36px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: #333;
+    font-family: 'Montserrat', sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.search-bar input::placeholder {
+    color: #aaa;
+    font-weight: 300;
+}
+
+.search-bar input:focus {
+    background-color: #e8e8e8;
+}
+
+.search-bar button {
+    background-color: transparent;
+    border: none;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.search-bar button i {
+    font-size: 16px;
+    color: #808080;
+}
+
+.search-bar button:hover {
+    color: #333;
+    transform: scale(1.1);
+}
+
+
+/* 모달창 */
+.modal-info {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 100;
+}
+
+.modal {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.user-list li {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.user-list li:last-child {
+    border-bottom: none;
+}
+
+.user-list img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}

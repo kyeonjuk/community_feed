@@ -16,7 +16,11 @@
     <link rel="stylesheet" th:href="@{/css/profile.css}">
     <link rel="stylesheet" th:href="@{/css/upload.css}">
     <link rel="stylesheet" th:href="@{/css/update.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
     <!-- <link th:rel="shortcut icon" href="/images/insta.svg"> -->
+
+    <!-- js -->
+    <script src="/js/header.js" defer></script>
 
     <!-- Fontawesome -->
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css}" />
@@ -31,9 +35,32 @@
         <a href="/image/story" class="logo">
             <img src="/images/logo.jpg" alt="">
         </a>
+
+        <!-- 중앙 검색 기능 추가 -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="검색할 유저명을 입력해주세요">
+            <button id="searchBtn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <!-- 검색 결과 모달 -->
+        <div class="modal-info search-modal" id="searchResultModal" style="display: none;">
+            <div class="modal" style="margin: auto; margin-top: 150px; padding: 10px; width: 400px; background: #fff;
+    border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+                <h3 style="text-align: center;">검색 결과</h3>
+                <div class="tab-content">
+                    <ul id="searchResultsList" class="user-list"></ul>
+                </div>
+                <button class="close-btn" style="margin-top: 10px; padding: 8px 15px; background: #007bff;
+        color: white; border: none; border-radius: 5px; cursor: pointer;">닫기</button>
+            </div>
+        </div>
+        <!-- 검색 결과 모달 끝 -->
+
         <nav class="navi">
             <ul class="navi-list">
-                <li class="navi-item"><a href="/image/story">
+                <li class="navi-item"><a href="/model/feed">
                     <i class="fas fa-home"></i>
                 </a></li>
                 <li class="navi-item"><a href="/image/popular">

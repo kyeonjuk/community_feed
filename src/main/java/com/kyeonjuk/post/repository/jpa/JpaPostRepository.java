@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-public interface JpaPostRepository extends JpaRepository<PostEntity, Long> {
+public interface JpaPostRepository extends JpaRepository<PostEntity,Long> {
 
-    @Query(value = "SELECT p FROM PostEntity p "
-        + "where p.author.id = :authorId")
+
+    @Query("SELECT p FROM PostEntity p "
+        + " WHERE p.author.id = :authorId ")
     List<PostEntity> findFollowingPosts(Long authorId);
 
     List<PostEntity> findAllByAuthorIdOrderByIdDesc(Long authorId);
@@ -17,9 +18,10 @@ public interface JpaPostRepository extends JpaRepository<PostEntity, Long> {
     @Modifying
     @Query(value = "UPDATE PostEntity p "
         + "SET p.content = :#{#postEntity.getContent()}, "
+        + "p.contentImageUrl = :#{#postEntity.getContentImageUrl()}, "
         + "p.state = :#{#postEntity.getState()}, "
         + "p.updDt = now() "
-        + "where p.id = :#{#postEntity.id}")
+        + "where p.id = :#{#postEntity.getId()}")
     void updatePostEntity(PostEntity postEntity);
 
     @Modifying
@@ -27,12 +29,14 @@ public interface JpaPostRepository extends JpaRepository<PostEntity, Long> {
         + "SET p.likeCount = p.likeCount + :likeCount, "
         + "p.updDt = now() "
         + "where p.id = :postId")
-    void updateLikePostEntity(Long postId, Integer likeCount);
+    void updateLikePostEntity(Long postId , Integer likeCount);
 
     @Modifying
     @Query(value = "UPDATE PostEntity p "
         + "SET p.commentCount = p.commentCount + 1, "
         + "p.updDt = now() "
         + "where p.id = :id")
-    void increaseCommentCountEntity(Long id);
+    void increaseCommentCount(Long id);
+
+
 }

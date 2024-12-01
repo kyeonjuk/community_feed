@@ -10,6 +10,7 @@ import com.kyeonjuk.user.domain.UserInfo;
 import com.kyeonjuk.user.ui.dto.PatchProfileImageRequestDto;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,6 +70,13 @@ public class UserService {
         user.changeName(name);
 
         userRepository.save(user);
+    }
+
+    /*
+        비슷한 이름의 유저 찾기
+     */
+    public List<User> findByLikeUserName(String userName) {
+        return userRepository.findByNameContaining(userName);
     }
 
     /*

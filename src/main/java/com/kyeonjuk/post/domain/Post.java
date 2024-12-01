@@ -17,23 +17,24 @@ public class Post {
     private final Long id;
     private final User author;
     private final PostContent content;
-    private final String contentImageUrl;
+    private String contentImageUrl;
     private final PositiveIntegerCounter likeCount;
     private PostPublicationState state;
 
-    // 정적 생성자 1
-    public static Post createPost(Long id, User author, String content, PostPublicationState state, String contentImageUrl) {
-        return new Post(id, author, new PostContent(content), contentImageUrl, state);
+    //정적 생성자 1
+    public static Post createPost(Long id,User author, String content,String contentImageUrl, PostPublicationState state){
+        return new Post(id,author,new PostContent(content),contentImageUrl,state);
     }
 
-    // 정적 생성자 2
-    public static Post createDefaultPost(Long id, User author, String content, String contentImageUrl) {
-        return new Post(id, author, new PostContent(content), contentImageUrl, PostPublicationState.PUBLIC);
+    //정적 생성자 2
+    public static Post createDefaultPost(Long id,User author, String content,String contentImageUrl){
+        return new Post(id,author,new PostContent(content),contentImageUrl ,PostPublicationState.PUBLIC);
     }
 
-    public Post(Long id, User author, PostContent content, String contentImageUrl) {
+    public Post(Long id,User author, PostContent content,String contentImageUrl) {
 
-        if (author == null) {
+
+        if(author == null){
             throw new IllegalArgumentException();
         }
 
@@ -43,11 +44,13 @@ public class Post {
         this.contentImageUrl = contentImageUrl;
         this.likeCount = new PositiveIntegerCounter();
         this.state = PostPublicationState.PUBLIC;
+
     }
 
-    public Post(Long id, User author, PostContent content, String contentImageUrl, PostPublicationState state) {
+    public Post(Long id,User author, PostContent content,String contentImageUrl, PostPublicationState state) {
 
-        if (author == null) {
+
+        if(author == null){
             throw new IllegalArgumentException();
         }
 
@@ -57,28 +60,32 @@ public class Post {
         this.contentImageUrl = contentImageUrl;
         this.likeCount = new PositiveIntegerCounter();
         this.state = state;
+
     }
 
-    public void like(User user) {
-        if (this.author.equals(user)) {
+    public void like(User user){
+        if(this.author.equals(user)){
             throw new IllegalArgumentException();
         }
-
         likeCount.increase();
     }
-
-    public void unLike() {
+    public void unlike(){
         likeCount.decrease();
     }
-
-    public void updatePost(User user, String updateContent, PostPublicationState state) {
+    public void updatePost(User user, String updateContent, PostPublicationState state, String imageUrl) {
         if (!this.author.equals(user)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Only the author can update the post.");
         }
-
-        this.content.updateContent(updateContent);
         this.state = state;
+        this.content.updateContent(updateContent);
+
+        // 이미지 URL이 변경된 경우, 이미지 URL을 업데이트
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            System.out.println("Updating image URL: " + imageUrl);
+            this.contentImageUrl = imageUrl;
+        }
     }
+
 
     public int getLikeCount() {
         return likeCount.getCount();
@@ -88,15 +95,17 @@ public class Post {
         return content.getContentText();
     }
 
-    public DateTimeInfo getDateTimeInfo() {
+    public DateTimeInfo getDatetimeInfo() {
         return content.getDateTimeInfo();
     }
+
 
     public Long getAuthorId() {
         return author.getId();
     }
-
-    public PostContent getContentObject() {
+    public PostContent getContentObject(){
         return content;
     }
+
+
 }

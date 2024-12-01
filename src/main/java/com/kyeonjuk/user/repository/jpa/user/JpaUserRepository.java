@@ -9,4 +9,7 @@ public interface JpaUserRepository extends JpaRepository<UserEntity, Long> {
     // userId가 리스트에 포함된 모든 사용자 조회
     List<UserEntity> findAllByIdIn(List<Long> ids);
 
+    // 특정 문자열을 포함하는 사용자 검색 (Contains)
+    List<UserEntity> findByNameContaining(String name);
+
 }

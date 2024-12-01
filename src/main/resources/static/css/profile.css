@@ -421,6 +421,8 @@
     border-radius: 10px;
     display: flex;
     flex-direction: column;
+    margin: auto;
+    margin-top: 200px;
 }
 .modal-info .modal button {
     border: 0;
@@ -574,3 +576,4 @@
 .close-btn:hover {
     background-color: #d32f2f;
 }
+

@@ -26,7 +26,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
         // 해당 post의 comment_count값 1증가
         Post post = comment.getPost();
-        jpaPostRepository.increaseCommentCountEntity(post.getId());
+        jpaPostRepository.increaseCommentCount(post.getId());
 
         return jpaCommentRepository.save(commentEntity).toComment();
     }

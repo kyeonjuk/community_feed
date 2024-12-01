@@ -541,7 +541,15 @@ function showPopup() {
     popup.style.display = 'flex'; // 팝업 보이기
   }
 }
-
+// 하나의 closePopup 함수로 두 팝업을 닫기
+function closePopup(popupId) {
+    const popup = document.getElementById(popupId);
+    if (popup) {
+        popup.style.display = 'none';
+    } else {
+        console.error(popupId + '을 찾을 수 없습니다.');
+    }
+}
 
 function openEditModal(button) {
     // 팝업 닫기
@@ -550,7 +558,7 @@ function openEditModal(button) {
         popup.style.display = 'none'; // popup 숨기기
     }
 
-    const postId = button.getAttribute('data-post-id');
+    const postId = button.getAttribute('data-post-id').trim(); // 공백을 제거
     const post = postData?.post; // postData가 있을 때만 post에 접근하도록
 
     // post가 제대로 로드되었는지 확인
@@ -561,7 +569,6 @@ function openEditModal(button) {
 
     // 수정 폼에 데이터를 채우기
     const contentElement = document.getElementById('editPostContent');
-    const imageUrlElement = document.getElementById('editPostImageUrl');
     const postImageElement = document.getElementById('editPostImage');
     const postIdElement = document.getElementById('editPostId');
 
@@ -570,14 +577,13 @@ function openEditModal(button) {
     const editPostUserProfileImage = document.getElementById('editPostUserProfileImage'); // 수정 팝업 내의 프로필 이미지
 
     // 각 요소가 존재하는지 확인
-    if (!contentElement || !imageUrlElement || !postIdElement || !editPostUserName || !editPostUserProfileImage) {
+    if (!contentElement || !postIdElement || !editPostUserName || !editPostUserProfileImage) {
         console.error('필요한 요소가 존재하지 않습니다.');
         return;
     }
 
     // 수정 폼에 데이터 삽입
     contentElement.value = post.content;
-    imageUrlElement.value = post.contentImageUrl;
     postIdElement.value = post.id;
     postImageElement.src = '/uploads/images/' + post.contentImageUrl;
 
@@ -599,14 +605,69 @@ function openEditModal(button) {
     }
 }
 
+function updatePost() {
+    const postId = document.getElementById('editPostId').value.trim(); // .value.trim() 추가
+    const content = document.getElementById('editPostContent').value.trim();
+    const contentImageUrl = document.getElementById('editPostImageUrl').files[0]; // 파일 선택
 
-// 하나의 closePopup 함수로 두 팝업을 닫기
-function closePopup(popupId) {
-    const popup = document.getElementById(popupId);
-    if (popup) {
-        popup.style.display = 'none';
-    } else {
-        console.error(popupId + '을 찾을 수 없습니다.');
+    if (!postId || !content) {
+        alert('게시물 ID와 내용을 모두 입력해야 합니다.');
+        return;
+    }
+
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+        alert('로그인 토큰이 없습니다.');
+        return;
+    }
+
+    // FormData를 사용하여 데이터 전송
+    const formData = new FormData();
+    formData.append("content", content);
+    formData.append("userId", globalUserId); // userId를 formData에 추가
+    formData.append("state", "PUBLIC"); // 예시: 'PUBLISHED'를 'PUBLIC'로 수정
+
+    if (contentImageUrl) { // 파일이 존재하면
+        formData.append("contentImageUrl", contentImageUrl); // 파일 추가
+        console.log("파일이 FormData에 추가되었습니다:", contentImageUrl); // 파일 확인용 로그
+    }
+
+    // FormData의 내용을 확인
+    for (let pair of formData.entries()) {
+        console.log(pair[0]+ ', ' + pair[1]);
+    }
+
+    // headers에서 'Content-Type'을 설정하지 않음. FormData는 자동으로 처리됨
+    fetch(`/post/${postId}`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.code === 0) {
+            alert('게시물이 성공적으로 수정되었습니다.');
+        } else {
+            alert('게시물 수정에 실패했습니다. 다시 시도해주세요.');
+        }
+    })
+    .catch(error => {
+        console.error('게시물 수정 오류:', error);
+        alert('게시물 수정에 실패했습니다.');
+    });
+}
+
+// 파일 미리보기
+function imageChoose(input) {
+    const file = input.files[0]; // 파일 선택
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById("editPostImage").src = e.target.result; // 이미지 미리보기
+        }
+        reader.readAsDataURL(file);
     }
 }
 
@@ -660,7 +721,7 @@ function closePopup(popupId) {
 <<!-- 팝업 -->
 <div id="popup" class="popup">
   <div class="popup-content">
-    <button class="popup-button" data-post-id="12" onclick="openEditModal(this)">게시글 수정</button>
+    <button class="popup-button" data-post-id="${postId}" onclick="openEditModal(this)">게시글 수정</button>
     <button class="popup-button">게시글 삭제</button>
     <button class="popup-button">게시글 공유</button>
     <button class="popup-button" onclick="closePopup('popup')">닫기</button>
@@ -688,21 +749,22 @@ function closePopup(popupId) {
         </div>
 
         <div class="sl__item__contents__content" style="margin-top: 10px;">
-          <input type="text" id="editPostImageUrl" placeholder="이미지 URL을 입력하세요." style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;" />
+          <!-- 파일 선택 -->
+          <!-- 파일 업로드 필드 -->
+          <input type="file" id="editPostImageUrl" name="editPostImageUrl" onchange="imageChoose(this)" />
+
           <input type="hidden" id="editPostId" />
         </div>
 
         <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-          <button onclick="submitEditForm()" style="background-color: #007bff; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">저장</button>
+          <!-- updatePost() 함수 호출 -->
+          <button onclick="updatePost()" style="background-color: #007bff; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">저장</button>
           <button onclick="closePopup('editPopup')" style="background-color: #ddd; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">취소</button>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-
-
 
 </body>
 </html>

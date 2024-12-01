@@ -3,6 +3,7 @@ package com.kyeonjuk.user.repository;
 import com.kyeonjuk.user.application.interfaces.UserRepository;
 import com.kyeonjuk.user.domain.User;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FakeUserRepository implements UserRepository {
@@ -26,5 +27,10 @@ public class FakeUserRepository implements UserRepository {
     @Override
     public User findById(Long id) {
         return store.get(id);
+    }
+
+    @Override
+    public List<User> findByNameContaining(String name) {
+        return List.of();
     }
 }

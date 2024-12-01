@@ -59,12 +59,28 @@ public class PostService {
 
     @Transactional
     public Post updatePost(Long postId, UpdatePostRequestDto requestDto) {
-        User user = userService.getUser(requestDto.userId());
-        Post post = getPost(postId);
-        post.updatePost(user, requestDto.content(), requestDto.state());
+        // 이미지 파일 처리 (파일이 있으면 저장)
+        String imageUrl = null;
+        if (requestDto.contentImageUrl() != null && !requestDto.contentImageUrl().isEmpty()) {
+            imageUrl = saveImage(requestDto.contentImageUrl());
+        }
 
+        // 사용자 정보
+        User user = userService.getUser(requestDto.userId());
+        System.out.println(user.getId()+"====================");
+        System.out.println(imageUrl+"22222222222");
+
+        // 기존 게시물 가져오기
+        Post post = getPost(postId);
+        System.out.println(post.getAuthor().getId() + "------------------------");
+
+        // 게시물 업데이트 (imageUrl을 전달)
+        post.updatePost(user, requestDto.content(), requestDto.state(), imageUrl);
+        System.out.println(post.getContentImageUrl());
+        // 게시물 저장
         return postRepository.save(post);
     }
+
 
     @Transactional
     public int likePost(LikePostRequestDto requestDto) {
@@ -87,7 +103,7 @@ public class PostService {
         Post post = getPost(requestDto.postId());
 
         if (likePostRepository.checkLike(user, post)) {
-            post.unLike();
+            post.unlike();
             likePostRepository.unlike(user, post);
         }
 
