@@ -4,6 +4,7 @@ import com.kyeonjuk.common.idempotency.Idempotent;
 import com.kyeonjuk.common.principal.AuthPrincipal;
 import com.kyeonjuk.common.principal.UserPrincipal;
 import com.kyeonjuk.common.ui.Response;
+import com.kyeonjuk.post.application.CommentService;
 import com.kyeonjuk.post.application.PostService;
 import com.kyeonjuk.post.application.dto.CreatePostRequestDto;
 import com.kyeonjuk.post.application.dto.LikePostRequestDto;
@@ -18,6 +19,8 @@ import com.kyeonjuk.user.application.UserService;
 import com.kyeonjuk.user.domain.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -33,6 +36,7 @@ public class PostController {
 
     private final UserService userService;
     private final PostService postService;
+    private final CommentService commentService;
     private final UserPostQueueQueryRepository userPostQueueQueryRepository;
     private final LikePostRepository likePostRepository;
     private final LikeCommentRepository likeCommentRepository;
@@ -54,6 +58,17 @@ public class PostController {
         Post post = postService.updatePost(postId, dto);
         return Response.ok(post.getId());
     }
+
+    @DeleteMapping("delete/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId,
+        @AuthPrincipal UserPrincipal userPrincipal) {
+        Long userId = userPrincipal.getUserId();
+
+        commentService.deleteAllByPostId(postId);
+        postService.deletePost(postId, userId);
+        return ResponseEntity.noContent().build();
+    }
+
 
 
     @Idempotent

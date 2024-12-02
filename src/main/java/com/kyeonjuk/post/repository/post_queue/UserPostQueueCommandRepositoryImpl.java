@@ -19,9 +19,7 @@ public class UserPostQueueCommandRepositoryImpl implements UserPostQueueCommandR
     private final JpaUserRelationRepository jpaUserRelationRepository;
     private final UserQueueRedisRepository userQueueRedisRepository;
 
-    /*
-        post가 등록될 때 작성자를 팔로우하는 유저 피드에 해당 포스트 등록
-     */
+    // post가 등록될 때 작성자를 팔로우하는 유저 피드에 해당 포스트 등록
     @Override
     @Transactional
     public void publishPost(PostEntity postEntity) {
@@ -31,28 +29,43 @@ public class UserPostQueueCommandRepositoryImpl implements UserPostQueueCommandR
         //작성자를 팔로우하는 유저 정보 가져오기
         List<Long> followerIds = jpaUserRelationRepository.findFollowers(author.getId());
 
-        userQueueRedisRepository.publishPostToFollowingUserList(postEntity, followerIds);
+        userQueueRedisRepository.publishPostToFollowingUserList(postEntity,followerIds);
+
+
     }
 
-    /*
-        팔로우한 작성자의 post를 가져와서 피드에 등록
-     */
+    // 팔로우한 작성자에 post를 전부 피드에 등록
     @Override
     @Transactional
     public void saveFollowPost(Long userId, Long targetId) {
         //작성자의 post 가져오기
-        List<PostEntity> followingPosts = jpaPostRepository.findFollowingPosts(targetId);
+        List<PostEntity> followingPosts= jpaPostRepository.findFollowingPosts(targetId);
 
-        userQueueRedisRepository.publishPostListToFollowerUser(followingPosts, userId);
+        userQueueRedisRepository.publishPostToFollowerUserList(followingPosts,userId);
+
     }
-
-    /*
-        언팔로우 했을 경우에 post 삭제
-     */
+    // 언팔로우 작성자에 post를 전부 삭제
     @Override
     @Transactional
     public void deleteFollowPost(Long userId, Long targetId) {
-        // 삭제
+
         userQueueRedisRepository.deleteFeed(userId, targetId);
     }
+
+    @Override
+    @Transactional
+    public void deletePost(PostEntity postEntity) {
+        // 작성자 정보 가져오기
+        UserEntity author = postEntity.getAuthor();
+
+        // 작성자를 팔로우하는 유저 ID 목록 가져오기
+        List<Long> followerIds = jpaUserRelationRepository.findFollowers(author.getId());
+
+        // 팔로워들의 피드에서 해당 게시글 삭제
+        userQueueRedisRepository.deletePostFromFollowingUserList(postEntity.getId(), followerIds);
+
+        System.out.println("Deleted post from all followers' feeds: " + postEntity.getId());
+    }
+
 }
+

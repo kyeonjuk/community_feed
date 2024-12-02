@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-public interface JpaCommentRepository extends JpaRepository<CommentEntity, Long> {
+public interface JpaCommentRepository extends JpaRepository<CommentEntity,Long> {
 
     @Modifying
     @Query(value = "UPDATE CommentEntity c "
@@ -13,4 +13,6 @@ public interface JpaCommentRepository extends JpaRepository<CommentEntity, Long>
         + "c.updDt = now() "
         + "where c.id = :commentId")
     void updateLikeCommentEntity(Long commentId, Integer likeCount);
+
+    void deleteAllByPostId(Long postId);
 }

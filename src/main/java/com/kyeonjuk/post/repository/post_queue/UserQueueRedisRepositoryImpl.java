@@ -36,7 +36,7 @@ public class UserQueueRedisRepositoryImpl implements UserQueueRedisRepository {
         [팔로우 시 기존 포스트 배포]
      */
     @Override
-    public void publishPostListToFollowerUser(List<PostEntity> postEntities, Long userId) {
+    public void publishPostToFollowerUserList(List<PostEntity> postEntities, Long userId) {
         for (PostEntity postEntity : postEntities) {
             UserPostQueueEntity userPostQueueEntity = new UserPostQueueEntity(
                 userId,
@@ -51,6 +51,14 @@ public class UserQueueRedisRepositoryImpl implements UserQueueRedisRepository {
     @Override
     public void deleteFeed(Long userId, Long targetUserId) {
         jpaUserPostQueueRepository.deleteAllByUserIdAndAuthorId(userId, targetUserId);
+    }
+
+
+    @Override
+    public void deletePostFromFollowingUserList(Long postId, List<Long> userIdList) {
+        for (Long userId : userIdList) {
+            jpaUserPostQueueRepository.deleteByUserIdAndPostId(userId, postId);
+        }
     }
 
 }

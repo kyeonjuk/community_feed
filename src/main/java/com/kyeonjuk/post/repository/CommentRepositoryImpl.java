@@ -14,27 +14,47 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
-public class CommentRepositoryImpl implements CommentRepository {
+public class CommentRepositoryImpl implements CommentRepository{
 
     private final JpaCommentRepository jpaCommentRepository;
+
     private final JpaPostRepository jpaPostRepository;
 
     @Override
     @Transactional
     public Comment save(Comment comment) {
-        CommentEntity commentEntity = new CommentEntity(comment);
-
-        // 해당 post의 comment_count값 1증가
-        Post post = comment.getPost();
+        Post post = comment.getPost();  //해당 Post 의 commentCount 값 1 증가
+        CommentEntity entity = new CommentEntity(comment);
+        entity = jpaCommentRepository.save(entity);
         jpaPostRepository.increaseCommentCount(post.getId());
-
-        return jpaCommentRepository.save(commentEntity).toComment();
+        return entity.toComment();
     }
 
     @Override
     public Comment findById(Long id) {
-        CommentEntity commentEntity = jpaCommentRepository.findById(id)
-            .orElseThrow(IllegalArgumentException::new);
-        return commentEntity.toComment();
+        CommentEntity entity = jpaCommentRepository
+            .findById(id)
+            .orElseThrow(IllegalArgumentException :: new);
+        return entity.toComment();
+
     }
+
+    @Override
+    public void delete(Comment comment) {
+
+        CommentEntity entity = new CommentEntity(comment);
+
+        jpaCommentRepository.delete(entity);
+
+    }
+
+    @Override
+    public void deleteAllByPostId(Long postId) {
+
+
+        jpaCommentRepository.deleteAllByPostId(postId);
+
+    }
+
 }
+

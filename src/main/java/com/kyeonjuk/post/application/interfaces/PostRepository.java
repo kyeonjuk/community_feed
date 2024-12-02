@@ -9,5 +9,7 @@ public interface PostRepository {
 
     Post findById(Long id);
 
+    void delete(Post post);
+
     List<Post> findAllByUserIdOrderByIdDesc(Long userId);
 }

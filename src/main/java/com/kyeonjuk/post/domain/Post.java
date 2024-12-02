@@ -86,6 +86,14 @@ public class Post {
         }
     }
 
+    public void deletePost(User user) {
+        if (!this.author.equals(user)) {
+            throw new IllegalArgumentException("Only the author can delete the post.");
+        }
+        // 삭제 작업 수행. 실제 데이터베이스 연동은 Service 또는 Repository에서 처리합니다.
+        System.out.println("Post with ID: " + this.id + " has been deleted.");
+    }
+
 
     public int getLikeCount() {
         return likeCount.getCount();
@@ -109,3 +117,4 @@ public class Post {
 
 
 }
+

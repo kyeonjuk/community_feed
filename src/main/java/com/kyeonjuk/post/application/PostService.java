@@ -81,6 +81,20 @@ public class PostService {
         return postRepository.save(post);
     }
 
+    @Transactional
+    public void deletePost(Long postId, Long userId) {
+        // 게시글 조회
+        Post post = getPost(postId);
+
+        // 작성자 확인
+        if (!post.getAuthor().getId().equals(userId)) {
+            throw new IllegalArgumentException("작성자와 사용자가 다릅니다. 삭제할 수 없습니다.");
+        }
+
+        // 게시글 삭제
+        postRepository.delete(post);
+    }
+
 
     @Transactional
     public int likePost(LikePostRequestDto requestDto) {

@@ -9,6 +9,8 @@ import com.kyeonjuk.post.application.dto.LikeCommentRequestDto;
 import com.kyeonjuk.post.application.dto.UpdateCommentRequestDto;
 import com.kyeonjuk.post.domain.comment.Comment;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +37,14 @@ public class CommentController {
         @RequestBody UpdateCommentRequestDto dto){
         Comment comment = commentService.updateComment(commentId,dto);
         return Response.ok(comment.getId());
+    }
+
+    @DeleteMapping("delete/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId,
+        @AuthPrincipal UserPrincipal userPrincipal) {
+        Long userId = userPrincipal.getUserId();
+        commentService.deleteComment(commentId,userId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/like/{commentId}")

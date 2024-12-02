@@ -230,6 +230,7 @@
   background-color: #0056b3;
 }
 
+
   </style>
 </head>
 <script>
@@ -307,23 +308,27 @@ document.addEventListener('DOMContentLoaded', function () {
               const isCommentOwner = globalUserId === commentItem.userId; // 전역 userId와 비교
 
               commentElement.innerHTML = `
-                  <div style="display: flex; align-items: center; margin-bottom: 5px;">
-                      <img class="profile-image"
-                           src="${commentItem.userProfileImageUrl || '/images/person.jpeg'}"
-                           onerror="this.src='/images/person.jpeg'"
-                           style="width: 30px; height: 30px; margin-right: 10px;" />
-                      <b>${commentItem.userName}</b>
-                      <button class="like-button"
-                              onclick="${isCommentOwner ? 'alert(\'자신의 댓글은 좋아요를 누를 수 없습니다.\')' : `toggleCommentLike(${commentItem.id}, this)`}"
-                              style="background: none; border: none; cursor: pointer; margin-left: 10px;">
-                          <i class="fas fa-heart" style="color: ${commentItem.likedByMe ? 'red' : 'black'};"></i>
-                      </button>
-                      <span id="commentLikeCount-${commentItem.id}"
-                            style="margin-left: 5px; color: #555;">${commentItem.likeCount !== undefined ? commentItem.likeCount : 0}</span>
-                  </div>
-                  <p>${commentItem.content}</p>
-                  <small style="color: #888;">${new Date(commentItem.createdAt).toLocaleString()}</small>
-              `;
+                <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                    <img class="profile-image"
+                         src="${commentItem.userProfileImageUrl || '/images/person.jpeg'}"
+                         onerror="this.src='/images/person.jpeg'"
+                         style="width: 30px; height: 30px; margin-right: 10px;" />
+                    <b>${commentItem.userName}</b>
+                    <button class="like-button"
+                            onclick="${isCommentOwner ? 'alert(\'자신의 댓글은 좋아요를 누를 수 없습니다.\')' : `toggleCommentLike(${commentItem.id}, this)`}"
+                            style="background: none; border: none; cursor: pointer; margin-left: 10px;">
+                        <i class="fas fa-heart" style="color: ${commentItem.likedByMe ? 'red' : 'black'};"></i>
+                    </button>
+                    <span id="commentLikeCount-${commentItem.id}"
+                          style="margin-left: 5px; color: #555;">${commentItem.likeCount !== undefined ? commentItem.likeCount : 0}</span>
+                </div>
+                <p>${commentItem.content}</p>
+                <small style="color: #888;">${new Date(commentItem.createdAt).toLocaleString()}</small>
+                <button class="delete-button" onclick="confirmDeleteComment(${commentItem.id})">
+                    <i class="fas fa-times"></i> <!-- X 아이콘 -->
+                </button>
+            `;
+
 
               commentList.appendChild(commentElement);
           } else {
@@ -343,6 +348,41 @@ document.addEventListener('DOMContentLoaded', function () {
     alert('잘못된 게시물 ID입니다.');
   }
 });
+function confirmDeleteComment(commentId) {
+    // 삭제 확인 alert
+    if (confirm("댓글을 삭제하시겠습니까?")) {
+        // 삭제 API 호출
+        deleteComment(commentId);
+    }
+}
+
+function deleteComment(commentId) {
+    const token = localStorage.getItem('accessToken'); // 로그인 토큰 가져오기
+    if (!token) {
+        alert('로그인 토큰이 없습니다. 다시 로그인 해주세요.');
+        return;
+    }
+
+    fetch(`/comment/delete/${commentId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('댓글이 성공적으로 삭제되었습니다.');
+            // 댓글 삭제 후 UI에서 해당 댓글 제거
+            document.getElementById(`comment-${commentId}`).remove();
+        } else {
+            alert('댓글1234 삭제에 실패했습니다.');
+        }
+    })
+    .catch(error => {
+        console.error('댓글 삭제 오류:', error);
+        alert('댓글 삭제에 실패했습니다.');
+    });
+}
 
  function toggleLike() {
    const pathname = window.location.pathname; // URL 경로 가져오기
@@ -494,11 +534,17 @@ function addCommentToList(comment) {
               style="margin-left: 5px; color: #555;">${comment.likeCount || 0}</span>
         </div>
         <p>${comment.content}</p>
-        <small style="color: #888;">${new Date(comment.createdAt).toLocaleString()}</small>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <small style="color: #888;">${new Date(comment.createdAt).toLocaleString()}</small>
+        </div>
+        <button class="delete-button" onclick="deleteComment(${comment.id}, this)">
+            <i class="fas fa-times"></i> <!-- X 아이콘 -->
+        </button>
     `;
 
     commentList.appendChild(commentElement);
 }
+
 
 function toggleCommentLike(commentId, button) {
     const token = localStorage.getItem('accessToken');
@@ -672,6 +718,53 @@ function imageChoose(input) {
 }
 
 
+function deleteModel(button) {
+    // 현재 페이지의 URL에서 postId를 추출하기 위해 pathParts 사용
+    const pathname = window.location.pathname; // URL 경로 가져오기
+    const pathParts = pathname.split('/'); // '/'를 기준으로 분리
+    const postId = pathParts[pathParts.length - 1]; // 마지막 부분이 'postId'
+
+    console.log(postId); // 실제 postId 값 확인
+
+    if (!postId) {
+        alert('게시글 ID를 찾을 수 없습니다.');
+        return;
+    }
+
+    // 삭제 확인 Alert 창
+    if (confirm('정말로 게시글을 삭제하시겠습니까?')) {
+        const token = localStorage.getItem('accessToken'); // 로그인 토큰 가져오기
+        if (!token) {
+            alert('로그인 토큰이 없습니다. 다시 로그인 해주세요.');
+            return;
+        }
+
+        // 서버로 DELETE 요청 보내기
+        fetch(`/post/delete/${postId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}` // 'Bearer ' 앞에 공백이 없어야 합니다.
+            }
+        })
+
+        .then(response => {
+            if (response.ok) {
+                alert('게시글이 성공적으로 삭제되었습니다.');
+                location.reload(); // 페이지 새로고침
+            } else {
+                return response.json().then(data => {
+                    throw new Error(data.message || '게시글 삭제에 실패했습니다.');
+                });
+            }
+        })
+        .catch(error => {
+            console.error('게시글 삭제 오류:', error);
+            alert('게시글 삭제에 실패했습니다. 다시 시도해주세요.');
+        });
+    }
+}
+
+
 
 
 
@@ -722,7 +815,7 @@ function imageChoose(input) {
 <div id="popup" class="popup">
   <div class="popup-content">
     <button class="popup-button" data-post-id="${postId}" onclick="openEditModal(this)">게시글 수정</button>
-    <button class="popup-button">게시글 삭제</button>
+    <button class="popup-button" data-post-id="${postId}" onclick="deleteModel(this)">게시글 삭제</button>
     <button class="popup-button">게시글 공유</button>
     <button class="popup-button" onclick="closePopup('popup')">닫기</button>
   </div>

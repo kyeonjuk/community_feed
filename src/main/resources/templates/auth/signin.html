@@ -12,18 +12,17 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <script type="module">
-
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
 
     // Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyD2x5AwpBiVYMphqkDtq2cQRdFyD4YsSzQ",
-      authDomain: "community-service-bb1ff.firebaseapp.com",
-      projectId: "community-service-bb1ff",
-      storageBucket: "community-service-bb1ff.firebasestorage.app",
-      messagingSenderId: "24753656321",
-      appId: "1:24753656321:web:427cbbe4be646c30ae2600"
+        apiKey: "AIzaSyD2x5AwpBiVYMphqkDtq2cQRdFyD4YsSzQ",
+        authDomain: "community-service-bb1ff.firebaseapp.com",
+        projectId: "community-service-bb1ff",
+        storageBucket: "community-service-bb1ff.firebasestorage.app",
+        messagingSenderId: "24753656321",
+        appId: "1:24753656321:web:427cbbe4be646c30ae2600"
     };
 
     // Initialize Firebase
@@ -32,19 +31,21 @@
 
     // Function to retrieve FCM token
     async function retrieveToken() {
-      try {
-        const currentToken = await getToken(messaging, {vapidKey: "BFZnaOmvy71Zp7dRY9K6Hk4-fjxfS8-92-6ZUBoy4SHSF8fJL0PZlDX4mryIzG23WPzZC-u0wqt1E0btURVIhVU"});
-        if (currentToken) {
-          console.log(currentToken);
-          return currentToken;
-        } else {
-          console.warn("No registration token available.");
-          return "";
+        try {
+            const currentToken = await getToken(messaging, {
+                vapidKey: "BFZnaOmvy71Zp7dRY9K6Hk4-fjxfS8-92-6ZUBoy4SHSF8fJL0PZlDX4mryIzG23WPzZC-u0wqt1E0btURVIhVU"
+            });
+            if (currentToken) {
+                console.log(currentToken);
+                return currentToken;
+            } else {
+                console.warn("No registration token available.");
+                return "";
+            }
+        } catch (err) {
+            console.error('An error occurred while retrieving token: ', err);
+            return "";
         }
-      } catch (err) {
-        console.error('An error occurred while retrieving token: ', err);
-        return "";
-      }
     }
 
     // Login function with fcmToken as a parameter
@@ -97,15 +98,23 @@
         }
     }
 
-
     // Function that handles login button click
     async function handleLogin() {
         const fcmToken = await retrieveToken();
         await login(fcmToken);
     }
 
+    // Add event listener for Enter key press
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // 기본 Enter 동작 방지
+            handleLogin(); // 로그인 처리 함수 호출
+        }
+    });
+
     window.handleLogin = handleLogin;
 </script>
+
 
 
 <body>
