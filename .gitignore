@@ -45,3 +45,6 @@ bin/
 
 ### FCM ###
 community-service-adminsdk.json
+
+### custom ###
+**/src/main/generated/**

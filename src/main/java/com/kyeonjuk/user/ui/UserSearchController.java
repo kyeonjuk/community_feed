@@ -19,7 +19,7 @@ public class UserSearchController {
     private final UserService userService;
 
     @GetMapping("/{userName}")
-    public Response<List<GetSearchByUserNameResponseDto>> searchByUserName(@PathVariable String userName) {
+    public Response<List<GetSearchByUserNameResponseDto>> searchByUserName(@PathVariable("userName") String userName) {
 
         List<User> userList = userService.findByLikeUserName(userName);
 
