@@ -24,7 +24,7 @@ public class NotificationService {
     }
 
     // 읽지 않은 내 알림 조회
-    public List<NotificationEntity> getAllMyNotifications(Long userId) {
+    public List<NotificationEntity> getAllMyNotificationsUnread(Long userId) {
         return notificationRepository.findAllByUserIdAndIsReadFalse(userId);
     }
 
@@ -43,6 +43,11 @@ public class NotificationService {
             .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND));
 
         return entity;
+    }
+
+    // 읽지않은 알림 개수 조회
+    public Long getUnreadNotificationCount(Long userId) {
+        return notificationRepository.countByUserIdAndIsReadFalse(userId);
     }
 
 }

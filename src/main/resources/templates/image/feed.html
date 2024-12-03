@@ -47,9 +47,17 @@
                 postItem.innerHTML = `
                     <div class="sl__item__header">
                         <div>
-                            <img class="profile-image" src="${post.userProfileImageUrl || '/images/person.jpeg'}" />
+                            <a href="/model/user/profile/${post.userId}">
+                                <img class="profile-image"
+                                     src="${post.userProfileImageUrl || '/images/person.jpeg'}"
+                                     onerror="this.src='/images/person.jpeg'" />
+                            </a>
                         </div>
-                        <div>${post.userName}</div>
+                        <div>
+                            <a href="/model/user/profile/${post.userId}" style="text-decoration: none; color: #000;">
+                                ${post.userName}
+                            </a>
+                        </div>
                     </div>
                     <div class="sl__item__img" onclick="location.href='/model/feed/postMain/${post.id}'">
                         <img src="/uploads/images/${post.contentImageUrl}" />

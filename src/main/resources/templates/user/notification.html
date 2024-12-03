@@ -1,0 +1,23 @@
+<header>
+  <link rel="stylesheet" th:href="@{/css/notification.css}">
+</header>
+
+<div th:replace="~{/layout/header :: headerFragment}"></div>
+
+<section class="notifications">
+  <div class="notificationsContainer">
+    <h2>읽지 않은 알림</h2>
+
+    <div id="notificationContainer" class="notification-list">
+      <!-- 알림이 동적으로 추가됩니다 -->
+    </div>
+
+    <div id="noNotificationsMessage" style="display: none;">
+      새로운 알림이 없습니다.
+    </div>
+  </div>
+</section>
+
+<script src="/js/notification.js"></script>
+
+<div th:replace="~{/layout/footer :: footerFragment}"></div>

@@ -51,4 +51,12 @@ public class UserModelController {
         return modelAndView;
     }
 
+    @GetMapping("/notification")
+    public ModelAndView getNotification() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("user/notification");
+
+        return modelAndView;
+    }
+
 }

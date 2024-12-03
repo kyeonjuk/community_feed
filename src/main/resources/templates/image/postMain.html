@@ -230,6 +230,19 @@
   background-color: #0056b3;
 }
 
+#postUserName a {
+  text-decoration: none; /* 링크 밑줄 제거 */
+  color: #3498db; /* 파란색 텍스트 */
+  font-weight: bold; /* 글씨 굵게 */
+  font-size: 16px; /* 글씨 크기 */
+  transition: color 0.3s ease; /* 색상 변화에 부드러운 애니메이션 추가 */
+}
+
+#postUserName a:hover {
+  color: #1abc9c; /* 마우스 올렸을 때 색상 변화 */
+  text-decoration: underline; /* 호버 시 밑줄 추가 */
+}
+
 
   </style>
 </head>
@@ -274,8 +287,16 @@ document.addEventListener('DOMContentLoaded', function () {
           const likeCount = post.likeCount || 0;
 
           // HTML 업데이트
-          document.getElementById('postUserName').innerText = userName;
-          document.getElementById('postUserProfileImage').src = userProfileImage;
+          document.getElementById('postUserName').innerHTML = `
+          <a href="/model/user/profile/${authorId}" style="text-decoration: none; color: #3498db; font-weight: bold; font-size: 16px;">
+            ${userName}
+          </a>
+        `;
+          document.getElementById('postUserProfileImage').outerHTML = `
+          <a href="/model/user/profile/${authorId}">
+            <img src="${userProfileImage}" alt="User Profile" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #3498db;">
+          </a>
+        `; // 사용자 프로필 이미지에 링크 추가
           document.getElementById('postImage').src = postImageUrl;
           document.getElementById('postContent').innerText = postContent;
           document.getElementById('storyLikeCount').innerText = likeCount;
@@ -294,47 +315,71 @@ document.addEventListener('DOMContentLoaded', function () {
             likeIcon.style.color = 'gray'; // 색상 변경 (비활성화 표시)
           }
 
+            if (globalUserId === authorId) {
+            // 더보기 버튼 추가
+            const moreOptionsButton = document.createElement('button');
+            moreOptionsButton.setAttribute('onclick', 'showPopup()');
+            moreOptionsButton.setAttribute('style', 'border: none; background: none; cursor: pointer;');
+            moreOptionsButton.innerHTML = `<i class="fas fa-ellipsis-h"></i>`; // 더보기 아이콘
+
+            // 버튼을 원하는 위치에 추가
+            const postContainer = document.getElementById('postContainer'); // 버튼을 넣을 부모 요소 ID
+            if (postContainer) {
+              postContainer.appendChild(moreOptionsButton);
+            }
+          }
+
           // 댓글 렌더링
           const commentList = document.getElementById('storyCommentList');
           commentList.innerHTML = ''; // 기존 댓글 제거
 
           // 댓글 렌더링 수정
         comments.forEach(commentItem => {
-          if (commentItem && commentItem.likeCount !== undefined) {
-              const commentElement = document.createElement('div');
-              commentElement.classList.add('sl__item__contents__comment');
+  if (commentItem && commentItem.likeCount !== undefined) {
+    const commentElement = document.createElement('div');
+    commentElement.classList.add('sl__item__contents__comment');
 
-              // 작성자와 현재 사용자의 ID 비교
-              const isCommentOwner = globalUserId === commentItem.userId; // 전역 userId와 비교
+    // 기본 댓글 HTML 구조 생성
+    commentElement.innerHTML = `
+  <div style="display: flex; align-items: center; margin-bottom: 5px;">
+      <a href="/model/user/profile/${commentItem.userId}">
+        <img class="profile-image"
+             src="${commentItem.userProfileImageUrl || '/images/person.jpeg'}"
+             onerror="this.src='/images/person.jpeg'"
+             style="width: 30px; height: 30px; margin-right: 10px; border-radius: 50%; border: 2px solid #3498db;" />
+      </a>
+      <a href="/model/user/profile/${commentItem.userId}" style="text-decoration: none; color: #000;">
+        <b>${commentItem.userName}</b>
+      </a>
+      <button class="like-button"
+              onclick="toggleCommentLike(${commentItem.id}, this)"
+              style="background: none; border: none; cursor: pointer; margin-left: 10px;">
+          <i class="fas fa-heart" style="color: ${commentItem.likedByMe ? 'red' : 'black'};"></i>
+      </button>
+      <span id="commentLikeCount-${commentItem.id}"
+            style="margin-left: 5px; color: #555;">${commentItem.likeCount || 0}</span>
+  </div>
+  <p>${commentItem.content}</p>
+  <small style="color: #888;">${new Date(commentItem.createdAt).toLocaleString()}</small>
+`;
 
-              commentElement.innerHTML = `
-                <div style="display: flex; align-items: center; margin-bottom: 5px;">
-                    <img class="profile-image"
-                         src="${commentItem.userProfileImageUrl || '/images/person.jpeg'}"
-                         onerror="this.src='/images/person.jpeg'"
-                         style="width: 30px; height: 30px; margin-right: 10px;" />
-                    <b>${commentItem.userName}</b>
-                    <button class="like-button"
-                            onclick="${isCommentOwner ? 'alert(\'자신의 댓글은 좋아요를 누를 수 없습니다.\')' : `toggleCommentLike(${commentItem.id}, this)`}"
-                            style="background: none; border: none; cursor: pointer; margin-left: 10px;">
-                        <i class="fas fa-heart" style="color: ${commentItem.likedByMe ? 'red' : 'black'};"></i>
-                    </button>
-                    <span id="commentLikeCount-${commentItem.id}"
-                          style="margin-left: 5px; color: #555;">${commentItem.likeCount !== undefined ? commentItem.likeCount : 0}</span>
-                </div>
-                <p>${commentItem.content}</p>
-                <small style="color: #888;">${new Date(commentItem.createdAt).toLocaleString()}</small>
-                <button class="delete-button" onclick="confirmDeleteComment(${commentItem.id})">
-                    <i class="fas fa-times"></i> <!-- X 아이콘 -->
-                </button>
-            `;
 
+    // 댓글 작성자인 경우에만 삭제 버튼 추가
+    if (globalUserId === commentItem.userId) {
+      commentElement.innerHTML += `
+        <button class="delete-button" onclick="confirmDeleteComment(${commentItem.id})">
+          <i class="fas fa-times"></i> <!-- X 아이콘 -->
+        </button>
+      `;
+    }
 
-              commentList.appendChild(commentElement);
-          } else {
-              console.error('Invalid comment data:', commentItem); // 잘못된 댓글 데이터 출력
-          }
-      });
+    // 댓글 목록에 추가
+    commentList.appendChild(commentElement);
+  } else {
+    console.error('Invalid comment data:', commentItem); // 잘못된 댓글 데이터 출력
+  }
+});
+
 
         })
         .catch(error => {
@@ -372,17 +417,18 @@ function deleteComment(commentId) {
     .then(response => {
         if (response.ok) {
             alert('댓글이 성공적으로 삭제되었습니다.');
-            // 댓글 삭제 후 UI에서 해당 댓글 제거
-            document.getElementById(`comment-${commentId}`).remove();
+            // 페이지를 새로고침
+            location.reload();
         } else {
-            alert('댓글1234 삭제에 실패했습니다.');
+            alert('댓글 삭제에 실패했습니다.');
         }
     })
     .catch(error => {
-        console.error('댓글 삭제 오류:', error);
-        alert('댓글 삭제에 실패했습니다.');
+        console.error('댓글 삭제 중 오류 발생:', error);
+        alert('댓글 삭제 중 오류가 발생했습니다.');
     });
 }
+
 
  function toggleLike() {
    const pathname = window.location.pathname; // URL 경로 가져오기
@@ -661,6 +707,12 @@ function updatePost() {
         return;
     }
 
+    // 게시글 내용 길이 검증
+    if (content.length < 5 || content.length > 500) {
+        alert('게시물 내용은 5자 이상 500자 이하로 작성해야 합니다.');
+        return;
+    }
+
     const token = localStorage.getItem('accessToken');
     if (!token) {
         alert('로그인 토큰이 없습니다.');
@@ -671,7 +723,7 @@ function updatePost() {
     const formData = new FormData();
     formData.append("content", content);
     formData.append("userId", globalUserId); // userId를 formData에 추가
-    formData.append("state", "PUBLIC"); // 예시: 'PUBLISHED'를 'PUBLIC'로 수정
+    formData.append("state", "PUBLIC"); // 예시: 'PUBLIC'로 수정
 
     if (contentImageUrl) { // 파일이 존재하면
         formData.append("contentImageUrl", contentImageUrl); // 파일 추가
@@ -680,10 +732,9 @@ function updatePost() {
 
     // FormData의 내용을 확인
     for (let pair of formData.entries()) {
-        console.log(pair[0]+ ', ' + pair[1]);
+        console.log(pair[0] + ', ' + pair[1]);
     }
 
-    // headers에서 'Content-Type'을 설정하지 않음. FormData는 자동으로 처리됨
     fetch(`/post/${postId}`, {
         method: 'PATCH',
         headers: {
@@ -695,6 +746,11 @@ function updatePost() {
     .then(data => {
         if (data.code === 0) {
             alert('게시물이 성공적으로 수정되었습니다.');
+
+            // 팝업창 닫기
+            closePopup(); // 팝업창 닫는 함수 호출
+            // 페이지 새로고침
+            location.reload();
         } else {
             alert('게시물 수정에 실패했습니다. 다시 시도해주세요.');
         }
@@ -704,6 +760,7 @@ function updatePost() {
         alert('게시물 수정에 실패했습니다.');
     });
 }
+
 
 // 파일 미리보기
 function imageChoose(input) {
@@ -746,11 +803,11 @@ function deleteModel(button) {
                 'Authorization': `Bearer ${token}` // 'Bearer ' 앞에 공백이 없어야 합니다.
             }
         })
-
         .then(response => {
             if (response.ok) {
                 alert('게시글이 성공적으로 삭제되었습니다.');
-                location.reload(); // 페이지 새로고침
+                // 특정 URL로 이동
+                window.location.href = 'http://localhost:8080/model/user/profile';
             } else {
                 return response.json().then(data => {
                     throw new Error(data.message || '게시글 삭제에 실패했습니다.');
@@ -768,6 +825,7 @@ function deleteModel(button) {
 
 
 
+
 </script>
 <body>
 <div class="story-list__item" id="postItem">
@@ -776,9 +834,9 @@ function deleteModel(button) {
       <img class="profile-image" src="#" onerror="this.src='/images/person.jpeg'" id="postUserProfileImage" />
     </div>
     <div id="postUserName">사용자 이름</div>
-    <button onclick="showPopup()" style="border: none; background: none; cursor: pointer;">
-      <i class="fas fa-ellipsis-h"></i> <!-- 더보기 아이콘 -->
-    </button>
+    <!-- 게시물 내용 -->
+    <div id="postContainer">
+    </div>
   </div>
 
   <div class="sl__item__img">
@@ -816,7 +874,6 @@ function deleteModel(button) {
   <div class="popup-content">
     <button class="popup-button" data-post-id="${postId}" onclick="openEditModal(this)">게시글 수정</button>
     <button class="popup-button" data-post-id="${postId}" onclick="deleteModel(this)">게시글 삭제</button>
-    <button class="popup-button">게시글 공유</button>
     <button class="popup-button" onclick="closePopup('popup')">닫기</button>
   </div>
 </div>

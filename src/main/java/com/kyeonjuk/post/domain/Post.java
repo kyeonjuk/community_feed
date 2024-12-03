@@ -115,6 +115,9 @@ public class Post {
         return content;
     }
 
-
+    public boolean isPublic() {
+        return PostPublicationState.PUBLIC.equals(this.state);
+    }
 }
+
 
