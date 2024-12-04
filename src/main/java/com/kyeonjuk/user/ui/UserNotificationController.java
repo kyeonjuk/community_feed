@@ -9,6 +9,7 @@ import com.kyeonjuk.user.ui.dto.GetUnreadNotificationResponseDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,5 +46,16 @@ public class UserNotificationController {
         List<GetUnreadNotificationResponseDto> dto = resultList.stream().map(NotificationEntity::toDto).toList();
 
         return Response.ok(dto);
+    }
+
+    /*
+        알림 읽음 처리 -> 삭제
+     */
+    @GetMapping("/markAsRead/{notificationId}")
+    public Response<Void> markAsRead(@PathVariable("notificationId") Long notificationId) {
+
+        notificationService.markAsRead(notificationId);
+
+        return Response.ok(null);
     }
 }

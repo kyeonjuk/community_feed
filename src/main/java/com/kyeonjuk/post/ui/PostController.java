@@ -1,8 +1,10 @@
 package com.kyeonjuk.post.ui;
 
+import com.kyeonjuk.common.domain.exception.ErrorCode;
 import com.kyeonjuk.common.idempotency.Idempotent;
 import com.kyeonjuk.common.principal.AuthPrincipal;
 import com.kyeonjuk.common.principal.UserPrincipal;
+import com.kyeonjuk.common.ui.BaseException;
 import com.kyeonjuk.common.ui.Response;
 import com.kyeonjuk.post.application.CommentService;
 import com.kyeonjuk.post.application.PostService;
@@ -52,7 +54,7 @@ public class PostController {
         @ModelAttribute UpdatePostRequestDto dto) {
 
         if (postId == null) {
-            throw new IllegalArgumentException("postId는 null일 수 없습니다.");
+            throw new BaseException(ErrorCode.NULL_POST_ID);
         }
 
         Post post = postService.updatePost(postId, dto);
@@ -77,7 +79,6 @@ public class PostController {
         @AuthPrincipal UserPrincipal userPrincipal) {
         Long userId = userPrincipal.getUserId(); // 로그인한 사용자 ID
         int likeCount = postService.likePost(new LikePostRequestDto(userId, postId));
-
         return Response.ok(likeCount);
     }
 

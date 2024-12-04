@@ -92,9 +92,9 @@ $(document).ready(function () {
             });
 
             if (response.ok) {
-                const data = await response.json(); // { "success": true, "data": 5 }
-                const unreadCount = data.value;      // 읽지 않은 알림 수 가져오기
-                updateNotificationIcon(unreadCount > 0); // 0보다 크면 아이콘을 업데이트
+                const data = await response.json(); // { "success": true, "value": 5 }
+                const unreadCount = data.value;     // 읽지 않은 알림 수 가져오기
+                updateNotificationIcon(unreadCount); // 알림 수 업데이트
             } else {
                 console.error('Failed to fetch notifications.');
             }
@@ -103,17 +103,26 @@ $(document).ready(function () {
         }
     }
 
+    // 알림 아이콘 상태 및 배지 업데이트 함수
+    function updateNotificationIcon(unreadCount) {
+        const icon = $('#notificationIcon'); // 알림 아이콘
+        const badge = $('#notificationBadge'); // 알림 배지
 
-    // 알림 아이콘 상태 업데이트 함수
-    function updateNotificationIcon(hasUnreadNotifications) {
-        const icon = $('#notificationIcon'); // jQuery로 접근
-
-        if (hasUnreadNotifications) {
+        if (unreadCount > 0) {
             icon.removeClass('far').addClass('fas'); // Regular -> Solid
-            icon.css('color', '#f39c12');                // 빨간색으로 변경
+            icon.css('color', '#f39c12');            // 아이콘 색상 변경
+            badge.text(unreadCount);                 // 배지에 알림 수 표시
+            badge.css('display', 'inline-block');    // 배지 표시
         } else {
             icon.removeClass('fas').addClass('far'); // Solid -> Regular
-            icon.css('color', 'gray');               // 회색으로 변경
+            icon.css('color', 'gray');               // 아이콘 색상 변경
+            badge.css('display', 'none');            // 배지 숨기기
         }
     }
+});
+
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted || window.performance.navigation.type === 2) {
+    window.location.reload(); // 캐시에서 복원되거나 뒤로가기 시 전체 페이지 재로딩
+  }
 });

@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
         log.error("InvalidDataAccessApiUsageException: {}", exception.getMessage(), exception);
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
-            .body(Response.error(new BaseException(ErrorCode.INVALID_INPUT_VALUE, "옳지 않은 비밀번호입니다.")));
+            .body(Response.error(new BaseException(ErrorCode.INTERNAL_ERROR, "서버 내부 오류가 발생했습니다.")));
     }
 
     // 모든 예외를 처리 (예상치 못한 예외)

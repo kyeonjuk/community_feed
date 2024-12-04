@@ -155,3 +155,18 @@
     border-radius: 50%;
     margin-right: 10px;
 }
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -13px;
+    background: #ff6000;
+    color: white;
+    font-size: 12px;
+    border-radius: 50%;
+    padding: 2px 6px;
+    min-width: 18px;
+    text-align: center;
+    font-weight: bold;
+    display: none; /* 기본적으로 숨기기 */
+}

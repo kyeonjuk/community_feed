@@ -1,5 +1,7 @@
 package com.kyeonjuk.post.repository;
 
+import com.kyeonjuk.common.domain.exception.ErrorCode;
+import com.kyeonjuk.common.ui.BaseException;
 import com.kyeonjuk.post.application.interfaces.PostRepository;
 import com.kyeonjuk.post.domain.Post;
 import com.kyeonjuk.post.repository.entity.post.PostEntity;
@@ -32,9 +34,10 @@ public class PostRepositoryImpl implements PostRepository {
     public Post findById(Long id) {
         PostEntity entity = jpaPostRepository
             .findById(id)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new BaseException(ErrorCode.NULL_POST_ID));
         return entity.toPost();
     }
+
     @Override
     public List<Post> findAllByUserIdOrderByIdDesc(Long userId) {
         List<PostEntity> postEntityList = jpaPostRepository.findAllByAuthorIdOrderByIdDesc(userId);

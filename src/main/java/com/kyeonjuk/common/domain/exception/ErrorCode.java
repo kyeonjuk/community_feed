@@ -12,6 +12,7 @@ public enum ErrorCode {
     EMPTY_POST_CONTENT(400, "게시글 내용은 비어 있을 수 없습니다."),
     EXCEEDED_MAX_POST_LENGTH(400, "게시글 내용은 최대 500자까지 작성할 수 있습니다."),
     BELOW_MIN_POST_LENGTH(400, "게시글 내용은 최소 5자 이상이어야 합니다."),
+    NULL_POST_ID(400, "해당 포스트가 존재하지 않습니다."),
 
     // 일반적인 오류 코드
     INVALID_INPUT_VALUE(400, "invalid input value"),

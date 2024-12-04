@@ -4,7 +4,7 @@ import com.kyeonjuk.common.domain.exception.ErrorCode;
 import com.kyeonjuk.common.repository.NotificationRepository;
 import com.kyeonjuk.common.repository.entity.NotificationEntity;
 import com.kyeonjuk.common.ui.BaseException;
-import com.kyeonjuk.common.ui.dto.PostSaveNotificationRequestDto;
+import com.kyeonjuk.common.ui.dto.SaveNotificationRequestDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class NotificationService {
 
     // 알림 저장
     @Transactional
-    public void saveNotification(PostSaveNotificationRequestDto dto) {
+    public void saveNotification(SaveNotificationRequestDto dto) {
         NotificationEntity entity = new NotificationEntity(dto.userId(), dto.body(), dto.contentUrl(), false);
         notificationRepository.save(entity);
     }

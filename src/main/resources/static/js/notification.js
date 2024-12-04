@@ -26,6 +26,7 @@ async function fetchUnreadNotifications() {
   }
 }
 
+// 알림 표시 함수
 function displayNotifications(notifications) {
   const container = document.getElementById('notificationContainer');
   const noNotificationsMessage = document.getElementById('noNotificationsMessage');
@@ -49,16 +50,41 @@ function displayNotifications(notifications) {
           <span class="notification-message">${notification.body}</span>
         </div>
         <div class="notification-footer">
-          <a href="${notification.contentUrl}" target="_blank">자세히 보기</a>
+          <a href="#">자세히 보기</a>
         </div>
       `;
 
-      // 클릭 시 URL로 이동
-      item.addEventListener('click', () => {
+      // 클릭 시 알림 읽음 처리 및 URL로 이동
+      item.addEventListener('click', async (e) => {
+        e.preventDefault(); // 기본 링크 동작 막기
+
+        // 알림 읽음 처리
+        await markNotificationAsRead(notification.id);
+
+        // URL로 이동
         window.location.href = notification.contentUrl;
       });
 
       container.appendChild(item);
     });
+  }
+}
+
+// 알림 읽음 처리 함수
+async function markNotificationAsRead(notificationId) {
+  try {
+    const response = await fetch(`/user/notification/markAsRead/${notificationId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('accessToken') // AccessToken 필요
+      }
+    });
+
+    if (!response.ok) {
+      console.error(`확인할 수 없는 알림 입니다.`);
+    }
+  } catch (error) {
+    console.error('Error:', error);
   }
 }

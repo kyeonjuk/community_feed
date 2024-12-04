@@ -1,5 +1,7 @@
 package com.kyeonjuk.post.application;
 
+import com.kyeonjuk.common.application.NotificationService;
+import com.kyeonjuk.common.ui.dto.SaveNotificationRequestDto;
 import com.kyeonjuk.post.application.dto.CreatePostRequestDto;
 import com.kyeonjuk.post.application.dto.LikePostRequestDto;
 import com.kyeonjuk.post.application.dto.UpdatePostRequestDto;
@@ -13,23 +15,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
 
     private final UserService userService;
+    private final NotificationService notificationService;
     private final PostRepository postRepository;
     private final LikePostRepository likePostRepository;
-
-    public PostService(UserService userService, PostRepository postRepository,
-        LikePostRepository likePostRepository) {
-        this.userService = userService;
-        this.postRepository = postRepository;
-        this.likePostRepository = likePostRepository;
-    }
 
     public Post getPost(Long id) {
         return postRepository.findById(id);
@@ -67,16 +65,13 @@ public class PostService {
 
         // 사용자 정보
         User user = userService.getUser(requestDto.userId());
-        System.out.println(user.getId()+"====================");
-        System.out.println(imageUrl+"22222222222");
 
         // 기존 게시물 가져오기
         Post post = getPost(postId);
-        System.out.println(post.getAuthor().getId() + "------------------------");
 
         // 게시물 업데이트 (imageUrl을 전달)
         post.updatePost(user, requestDto.content(), requestDto.state(), imageUrl);
-        System.out.println(post.getContentImageUrl());
+
         // 게시물 저장
         return postRepository.save(post);
     }
@@ -107,6 +102,11 @@ public class PostService {
 
         post.like(user);
         likePostRepository.like(user, post);
+
+        // 작성자 알림 저장
+        String message = user.getName() + "님이 회원님의 글에 좋아요를 눌렀습니다.";
+        String url = "/model/feed/postMain/" + post.getId();
+        notificationService.saveNotification(new SaveNotificationRequestDto(post.getAuthorId(), message, url));
 
         return post.getLikeCount();
     }
