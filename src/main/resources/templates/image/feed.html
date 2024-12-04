@@ -1,4 +1,10 @@
 <div th:replace="~{/layout/header :: headerFragment}"></div>
+<style>
+    .sl__item__contents__content {
+    padding: 5px 15px;
+    margin-bottom: 20;
+}
+</style>
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
         const token = localStorage.getItem('accessToken');
@@ -49,8 +55,7 @@
                         <div>
                             <a href="/model/user/profile/${post.userId}">
                                 <img class="profile-image"
-                                     src="${post.userProfileImageUrl || '/images/person.jpeg'}"
-                                     onerror="this.src='/images/person.jpeg'" />
+                                     src="/uploads/images/${post.userProfileImageUrl || 'Default-Profile.png'}"/>
                             </a>
                         </div>
                         <div>

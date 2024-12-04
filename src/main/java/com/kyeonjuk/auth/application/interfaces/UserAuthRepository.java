@@ -9,4 +9,5 @@ public interface UserAuthRepository {
     UserAuth loginUser(String email, String password, String fcmToken);
     UserAuth getAuth(Long userId);
     void save(UserAuth userAuth);
+    void flush();
 }

@@ -1,5 +1,7 @@
 package com.kyeonjuk.user.repository;
 
+import com.kyeonjuk.common.domain.exception.ErrorCode;
+import com.kyeonjuk.common.ui.BaseException;
 import com.kyeonjuk.user.application.interfaces.UserRepository;
 import com.kyeonjuk.user.domain.User;
 import com.kyeonjuk.user.repository.entity.UserEntity;
@@ -28,7 +30,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User findById(Long id) {
         UserEntity userEntity = jpaUserRepository
             .findById(id)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new BaseException(ErrorCode.ENTITY_NOT_FOUND));
 
         return userEntity.toUser();
     }

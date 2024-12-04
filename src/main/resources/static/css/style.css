@@ -94,10 +94,10 @@ button {
     height: 30px;
     background-color: #0095f6;
     color: #fff;
-    margin-top: 15px;
     font-weight: 700;
     border-radius: 3px;
     transition: background 0.5s;
+    margin-bottom: 26px;
 }
 
 /*버튼 hover 액션*/

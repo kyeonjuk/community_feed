@@ -8,7 +8,7 @@
 /*컨테이너*/
 .main .container {
     padding-top: 30px;
-    width: 935px;
+    width: 800px;
     display: flex;
     flex-direction: column;
     margin: 0 auto;

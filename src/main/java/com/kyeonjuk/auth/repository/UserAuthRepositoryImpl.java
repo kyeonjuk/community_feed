@@ -74,4 +74,9 @@ public class UserAuthRepositoryImpl implements UserAuthRepository {
 
         jpaUserAuthRepository.save(userAuthEntity);
     }
+
+    @Override
+    public void flush() {
+        jpaUserAuthRepository.flush();
+    }
 }

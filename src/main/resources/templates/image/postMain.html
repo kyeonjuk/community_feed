@@ -60,13 +60,14 @@
 
     .sl__item__contents__content {
         margin-top: 10px;
+        margin-bottom: 53px;
+        margin-left: 20px;
     }
 
     .sl__item__contents__comment {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        display: flow;
         margin-top: 10px;
+        margin-bottom: 29px;
     }
 
     .sl__item__input {
@@ -231,18 +232,13 @@
 }
 
 #postUserName a {
+  margin-left: 14px;
   text-decoration: none; /* 링크 밑줄 제거 */
-  color: #3498db; /* 파란색 텍스트 */
+  color: #000000; /* 파란색 텍스트 */
   font-weight: bold; /* 글씨 굵게 */
   font-size: 16px; /* 글씨 크기 */
   transition: color 0.3s ease; /* 색상 변화에 부드러운 애니메이션 추가 */
 }
-
-#postUserName a:hover {
-  color: #1abc9c; /* 마우스 올렸을 때 색상 변화 */
-  text-decoration: underline; /* 호버 시 밑줄 추가 */
-}
-
 
   </style>
 </head>
@@ -289,18 +285,18 @@ document.addEventListener('DOMContentLoaded', function () {
          const postContent = post.content || '게시물 내용 없음';
          const postImageUrl = post.contentImageUrl ? `/uploads/images/${post.contentImageUrl}` : '/images/default-post-image.jpg';
          const userName = post.author?.info?.name || '사용자 이름';
-         const userProfileImage = post.author?.info?.profileImage || '/images/person.jpeg';
+         const userProfileImage = post.author?.info?.profileImageUrl;
          const likeCount = post.likeCount || 0;
 
          // HTML 업데이트
          document.getElementById('postUserName').innerHTML = `
-           <a href="/model/user/profile/${authorId}" style="text-decoration: none; color: #3498db; font-weight: bold; font-size: 16px;">
+           <a href="/model/user/profile/${authorId}">
              ${userName}
            </a>
          `;
          document.getElementById('postUserProfileImage').outerHTML = `
            <a href="/model/user/profile/${authorId}">
-             <img src="${userProfileImage}" alt="User Profile" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #3498db;">
+             <img src="/uploads/images/${userProfileImage || 'Default-Profile.png'}" alt="User Profile" style="width: 50px; height: 50px; border-radius: 50%;">
            </a>
          `;
          document.getElementById('postImage').src = postImageUrl;
@@ -350,29 +346,29 @@ document.addEventListener('DOMContentLoaded', function () {
                <div style="display: flex; align-items: center; margin-bottom: 5px;">
                    <a href="/model/user/profile/${commentItem.userId}">
                      <img class="profile-image"
-                          src="${commentItem.userProfileImageUrl || '/images/person.jpeg'}"
-                          onerror="this.src='/images/person.jpeg'"
-                          style="width: 30px; height: 30px; margin-right: 10px; border-radius: 50%; border: 2px solid #3498db;" />
+                          src="/uploads/images/${commentItem.userProfileImageUrl || 'Default-Profile.png'}"
+                          style="width: 30px; height: 30px; margin-right: 10px; border-radius: 50%;" />
                    </a>
                    <a href="/model/user/profile/${commentItem.userId}" style="text-decoration: none; color: #000;">
                      <b>${commentItem.userName}</b>
                    </a>
+                   <small style="margin-left: 20px; color: #888;">${new Date(commentItem.createdAt).toLocaleString()}</small>
                    <button class="like-button"
                            onclick="toggleCommentLike(${commentItem.id}, this)"
-                           style="background: none; border: none; cursor: pointer; margin-left: 10px;">
+                           style="margin-left: 274px !important; background: none; border: none; cursor: pointer; margin-left: 10px;">
                        <i class="fas fa-heart" style="color: ${commentItem.likedByMe ? 'red' : 'black'};"></i>
                    </button>
                    <span id="commentLikeCount-${commentItem.id}"
                          style="margin-left: 5px; color: #555;">${commentItem.likeCount || 0}</span>
                </div>
-               <p>${commentItem.content}</p>
-               <small style="color: #888;">${new Date(commentItem.createdAt).toLocaleString()}</small>
+               <p style="display: contents;">${commentItem.content}</p>
+
              `;
 
              // 댓글 작성자인 경우에만 삭제 버튼 추가
              if (globalUserId === commentItem.userId) {
                commentElement.innerHTML += `
-                 <button class="delete-button" onclick="confirmDeleteComment(${commentItem.id})">
+                 <button class="delete-button" onclick="confirmDeleteComment(${commentItem.id})" style="display: contents;">
                    <i class="fas fa-times"></i> <!-- X 아이콘 -->
                  </button>
                `;
@@ -575,13 +571,12 @@ document.addEventListener('DOMContentLoaded', function () {
      // 댓글 요소 구조에 하트 아이콘과 좋아요 수 추가
      commentElement.innerHTML = `
          <div style="display: flex; align-items: center; margin-bottom: 5px;">
-             <img class="profile-image" src="${comment.userProfileImageUrl || '/images/person.jpeg'}"
-               onerror="this.src='/images/person.jpeg'"
+             <img class="profile-image" src="/uploads/images/${comment.userProfileImageUrl || 'Default-Profile.png'}"
                style="width: 30px; height: 30px; margin-right: 10px;" />
              <b>${comment.userName}</b>
              <button class="like-button"
                onclick="toggleCommentLike(${comment.id}, this)"
-               style="background: none; border: none; cursor: pointer; margin-left: 10px;">
+               style="margin-left: 274px !important; background: none; border: none; cursor: pointer; margin-left: 10px;">
                  <i class="fas fa-heart" style="color: ${comment.isLiked ? 'red' : 'black'};"></i>
              </button>
              <span id="commentLikeCount-${comment.id}"
@@ -589,7 +584,7 @@ document.addEventListener('DOMContentLoaded', function () {
          </div>
          <p>${comment.content}</p>
          <div style="display: flex; justify-content: space-between; align-items: center;">
-             <small style="color: #888;">${new Date(comment.createdAt).toLocaleString()}</small>
+             <small style="margin-left: 20px; color: #888;">${new Date(comment.createdAt).toLocaleString()}</small>
          </div>
          <button class="delete-button" onclick="deleteComment(${comment.id}, this)">
              <i class="fas fa-times"></i> <!-- X 아이콘 -->
@@ -865,7 +860,7 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
 
     <!-- 댓글 리스트 -->
-    <div id="storyCommentList">
+    <div id="storyCommentList" style="display: grid;">
       <!-- 댓글이 동적으로 추가됩니다. -->
     </div>
     <br>

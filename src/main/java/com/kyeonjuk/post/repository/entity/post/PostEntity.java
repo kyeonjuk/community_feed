@@ -6,6 +6,7 @@ import com.kyeonjuk.post.domain.Post;
 import com.kyeonjuk.post.domain.content.PostContent;
 import com.kyeonjuk.post.domain.content.PostPublicationState;
 import com.kyeonjuk.user.repository.entity.UserEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -32,7 +33,7 @@ public class PostEntity extends TimeBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne                                    //foreignKey 생성 제한 (데이터 수정이 어려워서 foreignKey 를 잘 사용 X)
+    @ManyToOne     //foreignKey 생성 제한 (데이터 수정이 어려워서 foreignKey 를 잘 사용 X)
     @JoinColumn(name = "author_id" , foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private UserEntity author;
 
