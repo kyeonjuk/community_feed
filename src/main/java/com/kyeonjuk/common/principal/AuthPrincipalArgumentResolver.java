@@ -1,6 +1,8 @@
 package com.kyeonjuk.common.principal;
 
 import com.kyeonjuk.auth.domain.TokenProvider;
+import com.kyeonjuk.common.domain.exception.ErrorCode;
+import com.kyeonjuk.common.ui.BaseException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -44,7 +46,7 @@ public class AuthPrincipalArgumentResolver implements HandlerMethodArgumentResol
             return new UserPrincipal(userId, role);
 
         } catch (Exception e) {
-            throw new IllegalArgumentException("올바르지 않은 토큰 입니다.");
+            throw new BaseException(ErrorCode.INVALID_TOKEN);
         }
 
     }

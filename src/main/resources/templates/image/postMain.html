@@ -240,11 +240,12 @@
   transition: color 0.3s ease; /* 색상 변화에 부드러운 애니메이션 추가 */
 }
 
+
   </style>
 </head>
 <script>
   let globalUserId = null; // 전역 변수 선언 (userId 저장)
- let postData = null;
+  let postData = null;
 
 document.addEventListener('DOMContentLoaded', function () {
    const pathname = window.location.pathname; // URL 경로 가져오기
@@ -274,11 +275,11 @@ document.addEventListener('DOMContentLoaded', function () {
        .then(data => {
          console.log('Post Data:', data);
 
-         const postData = data.value; // postData에 서버에서 받은 데이터 할당
+         postData = data.value; // postData에 서버에서 받은 데이터 할당
          const post = postData.post;
          const comments = postData.comment;
          const isLiked = postData.liked; // 좋아요 상태
-         const globalUserId = postData.userId; // 전역 변수에 userId 저장
+         globalUserId = postData.userId; // 전역 변수에 userId 저장
          const authorId = post.author?.id; // 게시물 작성자 ID
 
          // 게시물 내용 렌더링
@@ -653,8 +654,16 @@ document.addEventListener('DOMContentLoaded', function () {
          popup.style.display = 'none'; // popup 숨기기
      }
 
+    // 수정 팝업창 표시
+     const editPopup = document.getElementById('editPopup');
+     if (editPopup) {
+         editPopup.style.display = 'block'; // 팝업을 표시합니다.
+     } else {
+         console.error('editPopup이 존재하지 않습니다.');
+     }
+
      const postId = button.getAttribute('data-post-id').trim(); // 공백을 제거
-     const post = postData?.post; // postData가 있을 때만 post에 접근하도록
+     const post = postData?.post; // value 안의 post에 접근
 
      // post가 제대로 로드되었는지 확인
      if (!post) {
@@ -684,20 +693,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
      // 사용자 이름과 프로필 이미지 설정
      editPostUserName.textContent = post.author.info.name;
-     editPostUserProfileImage.src = post.author.info.profileImageUrl;
+     editPostUserProfileImage.src = '/uploads/images/' + post.author.profileImageUrl;
 
      // 이미지 URL이 잘못되었을 경우 기본 이미지 설정
      editPostUserProfileImage.onerror = function () {
          this.src = '/images/person.jpeg'; // 기본 이미지로 설정
      };
 
-     // 수정 팝업창 표시
-     const editPopup = document.getElementById('editPopup');
-     if (editPopup) {
-         editPopup.style.display = 'block'; // 팝업을 표시합니다.
-     } else {
-         console.error('editPopup이 존재하지 않습니다.');
-     }
+
  }
 
  function updatePost() {
