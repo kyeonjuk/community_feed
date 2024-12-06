@@ -87,6 +87,10 @@ https://github.com/user-attachments/assets/5ab43078-9d0d-4b77-9317-d2c22e2b3fc3
 
 <br>
 
+### ERD
+![image](https://github.com/user-attachments/assets/c2ae570b-276c-4dbd-baff-dba600d6aa7e)
+
+
 <!-- Top Button -->
 <p style='background: black; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto;'><a href="#top" style='color: white; '>▲</a></p>
 
