@@ -475,7 +475,7 @@ https://github.com/user-attachments/assets/5ab43078-9d0d-4b77-9317-d2c22e2b3fc3
 | ------------------------------------------------- |
 | ![image](https://github.com/user-attachments/assets/973b6e48-daa9-4a3c-8844-011dc541fffd)
 
-
+ <br>
 
 ### 2) 게시글
 
@@ -501,7 +501,7 @@ https://github.com/user-attachments/assets/5ab43078-9d0d-4b77-9317-d2c22e2b3fc3
 | ------------------------------------------------- |
 | ![image](https://github.com/user-attachments/assets/e8a9918d-3161-4343-a2bc-363613552681)
 
-
+ <br>
 
 ### 3) 마이페이지
 
@@ -533,7 +533,7 @@ https://github.com/user-attachments/assets/5ab43078-9d0d-4b77-9317-d2c22e2b3fc3
 | ------------------------------------------------- |
 | ![image](https://github.com/user-attachments/assets/63714cf0-5259-49a8-be5b-c0ad9d36c23f)
  
-
+ <br>
 
 ### 4) etc
 
@@ -547,6 +547,15 @@ https://github.com/user-attachments/assets/5ab43078-9d0d-4b77-9317-d2c22e2b3fc3
 | ------------------------------------------------- |
 | ![image](https://github.com/user-attachments/assets/1ef08794-e239-4f81-8bdd-9ec4dc382d04)
 <br>
+
+### 5) 관리자 페이지
+
+| 메인화면                                          
+| ------------------------------------------------- |
+| ![3](https://github.com/user-attachments/assets/e544f1e8-3663-47ad-ba10-6124a68f0d6c)
+
+ <br>
+
 
 <!-- Top Button -->
 <p style='background: black; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-left: auto;'><a href="#top" style='color: white; '>▲</a></p>
