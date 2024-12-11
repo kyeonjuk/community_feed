@@ -75,9 +75,9 @@ jobs:
         # SSH를 사용하여 EC2 서버에 연결하고 현재 실행 중인 Java 프로세스를 종료한 다음 새로운 Java 프로세스 생성 및 실행!!
         ## NLP 적용하면 IP -> 도메인으로 수정 + EC2 늘리면 run 추가
       - name: Deploy to EC2
-        run: | 
+        run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
-            chmod 600 private_key.pem
-            scp -i private_key.pem -o StrictHostKeyChecking=no build/libs/community_feed-${{ needs.build.outputs.release }}.jar ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER_NAME }}/community_feed-${{ needs.build.outputs.release }}.jar
-            ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST }} "pgrep java | xargs kill -9; nohup java -jar /home/${{ secrets.EC2_USER_NAME }}/community_feed-${{ needs.build.outputs.release }}.jar > app.log 2>&1 &"
-            rm -f private_key.pem
+          chmod 600 private_key.pem
+          scp -i private_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null build/libs/community_feed-${{ needs.build.outputs.release }}.jar ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER_NAME }}/community_feed-${{ needs.build.outputs.release }}.jar
+          ssh -i private_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST }} "pgrep java | xargs kill -9 || echo 'No running Java processes'; nohup java -jar /home/${{ secrets.EC2_USER_NAME }}/community_feed-${{ needs.build.outputs.release }}.jar > app.log 2>&1 &"
+          rm -f private_key.pem
