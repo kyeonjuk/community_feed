@@ -1,6 +1,6 @@
 name: on-premise-cicd      # Github Actions 목록에서 보여지는 이름
 on:                         # 언제 방아쇠를 당겨서 워크플로우를 실행할지 정의
-  workflow-dispatch:
+  workflow_dispatch:
     inputs:
       tags:                 # 태그로 어떤 버전인지 확인하기 위해 사용 (ex: v1.0.0)
         description: 'Set Tags Name'
