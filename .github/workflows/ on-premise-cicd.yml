@@ -1,4 +1,4 @@
-name : on-premise-cicd      # Github Actions 목록에서 보여지는 이름
+name: on-premise-cicd      # Github Actions 목록에서 보여지는 이름
 on:                         # 언제 방아쇠를 당겨서 워크플로우를 실행할지 정의
   workflow-dispatch:
     inputs:
