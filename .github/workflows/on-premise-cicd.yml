@@ -78,6 +78,9 @@ jobs:
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
           chmod 600 private_key.pem
-          scp -i private_key.pem -o StrictHostKeyChecking=no build/libs/community_feed-${{ needs.build.outputs.release }}.jar ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER_NAME }}/community_feed-${{ needs.build.outputs.release }}.jar
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST }} "pgrep java | xargs kill -9 || echo 'No running Java processes'; nohup java -jar /home/${{ secrets.EC2_USER_NAME }}/community_feed-${{ needs.build.outputs.release }}.jar > app.log 2>&1 &"
+          # scp 명령어에 -v 옵션을 추가
+          scp -v -i private_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null build/libs/community_feed-v1-0-0.jar ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER_NAME }}/community_feed-v1-0-0.jar
+          # ssh 명령어에도 -v 옵션을 추가
+          ssh -v -i private_key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST }} "pgrep java | xargs kill -9 || echo 'No running Java processes'; nohup java -jar /home/${{ secrets.EC2_USER_NAME }}/community_feed-v1-0-0.jar > app.log 2>&1 &"
           rm -f private_key.pem
+      
