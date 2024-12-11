@@ -77,10 +77,9 @@ jobs:
       - name: Deploy to EC2
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
-          chmod 600 private_key.pem
-          # scp 명령어에 타임아웃 설정 및 대역폭 제한 추가
-          scp -v -i private_key.pem -o StrictHostKeyChecking=no build/libs/community_feed-v1-0-0.jar ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER_NAME }}/community_feed-v1-0-0.jar
-          ssh -v -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST }} "pgrep java | xargs kill -9 || echo 'No running Java processes'; nohup java -jar /home/${{ secrets.EC2_USER_NAME }}/community_feed-v1-0-0.jar > app.log 2>&1 &"
-          rm -f private_key.pem
+            chmod 600 private_key.pem
+            scp -i private_key.pem -o StrictHostKeyChecking=no build/libs/community_feed-${{ needs.build.outputs.release }}.jar ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER_NAME }}/community_feed-${{ needs.build.outputs.release }}.jar
+            ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER_NAME }}@${{ secrets.EC2_HOST }} "pgrep java | xargs kill -9; nohup java -jar /home/${{ secrets.EC2_USER_NAME }}/community_feed-${{ needs.build.outputs.release }}.jar > app.log 2>&1 &"
+            rm -f private_key.pem
       
       
