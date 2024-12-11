@@ -64,7 +64,7 @@ jobs:
 
     steps:
       - name: Download Artifact
-        uses: actions/download-artiface@v4
+        uses: actions/download-artifact@v4
         with:
           name: community_feed-application  # build 한 아키텍처 파일 : community_feed-application.zip
           path: build/libs/
