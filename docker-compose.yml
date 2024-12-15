@@ -4,8 +4,6 @@ services:
     ports:
       - "8081:8080"     # Host포트 : 컨테이너의 Jenkins기본포트와 연결
       - "50000:50000"   # Host포트 : Jenkins 에이전트와 통신에 사용되는 포트와 연결
-    env_file:
-      - .env
     volumes:
       - ${HOST_JENKINS_HOME}:/var/jenkins_home      #Host의 Jenkins 데이터 디렉토리 : 컨테이너 내부의 경로에 마운트
       - /var/run/docker.sock:/var/run/docker.sock
