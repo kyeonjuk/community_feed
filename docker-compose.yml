@@ -6,7 +6,7 @@ services:
       - "50000:50000"   # Host포트 : Jenkins 에이전트와 통신에 사용되는 포트와 연결
     volumes:
       #- ${HOST_JENKINS_HOME}:/var/jenkins_home      #Host의 Jenkins 데이터 디렉토리 : 컨테이너 내부의 경로에 마운트
-      - /User/USER/dev/jenkins:/var/jenkins_home
+      - /c/User/USER/dev/jenkins:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
 
     links:
@@ -16,7 +16,7 @@ services:
     image: jenkins/ssh-agent:jdk17
     volumes:
       #- ${HOST_JENKINS_WORKER_1}:/home/jenkins
-      - /User/USER/dev/worker-1:/home/jenkins
+      - /c/User/USER/dev/worker-1:/home/jenkins
     environment:
       - JENKINS_SLAVE_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC0/R35E968iRU+B92GTvAoAaGKwottCo5cl3PjatIySU2a+dvXJRzJkqLgX11kV0cKZxhUcQNpNao7n94j2vMneDnGFZDb0MZDxNFHtq2KZvtF+orAzSP6lagqmooCmIy35CSLTaO1tA6Lc26OSq7WQU5pu5xZ3I14wVCFtDrfRQuHJurdvovJ/5u7i1i73o0GM8olpzKQmmuzMxvxyVOC+DGgdfj6dI2pIIjaH4H3zmAMBVpcM7eZOKPUeT35WrKxWe/cFfFXPf9qQhqrGpFs7w7nEUlnNjrENVX/ME4DnwydG/WpF2W8ZXZRA0KAvjW3Im8p0yWtf34mVWMJQ9bv52kOYHuSncJRrNYUJichneVG38APFlQzFqHlGMyrbL6+2GBuOmzxGs6Vj7kvtpnw6qOae6dt/9lmo4wqQu37A9F/PKZXuM81I8G/zFivRH7pS03uiXDLbkPWeIPi/7QNcq+1IPkmiT/4qgxlsgQ0asLxzC9TytYx1tYCbpPIbG8=
 
